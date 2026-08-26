@@ -1,0 +1,1470 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>DAILY PROD - TERMINAL & PRINT SHEET v6.1</title>
+  <!-- โหลดไลบรารีสำหรับสร้าง QR Code และสแกน QR Code -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+  <style>
+    :root {
+      --bg-dark: #0b0e14;
+      --panel-bg: #151a22;
+      --border-color: #2b3342;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --neon-green: #00ff9d;
+      --neon-red: #ff3366;
+      --neon-yellow: #f5a623;
+      --neon-blue: #00e5ff;
+      --input-bg: #0b0e14;
+      --highlight: rgba(0, 255, 157, 0.15);
+    }
+
+    body {
+      font-family: 'Courier New', Courier, monospace;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      margin: 0;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    .terminal-container {
+      width: 100%;
+      max-width: 950px;
+      background: var(--panel-bg);
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      color: var(--neon-green);
+      margin: 0;
+      font-size: 20px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .status { font-size: 12px; color: var(--text-muted); }
+    .status-dot {
+      display: inline-block; width: 8px; height: 8px;
+      background-color: var(--neon-green); border-radius: 50%;
+      margin-right: 4px; box-shadow: 0 0 6px var(--neon-green);
+    }
+
+    .form-group { margin-bottom: 16px; }
+    label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; }
+
+    input, select {
+      width: 100%; 
+      padding: 12px 14px; 
+      background-color: var(--input-bg);
+      border: 1px solid var(--border-color); 
+      color: var(--text-main);
+      border-radius: 6px; 
+      box-sizing: border-box; 
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 16px; 
+      transition: all 0.2s;
+    }
+
+    input:focus, select:focus { border-color: var(--neon-green); outline: none; box-shadow: 0 0 6px var(--highlight); }
+    input[readonly] { background-color: #1a202a; cursor: pointer; color: var(--neon-green); font-weight: bold; }
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+
+    .order-input-wrapper {
+      display: flex;
+      gap: 8px;
+    }
+    .scan-btn {
+      background: transparent;
+      border: 1px solid var(--neon-blue);
+      color: var(--neon-blue);
+      padding: 0 16px;
+      font-size: 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-family: 'Courier New', Courier, monospace;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .scan-btn:hover {
+      background: var(--neon-blue);
+      color: var(--bg-dark);
+    }
+
+    /* QR Scanner Modal */
+    .scanner-modal {
+      display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(11, 14, 20, 0.95); z-index: 2000;
+      justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box;
+    }
+    .scanner-box {
+      width: 100%; max-width: 400px; background: var(--panel-bg);
+      border: 2px solid var(--neon-blue); border-radius: 8px; padding: 15px; text-align: center;
+    }
+    .scanner-close {
+      background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red);
+      padding: 10px; width: 100%; margin-top: 15px; border-radius: 6px; cursor: pointer;
+      font-family: 'Courier New', Courier, monospace; font-weight: bold;
+    }
+
+    .eff-box {
+      background: #1a202a;
+      border: 1px solid var(--border-color);
+      padding: 12px 14px;
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-size: 15px;
+    }
+    .eff-value { font-weight: bold; font-size: 18px; }
+
+    .submit-btn {
+      width: 100%; background-color: transparent; color: var(--neon-green);
+      border: 2px solid var(--neon-green); padding: 14px; font-size: 16px;
+      border-radius: 6px; cursor: pointer; font-weight: bold;
+      text-transform: uppercase; margin-top: 10px;
+      font-family: 'Courier New', Courier, monospace; transition: all 0.3s; letter-spacing: 1px;
+    }
+    .submit-btn:hover { background-color: var(--neon-green); color: var(--bg-dark); box-shadow: 0 0 15px rgba(0, 255, 157, 0.4); }
+    
+    .print-sheet-btn {
+      width: 100%; background-color: transparent; color: var(--neon-blue);
+      border: 2px solid var(--neon-blue); padding: 12px; font-size: 15px;
+      border-radius: 6px; cursor: pointer; font-weight: bold;
+      text-transform: uppercase; margin-top: 8px;
+      font-family: 'Courier New', Courier, monospace; transition: all 0.3s;
+    }
+    .print-sheet-btn:hover { background-color: var(--neon-blue); color: var(--bg-dark); }
+
+    .cancel-edit-btn {
+      width: 100%; background-color: transparent; color: var(--neon-red);
+      border: 1px solid var(--neon-red); padding: 10px; font-size: 14px;
+      border-radius: 6px; cursor: pointer; margin-top: 8px; display: none;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    /* VIRTUAL KEYPAD STYLES */
+    .keypad-modal {
+      display: none; position: fixed; bottom: 0; left: 0; width: 100%;
+      background: var(--panel-bg); border-top: 2px solid var(--neon-green);
+      padding: 15px 10px; box-sizing: border-box; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); z-index: 1000;
+    }
+    .keypad-header { display: flex; justify-content: space-between; color: var(--neon-green); margin-bottom: 10px; font-size: 14px; text-transform: uppercase; }
+    .keypad-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 500px; margin: 0 auto; }
+    
+    .key-btn {
+      background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border-color);
+      padding: 16px 0; font-size: 20px; border-radius: 6px; cursor: pointer;
+      font-family: 'Courier New', Courier, monospace; transition: background 0.1s;
+    }
+    .key-btn:active { background: #2b3342; }
+    .key-action { color: var(--neon-red); border-color: var(--neon-red); }
+    .key-special { color: var(--neon-green); border-color: var(--border-color); background: #1a202a; }
+    .key-close { background: var(--border-color); grid-column: span 4; margin-top: 3px; font-size: 16px; }
+
+    .system-msg { text-align: center; font-size: 14px; margin-bottom: 12px; }
+    .loading { color: #f5a623; }
+    .error { color: var(--neon-red); }
+
+    /* REPORT & FILTER STYLES */
+    .report-section {
+      margin-top: 35px;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 20px;
+    }
+    .report-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .report-title {
+      color: var(--text-muted);
+      font-size: 14px;
+      letter-spacing: 1px;
+      margin: 0;
+    }
+    .filter-box {
+      background: #1a202a;
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      border-radius: 6px;
+      margin-bottom: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 600px) {
+      .filter-box { grid-template-columns: 1fr; }
+    }
+    .filter-group label { font-size: 11px; margin-bottom: 4px; }
+    .filter-group select, .filter-group input { padding: 8px; font-size: 14px; }
+
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 10px;
+    }
+    .clear-filter-btn {
+      background: transparent;
+      border: 1px solid var(--neon-yellow);
+      color: var(--neon-yellow);
+      padding: 8px 14px;
+      font-size: 13px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Courier New', Courier, monospace;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .clear-filter-btn:hover {
+      background: var(--neon-yellow);
+      color: var(--bg-dark);
+    }
+    .export-btn {
+      background: transparent;
+      border: 1px solid var(--neon-blue);
+      color: var(--neon-blue);
+      padding: 8px 14px;
+      font-size: 13px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: 'Courier New', Courier, monospace;
+      text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .export-btn:hover {
+      background: var(--neon-blue);
+      color: var(--bg-dark);
+    }
+
+    .summary-panel {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    @media (min-width: 768px) {
+      .summary-panel { grid-template-columns: repeat(4, 1fr); }
+    }
+    .summary-card {
+      background: #1a202a;
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      border-radius: 6px;
+      text-align: center;
+    }
+    .summary-card label {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .summary-card span {
+      font-size: 16px;
+      font-weight: bold;
+      color: var(--neon-green);
+    }
+
+    .table-container { width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; }
+    th, td { padding: 10px 6px; text-align: left; border-bottom: 1px solid var(--border-color); }
+    th { color: var(--neon-green); font-weight: normal; text-transform: uppercase; opacity: 0.9; }
+    td { color: var(--text-main); }
+    tr:hover td { background-color: var(--input-bg); }
+    .text-right { text-align: right; }
+    .text-center { text-align: center; }
+    .action-cell button {
+      background: none; border: 1px solid var(--border-color); padding: 5px 8px;
+      font-family: 'Courier New', Courier, monospace; font-size: 11px; cursor: pointer; border-radius: 4px;
+    }
+    .btn-edit { color: var(--neon-yellow); border-color: var(--neon-yellow); margin-right: 4px; }
+    .btn-del { color: var(--neon-red); border-color: var(--neon-red); }
+
+    /* ========================================================= */
+    /* CSS พิมพ์เอกสาร A4 แนวนอน (เพิ่มเป็น 26 แถว เต็มพื้นที่เป๊ะ) */
+    /* ========================================================= */
+    #printArea {
+      display: none;
+    }
+
+    @media print {
+      body * {
+        visibility: hidden;
+      }
+      #printArea, #printArea * {
+        visibility: visible;
+        color: #000 !important; /* บังคับอักษรสีดำสนิท */
+      }
+      #printArea {
+        display: flex !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+      }
+      @page {
+        size: A4 landscape;
+        margin: 0;
+      }
+    }
+
+    .print-sheet-container {
+      width: 297mm;
+      height: 202mm; 
+      padding: 2.5mm 3.5mm;
+      box-sizing: border-box;
+      background: white;
+      display: flex;
+      justify-content: space-between;
+      page-break-after: avoid;
+      page-break-inside: avoid;
+      color: #000;
+      font-family: 'Courier New', Courier, monospace, 'TH Sarabun PSK';
+      overflow: hidden;
+    }
+
+    .print-card {
+      width: 48.6%;
+      height: 100%;
+      border: 1.5px solid #000;
+      padding: 2.5mm;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #fff;
+    }
+
+    .print-header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #000;
+      padding-bottom: 2px;
+      margin-bottom: 2px;
+    }
+
+    .print-title-area h3 {
+      margin: 0 0 2px 0;
+      font-size: 13px;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: bold;
+    }
+
+    .print-meta-row {
+      font-size: 9px;
+      margin-bottom: 1.5px;
+      display: flex;
+      gap: 6px;
+    }
+
+    .print-meta-row span.line {
+      border-bottom: 1px dotted #000;
+      flex-grow: 1;
+      padding-left: 3px;
+      font-weight: bold;
+    }
+
+    .print-qr-box {
+      text-align: center;
+    }
+    .print-qr-box canvas, .print-qr-box img {
+      width: 64px !important;
+      height: 64px !important;
+    }
+    .print-qr-box span {
+      display: block;
+      font-size: 6px;
+      margin-top: 1px;
+      font-weight: bold;
+    }
+
+    .print-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 7.5px;
+      margin-top: 1px;
+    }
+
+    .print-table th, .print-table td {
+      border: 1px solid #000;
+      padding: 1.5px 2px; 
+      text-align: center;
+      height: 16.5px;
+    }
+
+    .print-table th {
+      background-color: #e0e0e0 !important;
+      font-size: 7.5px;
+      text-transform: uppercase;
+      font-weight: bold;
+      -webkit-print-color-adjust: exact;
+    }
+
+    .print-footer {
+      display: flex;
+      justify-content: space-between;
+      font-size: 6.5px;
+      margin-top: 1px;
+      border-top: 1px solid #000;
+      padding-top: 1px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="terminal-container">
+  <div class="header">
+    <h2>DAILY_PROD <span style="font-size:12px; color:var(--text-muted)">v6.1 Smart Scan</span></h2>
+    <div class="status"><span class="status-dot" id="statusDot"></span><span id="statusText">CONNECTING...</span></div>
+  </div>
+
+  <div id="statusMessage" class="system-msg loading">> INITIALIZING SYSTEM PARAMETERS...</div>
+  
+  <form id="prodForm" onsubmit="handleSubmit(event)" style="display:none;">
+    <div class="form-group">
+      <label>1. RECORD DATE</label>
+      <input type="date" id="record_date" required>
+    </div>
+
+    <div class="form-group">
+      <label>2. ORDER NO</label>
+      <div class="order-input-wrapper">
+        <select id="id_order" onchange="handleOrderChange()" required style="flex-grow: 1;">
+          <option value="">-- SELECT ORDER --</option>
+        </select>
+        <button type="button" class="scan-btn" onclick="openScanner()">[ 📷 SCAN ]</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>3. TARGET / STEP</label>
+      <select id="id_target" onchange="calculateEfficiency()" required>
+        <option value="">-- WAITING FOR ORDER SELECTION --</option>
+      </select>
+      <input type="hidden" id="id_work" value="">
+    </div>
+
+    <div class="form-group">
+      <label>4. EMPLOYEE</label>
+      <select id="id_name" required>
+        <option value="">-- SELECT EMPLOYEE --</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>5. WORK HOURS</label>
+      <input type="text" id="hour_work" readonly placeholder="0.00 (TAP TO INPUT)" onclick="openKeypad('hour_work')" required>
+    </div>
+
+    <div class="form-group">
+      <label>6. PRODUCED QTY</label>
+      <input type="text" id="produced_amount" readonly placeholder="0 (TAP TO INPUT)" onclick="openKeypad('produced_amount')" required>
+    </div>
+
+    <div class="eff-box">
+      <span>> CALCULATED EFFICIENCY:</span>
+      <span id="effDisplay" class="eff-value" style="color: var(--text-muted);">0.00%</span>
+    </div>
+
+    <div class="form-group" id="reasonGroup" style="display: none;">
+      <label style="color: var(--neon-red);">7. REASON (EFFICIENCY &lt; 100% REQUIRED)</label>
+      <select id="id_reason">
+        <option value="">-- SELECT REASON --</option>
+      </select>
+    </div>
+
+    <button type="submit" class="submit-btn" id="submitBtn">> EXECUTE RECORD</button>
+    <button type="button" class="print-sheet-btn" onclick="printProgressSheet()">🖨️ PRINT PROGRESS SHEET (FOR SELECTED ORDER)</button>
+    <button type="button" class="cancel-edit-btn" id="cancelEditBtn" onclick="cancelEditMode()">[X] CANCEL EDIT</button>
+  </form>
+
+  <div class="report-section" id="reportSection" style="display:none;">
+    <div class="report-header">
+      <h3 class="report-title">> PROGRESS & VERIFICATION PANEL</h3>
+    </div>
+    
+    <div class="filter-box">
+      <div class="filter-group">
+        <label>FILTER: ORDER NO</label>
+        <select id="filter_order" onchange="onFilterOrderChange()">
+          <option value="">-- ALL ORDERS --</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>FILTER: WORK CODE [รหัสชิ้นงาน]</label>
+        <select id="filter_work" onchange="fetchReport()">
+          <option value="">-- ALL WORK CODES --</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>FILTER: TARGET / STEP</label>
+        <select id="filter_target" onchange="fetchReport()">
+          <option value="">-- ALL STEPS --</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>FROM DATE [จากวันที่]</label>
+        <input type="date" id="filter_date_from" onchange="fetchReport()">
+      </div>
+      <div class="filter-group">
+        <label>TO DATE [ถึงวันที่]</label>
+        <input type="date" id="filter_date_to" onchange="fetchReport()">
+      </div>
+    </div>
+
+    <div class="action-bar">
+      <button type="button" class="clear-filter-btn" onclick="clearFilters()">[CLEAR FILTERS]</button>
+      <button type="button" class="export-btn" onclick="exportToExcel()">[EXPORT TO EXCEL]</button>
+    </div>
+
+    <div class="summary-panel">
+      <div class="summary-card">
+        <label>TOTAL PRODUCED</label>
+        <span id="sumProduced">0</span>
+      </div>
+      <div class="summary-card">
+        <label>TARGET QUANTITY</label>
+        <span id="sumTarget" style="color: var(--neon-blue);">0</span>
+      </div>
+      <div class="summary-card">
+        <label>REMAINING QTY</label>
+        <span id="sumRemaining" style="color: var(--neon-yellow);">0</span>
+      </div>
+      <div class="summary-card">
+        <label>DEADLINE (DAYS LEFT)</label>
+        <span id="sumDaysLeft" style="color: var(--text-main);">-</span>
+      </div>
+    </div>
+
+    <div class="table-container">
+      <table id="reportTable">
+        <thead>
+          <tr>
+            <th>DATE</th>
+            <th>ORDER</th>
+            <th>EMPLOYEE</th>
+            <th>WORK CODE</th>
+            <th>STEP</th>
+            <th class="text-right">PRODUCED</th>
+            <th class="text-right">HOURS</th>
+            <th class="text-right">EFF%</th>
+            <th>REASON</th>
+            <th class="text-center no-export">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody id="reportTbody">
+          <tr><td colspan="10" class="text-center loading">> LOADING DATA...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- QR SCANNER MODAL -->
+<div id="scannerModal" class="scanner-modal" style="display:none;">
+  <div class="scanner-box">
+    <h3 style="color:var(--neon-blue); margin-top:0;">> SCAN QR CODE</h3>
+    <div id="reader" style="width:100%;"></div>
+    <button type="button" class="scanner-close" onclick="closeScanner()">[X] CLOSE CAMERA</button>
+  </div>
+</div>
+
+<div id="printArea"></div>
+
+<div id="numericKeypad" class="keypad-modal">
+  <div class="keypad-header">
+    <span id="keypadTitle">> INPUT VALUE: </span>
+    <span onclick="closeKeypad()" style="cursor:pointer;">[X] CLOSE</span>
+  </div>
+  <div class="keypad-grid">
+    <button type="button" class="key-btn" onclick="pressKey('7')">7</button>
+    <button type="button" class="key-btn" onclick="pressKey('8')">8</button>
+    <button type="button" class="key-btn" onclick="pressKey('9')">9</button>
+    <button type="button" class="key-btn key-action" onclick="pressKey('CLEAR')">CLR</button>
+    
+    <button type="button" class="key-btn" onclick="pressKey('4')">4</button>
+    <button type="button" class="key-btn" onclick="pressKey('5')">5</button>
+    <button type="button" class="key-btn" onclick="pressKey('6')">6</button>
+    <button type="button" class="key-btn key-special" onclick="pressKey('*2')">*2</button>
+    
+    <button type="button" class="key-btn" onclick="pressKey('1')">1</button>
+    <button type="button" class="key-btn" onclick="pressKey('2')">2</button>
+    <button type="button" class="key-btn" onclick="pressKey('3')">3</button>
+    <button type="button" class="key-btn key-special" onclick="pressKey('*4')">*4</button>
+    
+    <button type="button" class="key-btn" onclick="pressKey('0')">0</button>
+    <button type="button" class="key-btn" onclick="pressKey('00')">00</button>
+    <button type="button" class="key-btn" onclick="pressKey('.')">.</button>
+    <button type="button" class="key-btn key-special" onclick="pressKey('/2')">/2</button>
+    
+    <button type="button" class="key-btn key-close" onclick="closeKeypad()">ENTER</button>
+  </div>
+</div>
+
+<script>
+  const SUPABASE_URL = "https://siiiifesdjuunwmwozfb.supabase.co/rest/v1";
+  const SUPABASE_KEY = "sb_publishable_ohToE8Z_Fzo87uBtzdPDIg_cqHCi3HT";
+  
+  const headers = {
+    "apikey": SUPABASE_KEY,
+    "Authorization": "Bearer " + SUPABASE_KEY,
+    "Content-Type": "application/json",
+    "Prefer": "return=representation"
+  };
+
+  let globalData = { orders: [], employees: [], targets: [], reasons: [], workItems: [], steps: [] };
+  let activeInputId = null;
+  let isEditMode = false;
+  let originalRecordKey = null;
+  let html5QrCode = null;
+
+  window.onload = async function() {
+    document.getElementById('record_date').valueAsDate = new Date();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const scannedOrderId = urlParams.get('order_id');
+    const scannedOrderNo = urlParams.get('order');
+
+    try {
+      const [ordersRes, empsRes, targetsRes, reasonsRes, workItemsRes, stepsRes] = await Promise.all([
+        fetch(SUPABASE_URL + "/orders?select=*", { headers }),
+        fetch(SUPABASE_URL + "/employees?select=*", { headers }), 
+        fetch(SUPABASE_URL + "/targets?select=*", { headers }), 
+        fetch(SUPABASE_URL + "/reasons?select=*", { headers }),
+        fetch(SUPABASE_URL + "/work_items?select=*", { headers }),
+        fetch(SUPABASE_URL + "/production_steps?select=*", { headers }) 
+      ]);
+
+      if (!ordersRes.ok || !targetsRes.ok) throw new Error("Database Fetch Error");
+
+      globalData.orders = await ordersRes.json();
+      
+      let emps = await empsRes.json();
+      emps.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'th'));
+      globalData.employees = emps;
+
+      globalData.targets = await targetsRes.json();
+      globalData.reasons = await reasonsRes.json();
+      if (workItemsRes.ok) globalData.workItems = await workItemsRes.json();
+      if (stepsRes.ok) globalData.steps = await stepsRes.json();
+
+      populateDropdown('id_order', globalData.orders, 'id_order', 'order_no'); 
+      populateDropdown('id_name', globalData.employees, 'id_name', 'name'); 
+      populateDropdown('id_reason', globalData.reasons, 'id_reason', 'reason_detail');
+      populateDropdown('filter_order', globalData.orders, 'id_order', 'order_no');
+      populateDropdown('filter_work', globalData.workItems, 'id_work', 'work_code');
+
+      document.getElementById('statusMessage').style.display = 'none';
+      document.getElementById('prodForm').style.display = 'block';
+      document.getElementById('reportSection').style.display = 'block';
+      document.getElementById('statusText').innerText = "ONLINE";
+
+      if (scannedOrderId) {
+        selectOrderByParam(scannedOrderId, 'id_order');
+      } else if (scannedOrderNo) {
+        selectOrderByParam(scannedOrderNo, 'order_no');
+      }
+
+      loadLastSessionData();
+
+    } catch (error) {
+      console.error(error);
+      const msgEl = document.getElementById('statusMessage');
+      msgEl.innerText = "> SYS_ERROR: " + error.message;
+      msgEl.className = "system-msg error";
+      document.getElementById('statusDot').style.backgroundColor = "var(--neon-red)";
+      document.getElementById('statusText').innerText = "OFFLINE";
+    }
+  };
+
+  function selectOrderByParam(val, keyType) {
+    const foundOrd = globalData.orders.find(o => String(o[keyType]) === String(val));
+    if (foundOrd) {
+      document.getElementById('id_order').value = foundOrd.id_order;
+      handleOrderChange();
+    }
+  }
+
+  // --- ฟังก์ชันเปิดกล้องสแกน QR Code แบบฉลาด (รองรับทั้งลิงก์ URL และตัวเลขตรงๆ) ---
+  function openScanner() {
+    document.getElementById('scannerModal').style.display = 'flex';
+    if (!html5QrCode) {
+      html5QrCode = new Html5Qrcode("reader");
+    }
+    
+    html5QrCode.start(
+      { facingMode: "environment" }, 
+      { fps: 10, qrbox: { width: 250, height: 250 } },
+      (decodedText) => {
+        handleScannedResult(decodedText);
+        closeScanner();
+      },
+      (errorMessage) => {}
+    ).catch(err => {
+      alert("ไม่สามารถเปิดกล้องได้: " + err);
+      closeScanner();
+    });
+  }
+
+  function closeScanner() {
+    if (html5QrCode && html5QrCode.isScanning) {
+      html5QrCode.stop().then(() => {
+        document.getElementById('scannerModal').style.display = 'none';
+      }).catch(err => {
+        document.getElementById('scannerModal').style.display = 'none';
+      });
+    } else {
+      document.getElementById('scannerModal').style.display = 'none';
+    }
+  }
+
+  function handleScannedResult(scannedText) {
+    try {
+      let targetId = null;
+      let targetNo = null;
+
+      // กรณีสแกนแล้วได้เป็น URL เต็มๆ
+      if (scannedText.includes('http://') || scannedText.includes('https://')) {
+        let url = new URL(scannedText);
+        targetId = url.searchParams.get('order_id');
+        targetNo = url.searchParams.get('order');
+      } else {
+        // กรณีสแกนแล้วได้ข้อความดิบหรือตัวเลขออเดอร์ตรงๆ
+        targetNo = scannedText.trim();
+      }
+
+      if (targetId) {
+        selectOrderByParam(targetId, 'id_order');
+        alert("✅ สแกนสำเร็จ: โหลดเลขออเดอร์ ID " + targetId + " เรียบร้อย");
+      } else if (targetNo) {
+        // ลองเทียบกับ id_order ก่อน ถ้าไม่เจอค่อยเทียบกับ order_no
+        let found = globalData.orders.find(o => String(o.id_order) === String(targetNo) || String(o.order_no) === String(targetNo));
+        if (found) {
+          document.getElementById('id_order').value = found.id_order;
+          handleOrderChange();
+          alert("✅ สแกนสำเร็จ: โหลดออเดอร์ " + found.order_no + " เรียบร้อย");
+        } else {
+          alert("⚠️ ไม่พบออเดอร์ที่ตรงกับข้อมูลที่สแกนได้: " + targetNo);
+        }
+      }
+    } catch (e) {
+      // เผื่อกรณีแปลง URL ไม่ผ่าน ให้ลองเอาข้อความดิบไปเทียบตรงๆ
+      let found = globalData.orders.find(o => String(o.order_no) === String(scannedText.trim()));
+      if (found) {
+        document.getElementById('id_order').value = found.id_order;
+        handleOrderChange();
+        alert("✅ สแกนสำเร็จ!");
+      } else {
+        alert("⚠️ อ่านข้อมูลได้แต่ไม่พบออเดอร์ในระบบ: " + scannedText);
+      }
+    }
+  }
+
+  function populateDropdown(elementId, dataArray, valueKey, textKey) {
+    const select = document.getElementById(elementId);
+    if (!Array.isArray(dataArray)) return;
+    dataArray.forEach(item => {
+      let opt = document.createElement('option');
+      opt.value = item[valueKey];
+      opt.textContent = item[textKey] || `ID: ${item[valueKey]}`;
+      select.appendChild(opt);
+    });
+  }
+
+  function handleOrderChange() {
+    const selectedOrderId = document.getElementById('id_order').value;
+    const targetSelect = document.getElementById('id_target');
+    const workHidden = document.getElementById('id_work');
+
+    targetSelect.innerHTML = '<option value="">-- SELECT TARGET / STEP --</option>';
+    workHidden.value = '';
+    document.getElementById('effDisplay').innerText = "0.00%";
+    document.getElementById('effDisplay').style.color = "var(--text-muted)";
+    document.getElementById('reasonGroup').style.display = 'none';
+    document.getElementById('id_reason').value = '';
+    document.getElementById('id_reason').removeAttribute('required');
+
+    if (!selectedOrderId) return;
+
+    const selectedOrder = globalData.orders.find(o => String(o.id_order) === String(selectedOrderId));
+    if (!selectedOrder || !selectedOrder.id_work) {
+        targetSelect.innerHTML = '<option value="">-- NO WORK CONFIGURED FOR THIS ORDER --</option>';
+        return;
+    }
+
+    const currentWorkId = selectedOrder.id_work;
+    workHidden.value = currentWorkId; 
+
+    const filteredTargets = globalData.targets.filter(t => String(t.id_work) === String(currentWorkId));
+    
+    if (filteredTargets.length > 0) {
+      filteredTargets.forEach(t => {
+        let opt = document.createElement('option');
+        opt.value = t.id_target; 
+        
+        let workDisplay = `WORK:${t.id_work}`;
+        if (globalData.workItems.length > 0) {
+          const foundWork = globalData.workItems.find(w => String(w.id_work) === String(t.id_work));
+          if (foundWork) workDisplay = foundWork.work_code; 
+        }
+
+        let stepDisplay = `STEP:${t.id_step}`;
+        if (t.id_step && globalData.steps.length > 0) {
+          const foundStep = globalData.steps.find(s => String(s.id_step) === String(t.id_step));
+          if (foundStep) stepDisplay = foundStep.step_name;
+        }
+
+        let tgtDisplay = t.target_amount ? `${t.target_amount} Pcs/H` : '';
+        opt.textContent = `${workDisplay} | ${stepDisplay} ${tgtDisplay ? '| ' + tgtDisplay : ''}`.trim();
+        targetSelect.appendChild(opt);
+      });
+    } else {
+      targetSelect.innerHTML = '<option value="">-- NO TARGETS FOUND FOR THIS WORK ITEM --</option>';
+    }
+  }
+
+  function printProgressSheet() {
+    const selectedOrderId = document.getElementById('id_order').value;
+    if (!selectedOrderId) {
+      alert("กรุณาเลือกเลขออเดอร์ (ORDER NO) ที่ต้องการพิมพ์ก่อนครับ");
+      return;
+    }
+
+    const orderObj = globalData.orders.find(o => String(o.id_order) === String(selectedOrderId));
+    if (!orderObj) {
+      alert("ไม่พบข้อมูลออเดอร์นี้ในระบบ");
+      return;
+    }
+
+    let workCodeText = "-";
+    if (orderObj.id_work && globalData.workItems.length > 0) {
+      const foundW = globalData.workItems.find(w => String(w.id_work) === String(orderObj.id_work));
+      if (foundW) workCodeText = foundW.work_code;
+    }
+
+    let stepNameText = "-";
+    if (orderObj.id_work && globalData.targets.length > 0) {
+      const foundTgt = globalData.targets.find(t => String(t.id_work) === String(orderObj.id_work));
+      if (foundTgt && foundTgt.id_step && globalData.steps.length > 0) {
+        const foundStp = globalData.steps.find(s => String(s.id_step) === String(foundTgt.id_step));
+        if (foundStp) stepNameText = foundStp.step_name;
+      }
+    }
+
+    const orderNo = orderObj.order_no || '-';
+    const quantity = orderObj.quantity ? parseInt(orderObj.quantity).toLocaleString() + ' Pcs' : '-';
+    
+    const formatDateStr = (dateInput) => {
+      if (!dateInput) return '-';
+      let d = new Date(dateInput);
+      return !isNaN(d) ? `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth()+1).toString().padStart(2, '0')}/${d.getFullYear()}` : dateInput;
+    };
+    
+    const startDateStr = formatDateStr(orderObj.start_date);
+    const endDateStr = formatDateStr(orderObj.end_date);
+    const currentUrl = window.location.href.split('?')[0] + `?order_id=${encodeURIComponent(orderObj.id_order)}`;
+
+    let tableRowsHtml = '';
+    for(let i=0; i<26; i++) {
+      tableRowsHtml += '<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+    }
+
+    const singleCardHtml = `
+      <div class="print-card">
+        <div>
+          <div class="print-header-top">
+            <div style="flex-grow: 1;">
+              <div class="print-title-area"><h3>ใบความก้าวหน้าของการผลิต</h3></div>
+              <div class="print-meta-row">
+                ใบสั่งงานเลขที่: <span class="line">${orderNo}</span>
+                ขั้นตอนงาน: <span class="line" style="flex:0.6">${stepNameText}</span>
+              </div>
+              <div class="print-meta-row">
+                ชนิดงาน: <span class="line">${workCodeText}</span>
+              </div>
+              <div class="print-meta-row">
+                จำนวนชิ้นงานสั่งผลิต: <span class="line">${quantity}</span>
+              </div>
+              <div class="print-meta-row">
+                วันที่เริ่ม: <span class="line">${startDateStr}</span>
+                วันที่เสร็จ: <span class="line">${endDateStr}</span>
+              </div>
+            </div>
+            <div class="print-qr-box">
+              <div class="qrcode-target" data-url="${currentUrl}"></div>
+              <span>SCAN TO WORK</span>
+            </div>
+          </div>
+
+          <table class="print-table">
+            <thead>
+              <tr>
+                <th width="12%">วันที่</th>
+                <th width="12%">ตัวเลขตอนเลิกงาน</th>
+                <th width="12%">ผลิตได้/วัน</th>
+                <th width="12%">สะสม</th>
+                <th width="8%">เสีย</th>
+                <th width="8%">เวลา</th>
+                <th width="14%">ชื่อคนทำ</th>
+                <th width="22%">หมายเหตุ</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRowsHtml}
+            </tbody>
+          </table>
+        </div>
+        <div class="print-footer">
+          <span>F-PR-005-00</span>
+          <span>DAILY PRODUCTION TRACKER</span>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('printArea').innerHTML = `
+      <div class="print-sheet-container">
+        ${singleCardHtml}
+        ${singleCardHtml}
+      </div>
+    `;
+
+    document.querySelectorAll('.qrcode-target').forEach(el => {
+      new QRCode(el, {
+        text: el.getAttribute('data-url'),
+        width: 64,
+        height: 64,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    });
+
+    window.print();
+  }
+
+  function onFilterOrderChange() {
+    const orderId = document.getElementById('filter_order').value;
+    const filterWorkSelect = document.getElementById('filter_work');
+    const filterTargetSelect = document.getElementById('filter_target');
+    
+    filterWorkSelect.innerHTML = '<option value="">-- ALL WORK CODES --</option>';
+    filterTargetSelect.innerHTML = '<option value="">-- ALL STEPS --</option>';
+    filterWorkSelect.value = '';
+    filterTargetSelect.value = '';
+
+    if (!orderId) {
+      populateDropdown('filter_work', globalData.workItems, 'id_work', 'work_code');
+      fetchReport();
+      return;
+    }
+
+    const selectedOrder = globalData.orders.find(o => String(o.id_order) === String(orderId));
+    if (selectedOrder && selectedOrder.id_work) {
+      const foundWork = globalData.workItems.find(w => String(w.id_work) === String(selectedOrder.id_work));
+      if (foundWork) {
+        let opt = document.createElement('option');
+        opt.value = foundWork.id_work;
+        opt.textContent = foundWork.work_code;
+        filterWorkSelect.appendChild(opt);
+        filterWorkSelect.value = foundWork.id_work;
+      }
+
+      const filteredTargets = globalData.targets.filter(t => String(t.id_work) === String(selectedOrder.id_work));
+      filteredTargets.forEach(t => {
+        let opt = document.createElement('option');
+        opt.value = t.id_target;
+        
+        let stepDisplay = `STEP:${t.id_step}`;
+        if (t.id_step && globalData.steps.length > 0) {
+          const foundStep = globalData.steps.find(s => String(s.id_step) === String(t.id_step));
+          if (foundStep) stepDisplay = foundStep.step_name;
+        }
+        opt.textContent = stepDisplay;
+        filterTargetSelect.appendChild(opt);
+      });
+    }
+
+    fetchReport();
+  }
+
+  function clearFilters() {
+    document.getElementById('filter_order').value = '';
+    document.getElementById('filter_work').value = '';
+    document.getElementById('filter_target').value = '';
+    document.getElementById('filter_date_from').value = '';
+    document.getElementById('filter_date_to').value = '';
+
+    const filterWorkSelect = document.getElementById('filter_work');
+    filterWorkSelect.innerHTML = '<option value="">-- ALL WORK CODES --</option>';
+    globalData.workItems.forEach(item => {
+      let opt = document.createElement('option');
+      opt.value = item.id_work;
+      opt.textContent = item.work_code;
+      filterWorkSelect.appendChild(opt);
+    });
+
+    const filterTargetSelect = document.getElementById('filter_target');
+    filterTargetSelect.innerHTML = '<option value="">-- ALL STEPS --</option>';
+
+    fetchReport();
+  }
+
+  function loadLastSessionData() {
+    const lastOrderId = localStorage.getItem('last_order_id');
+    const lastTargetId = localStorage.getItem('last_target_id');
+    const lastEmployeeId = localStorage.getItem('last_employee_id');
+
+    if (lastOrderId) {
+      document.getElementById('id_order').value = lastOrderId;
+      handleOrderChange();
+      if (lastTargetId) {
+        document.getElementById('id_target').value = lastTargetId;
+      }
+    }
+    if (lastEmployeeId) {
+      document.getElementById('id_name').value = lastEmployeeId;
+    }
+
+    if (lastOrderId) {
+      document.getElementById('filter_order').value = lastOrderId;
+      onFilterOrderChange();
+      if (lastTargetId) {
+        document.getElementById('filter_target').value = lastTargetId;
+      }
+    }
+    
+    fetchReport();
+  }
+
+  function calculateEfficiency() {
+    const targetId = document.getElementById('id_target').value;
+    const hourWork = parseFloat(document.getElementById('hour_work').value) || 0;
+    const producedAmt = parseFloat(document.getElementById('produced_amount').value) || 0;
+    
+    const effDisplayEl = document.getElementById('effDisplay');
+    const reasonGroup = document.getElementById('reasonGroup');
+    const reasonSelect = document.getElementById('id_reason');
+
+    if (!targetId || hourWork <= 0) {
+      effDisplayEl.innerText = "0.00%";
+      effDisplayEl.style.color = "var(--text-muted)";
+      reasonGroup.style.display = 'none';
+      reasonSelect.removeAttribute('required');
+      return;
+    }
+
+    const targetObj = globalData.targets.find(t => String(t.id_target) === String(targetId));
+    if (!targetObj || !targetObj.target_amount) {
+      effDisplayEl.innerText = "N/A";
+      return;
+    }
+
+    const totalTarget = targetObj.target_amount * hourWork;
+    const efficiency = totalTarget > 0 ? (producedAmt / totalTarget) * 100 : 0;
+
+    effDisplayEl.innerText = efficiency.toFixed(2) + "%";
+
+    if (efficiency >= 100) {
+      effDisplayEl.style.color = "var(--neon-green)";
+      reasonGroup.style.display = 'none';
+      reasonSelect.value = '';
+      reasonSelect.removeAttribute('required');
+    } else {
+      effDisplayEl.style.color = "var(--neon-red)";
+      reasonGroup.style.display = 'block';
+      reasonSelect.setAttribute('required', 'true');
+    }
+  }
+
+  async function fetchReport() {
+    const orderId = document.getElementById('filter_order').value;
+    const workId = document.getElementById('filter_work').value;
+    const targetId = document.getElementById('filter_target').value;
+    const dateFrom = document.getElementById('filter_date_from').value;
+    const dateTo = document.getElementById('filter_date_to').value;
+    const tbody = document.getElementById('reportTbody');
+
+    tbody.innerHTML = '<tr><td colspan="10" class="text-center loading">> FETCHING RECORDS...</td></tr>';
+    updateSummaryMetrics(orderId);
+
+    try {
+      let query = `${SUPABASE_URL}/daily_production?select=*`;
+      if (orderId) query += `&id_order=eq.${orderId}`;
+      if (targetId) query += `&id_target=eq.${targetId}`;
+      if (dateFrom) query += `&record_date=gte.${dateFrom}`;
+      if (dateTo) query += `&record_date=lte.${dateTo}`;
+
+      if (!orderId && !workId && !targetId && !dateFrom && !dateTo) {
+        query += `&order=record_date.desc&limit=10`;
+      } else {
+        query += `&order=record_date.desc&limit=50`;
+      }
+
+      const res = await fetch(query, { headers });
+      if (!res.ok) throw new Error("Failed to fetch logs");
+      let logs = await res.json();
+
+      if (workId) {
+        logs = logs.filter(log => {
+          const tgt = globalData.targets.find(t => String(t.id_target) === String(log.id_target));
+          return tgt && String(tgt.id_work) === String(workId);
+        });
+      }
+
+      if (logs.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted">> NO RECORDS FOUND FOR THIS FILTER</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = '';
+      logs.forEach(log => {
+        let dateObj = new Date(log.record_date);
+        let dateFormatted = !isNaN(dateObj) ? `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth()+1).toString().padStart(2, '0')}/${dateObj.getFullYear()}` : log.record_date;
+
+        const order = globalData.orders.find(o => String(o.id_order) === String(log.id_order));
+        const orderText = order ? order.order_no : `ID:${log.id_order}`;
+
+        const emp = globalData.employees.find(e => String(e.id_name) === String(log.id_name));
+        const empText = emp ? emp.name : `ID:${log.id_name}`;
+
+        let workText = "-";
+        let stepText = "-";
+        let targetAmountVal = 0;
+        if (log.id_target) {
+          const target = globalData.targets.find(t => String(t.id_target) === String(log.id_target));
+          if (target) {
+            targetAmountVal = target.target_amount || 0;
+            if (target.id_work && globalData.workItems.length > 0) {
+              const work = globalData.workItems.find(w => String(w.id_work) === String(target.id_work));
+              if (work) workText = work.work_code;
+            }
+            if (target.id_step && globalData.steps.length > 0) {
+              const step = globalData.steps.find(s => String(s.id_step) === String(target.id_step));
+              if (step) stepText = step.step_name;
+            }
+          }
+        }
+
+        const producedAmt = log.produced_amount || 0;
+        const hourWork = log.hour_work || 0;
+
+        const totalTarget = targetAmountVal * hourWork;
+        const effPct = totalTarget > 0 ? (producedAmt / totalTarget) * 100 : 0;
+        const effColor = effPct >= 100 ? "var(--neon-green)" : "var(--neon-red)";
+
+        let reasonText = "-";
+        if (log.id_reason && globalData.reasons.length > 0) {
+          const reason = globalData.reasons.find(r => String(r.id_reason) === String(log.id_reason));
+          if (reason) reasonText = reason.reason_detail;
+        }
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${dateFormatted}</td>
+          <td>${orderText}</td>
+          <td>${empText}</td>
+          <td>${workText}</td>
+          <td>${stepText}</td>
+          <td class="text-right" style="color:var(--neon-green)">${producedAmt}</td>
+          <td class="text-right">${hourWork.toFixed(2)}</td>
+          <td class="text-right" style="color:${effColor}">${effPct.toFixed(1)}%</td>
+          <td>${reasonText}</td>
+          <td class="text-center action-cell">
+            <button class="btn-edit" onclick='promptEdit(${JSON.stringify(log)})'>EDIT</button>
+            <button class="btn-del" onclick='promptDelete(${JSON.stringify(log)})'>DEL</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+    } catch (error) {
+      console.error(error);
+      tbody.innerHTML = `<tr><td colspan="10" class="text-center error">> ERR: ${error.message}</td></tr>`;
+    }
+  }
+
+  function exportToExcel() {
+    let table = document.getElementById("reportTable");
+    let html = table.outerHTML;
+    let blob = new Blob(['\ufeff' + html], { type: 'application/vnd.ms-excel' });
+    let url = URL.createObjectURL(blob);
+    let a = document.createElement('a');
+    a.href = url;
+    a.download = `Daily_Production_Report_${new Date().toISOString().slice(0,10)}.xls`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  async function updateSummaryMetrics(orderId) {
+    const sumProducedEl = document.getElementById('sumProduced');
+    const sumTargetEl = document.getElementById('sumTarget');
+    const sumRemainingEl = document.getElementById('sumRemaining');
+    const sumDaysLeftEl = document.getElementById('sumDaysLeft');
+
+    if (!orderId) {
+      sumProducedEl.innerText = "0";
+      sumTargetEl.innerText = "0";
+      sumRemainingEl.innerText = "0";
+      sumDaysLeftEl.innerText = "-";
+      return;
+    }
+
+    const orderObj = globalData.orders.find(o => String(o.id_order) === String(orderId));
+    const totalRequiredQty = orderObj && orderObj.quantity ? parseInt(orderObj.quantity) : 0;
+    sumTargetEl.innerText = totalRequiredQty.toLocaleString();
+
+    if (orderObj && orderObj.end_date) {
+      const endDate = new Date(orderObj.end_date);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const diffTime = endDate - today;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays > 0) {
+        sumDaysLeftEl.innerText = `${diffDays} DAYS`;
+        sumDaysLeftEl.style.color = "var(--neon-green)";
+      } else if (diffDays === 0) {
+        sumDaysLeftEl.innerText = `DUE TODAY`;
+        sumDaysLeftEl.style.color = "var(--neon-yellow)";
+      } else {
+        sumDaysLeftEl.innerText = `OVERDUE ${Math.abs(diffDays)} DAYS`;
+        sumDaysLeftEl.style.color = "var(--neon-red)";
+      }
+    } else {
+      sumDaysLeftEl.innerText = "N/A";
+      sumDaysLeftEl.style.color = "var(--text-muted)";
+    }
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/daily_production?select=produced_amount&id_order=eq.${orderId}`, { headers });
+      if (res.ok) {
+        const data = await res.json();
+        const totalProduced = data.reduce((acc, curr) => acc + (curr.produced_amount || 0), 0);
+        sumProducedEl.innerText = totalProduced.toLocaleString();
+
+        const remaining = totalRequiredQty - totalProduced;
+        sumRemainingEl.innerText = remaining > 0 ? remaining.toLocaleString() : "0";
+        if (remaining <= 0) {
+          sumRemainingEl.style.color = "var(--neon-green)";
+        } else {
+          sumRemainingEl.style.color = "var(--neon-yellow)";
+        }
+      }
+    } catch (err) {
+      console.error("Error calculating summary metrics:", err);
+    }
+  }
+
+  function promptDelete(logData) {
+    const pwd = prompt("SECURITY CHECK: ENTER PASSWORD TO DELETE (112233)");
+    if (pwd === "112233") {
+      deleteRecord(logData);
+    } else if (pwd !== null) {
+      alert("ACCESS DENIED: INCORRECT PASSWORD");
+    }
+  }
+
+  async function deleteRecord(logData) {
+    try {
+      const queryStr = `record_date=eq.${logData.record_date}&id_order=eq.${logData.id_order}&id_target=eq.${logData.id_target}&id_name=eq.${logData.id_name}`;
+      const res = await fetch(`${SUPABASE_URL}/daily_production?${queryStr}`, {
+        method: "DELETE",
+        headers: headers
+      });
+      if (res.ok) {
+        alert("SUCCESS: RECORD DELETED");
+        fetchReport();
+      } else {
+        alert("DELETE FAILED");
+      }
+    } catch (err) {
+      alert("ERROR: " + err.message);
+    }
+  }
+
+  function promptEdit(logData) {
+    const pwd = prompt("SECURITY CHECK: ENTER PASSWORD TO EDIT (112233)");
+    if (pwd === "112233") {
+      enterEditMode(logData);
+    } else if (pwd !== null) {
+      alert("ACCESS DENIED: INCORRECT PASSWORD");
+    }
+  }
+
+  function enterEditMode(logData) {
+    isEditMode = true;
+    originalRecordKey = logData;
+
+    document.getElementById('record_date').value = logData.record_date;
+    document.getElementById('id_order').value = logData.id_order || '';
+    handleOrderChange();
+    
+    document.getElementById('id_target').value = logData.id_target || '';
+    document.getElementById('id_name').value = logData.id_name || '';
+    document.getElementById('hour_work').value = logData.hour_work || '';
+    document.getElementById('produced_amount').value = logData.produced_amount || '';
+    document.getElementById('id_reason').value = logData.id_reason || '';
+
+    calculateEfficiency();
+
+    document.getElementById('submitBtn').innerText = "> UPDATE RECORD";
+    document.getElementById('cancelEditBtn').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function cancelEditMode() {
+    isEditMode = false;
+    originalRecordKey = null;
+    document.getElementById('prodForm').reset();
+    document.getElementById('record_date').valueAsDate = new Date();
+    document.getElementById('id_target').innerHTML = '<option value="">-- WAITING FOR ORDER SELECTION --</option>';
+    document.getElementById('id_work').value = '';
+    document.getElementById('submitBtn').innerText = "> EXECUTE RECORD";
+    document.getElementById('cancelEditBtn').style.display = 'none';
+    document.getElementById('reasonGroup').style.display = 'none';
+    document.getElementById('effDisplay').innerText = "0.00%";
+    document.getElementById('effDisplay').style.color = "var(--text-muted)";
+  }
+
+  function openKeypad(inputId) {
+    activeInputId = inputId;
+    let labelText = document.querySelector(`label[for="${inputId}"]`);
+    let title = labelText ? labelText.innerText : (inputId === 'hour_work' ? 'WORK HOURS' : 'PRODUCED QTY');
+    document.getElementById('keypadTitle').innerText = "> INPUT: " + title;
+    document.getElementById('numericKeypad').style.display = 'block';
+  }
+
+  function closeKeypad() {
+    document.getElementById('numericKeypad').style.display = 'none';
+    activeInputId = null;
+    calculateEfficiency();
+  }
+
+  function pressKey(val) {
+    if (!activeInputId) return;
+    let input = document.getElementById(activeInputId);
+    let currentVal = input.value;
+
+    if (val === 'CLEAR') {
+      input.value = '';
+    } else if (val === '*2') {
+      input.value = (parseFloat(currentVal) || 0) * 2;
+    } else if (val === '*4') {
+      input.value = (parseFloat(currentVal) || 0) * 4;
+    } else if (val === '/2') {
+      input.value = (parseFloat(currentVal) || 0) / 2;
+    } else {
+      input.value = currentVal + val;
+    }
+    calculateEfficiency();
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerText = isEditMode ? "> UPDATING..." : "> EXECUTING...";
+
+    const orderVal = document.getElementById('id_order').value;
+    const targetVal = document.getElementById('id_target').value;
+    const employeeVal = document.getElementById('id_name').value;
+
+    const payload = {
+      record_date: document.getElementById('record_date').value,
+      id_order: parseInt(orderVal) || null,
+      id_work: parseInt(document.getElementById('id_work').value) || null,
+      id_name: parseInt(employeeVal) || null,
+      id_target: parseInt(targetVal) || null,
+      hour_work: parseFloat(document.getElementById('hour_work').value) || 0,
+      produced_amount: parseInt(document.getElementById('produced_amount').value) || 0,
+      id_reason: parseInt(document.getElementById('id_reason').value) || null
+    };
+
+    try {
+      let response;
+      if (isEditMode) {
+        const queryStr = `record_date=eq.${originalRecordKey.record_date}&id_order=eq.${originalRecordKey.id_order}&id_target=eq.${originalRecordKey.id_target}&id_name=eq.${originalReportKey.id_name}`;
+        response = await fetch(`${SUPABASE_URL}/daily_production?${queryStr}`, {
+          method: "PATCH",
+          headers: headers,
+          body: JSON.stringify(payload)
+        });
+      } else {
+        response = await fetch(`${SUPABASE_URL}/daily_production`, {
+          method: "POST",
+          headers: headers,
+          body: JSON.stringify(payload)
+        });
+      }
+
+      if (response.ok) {
+        alert(isEditMode ? "SUCCESS: RECORD UPDATED" : "SUCCESS: TRANSACTION COMPLETED");
+
+        localStorage.setItem('last_order_id', orderVal);
+        localStorage.setItem('last_target_id', targetVal);
+        localStorage.setItem('last_employee_id', employeeVal);
+
+        document.getElementById('filter_order').value = orderVal;
+        onFilterOrderChange();
+        document.getElementById('filter_target').value = targetVal;
+
+        if (isEditMode) {
+          cancelEditMode();
+        } else {
+          document.getElementById('produced_amount').value = '';
+          document.getElementById('id_reason').value = '';
+          document.getElementById('reasonGroup').style.display = 'none';
+          document.getElementById('effDisplay').innerText = "0.00%";
+          document.getElementById('effDisplay').style.color = "var(--text-muted)";
+        }
+
+        fetchReport();
+      } else {
+        const errData = await response.json();
+        alert("TRANSACTION FAILED: " + (errData.message || JSON.stringify(errData)));
+      }
+    } catch (error) {
+      console.error(error);
+      alert("CONNECTION ERROR: " + error.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerText = isEditMode ? "> UPDATE RECORD" : "> EXECUTE RECORD";
+    }
+  }
+</script>
+
+</body>
+</html>
