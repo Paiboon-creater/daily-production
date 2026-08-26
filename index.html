@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>DAILY PROD - TERMINAL & PRINT SHEET v6.1</title>
+  <title>DAILY PROD - TERMINAL & PRINT SHEET v6.2</title>
   <!-- โหลดไลบรารีสำหรับสร้าง QR Code และสแกน QR Code -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -444,7 +444,7 @@
 
 <div class="terminal-container">
   <div class="header">
-    <h2>DAILY_PROD <span style="font-size:12px; color:var(--text-muted)">v6.1 Smart Scan</span></h2>
+    <h2>DAILY_PROD <span style="font-size:12px; color:var(--text-muted)">v6.2 Smart Scan Step</span></h2>
     <div class="status"><span class="status-dot" id="statusDot"></span><span id="statusText">CONNECTING...</span></div>
   </div>
 
@@ -653,7 +653,7 @@
     
     const urlParams = new URLSearchParams(window.location.search);
     const scannedOrderId = urlParams.get('order_id');
-    const scannedOrderNo = urlParams.get('order');
+    const scannedTargetId = urlParams.get('target_id');
 
     try {
       const [ordersRes, empsRes, targetsRes, reasonsRes, workItemsRes, stepsRes] = await Promise.all([
@@ -689,10 +689,21 @@
       document.getElementById('reportSection').style.display = 'block';
       document.getElementById('statusText').innerText = "ONLINE";
 
+      // ถ้าเปิดลิงก์มาจาก URL ที่มีทั้ง order_id และ target_id
       if (scannedOrderId) {
-        selectOrderByParam(scannedOrderId, 'id_order');
-      } else if (scannedOrderNo) {
-        selectOrderByParam(scannedOrderNo, 'order_no');
+        const foundOrd = globalData.orders.find(o => String(o.id_order) === String(scannedOrderId));
+        if (foundOrd) {
+          document.getElementById('id_order').value = foundOrd.id_order;
+          handleOrderChange(); // โหลดรายการ Target ตาม Order นี้
+          
+          if (scannedTargetId) {
+            // รอให้ Dropdown โหลดเสร็จแล้วเลือก Target ทันที
+            setTimeout(() => {
+              document.getElementById('id_target').value = scannedTargetId;
+              calculateEfficiency();
+            }, 200);
+          }
+        }
       }
 
       loadLastSessionData();
@@ -707,15 +718,7 @@
     }
   };
 
-  function selectOrderByParam(val, keyType) {
-    const foundOrd = globalData.orders.find(o => String(o[keyType]) === String(val));
-    if (foundOrd) {
-      document.getElementById('id_order').value = foundOrd.id_order;
-      handleOrderChange();
-    }
-  }
-
-  // --- ฟังก์ชันเปิดกล้องสแกน QR Code แบบฉลาด (รองรับทั้งลิงก์ URL และตัวเลขตรงๆ) ---
+  // --- ฟังก์ชันเปิดกล้องสแกน QR Code ---
   function openScanner() {
     document.getElementById('scannerModal').style.display = 'flex';
     if (!html5QrCode) {
@@ -748,45 +751,34 @@
     }
   }
 
+  // รองรับการแกะค่าทั้ง order_id และ target_id จากการสแกน QR Code
   function handleScannedResult(scannedText) {
     try {
-      let targetId = null;
-      let targetNo = null;
-
-      // กรณีสแกนแล้วได้เป็น URL เต็มๆ
       if (scannedText.includes('http://') || scannedText.includes('https://')) {
         let url = new URL(scannedText);
-        targetId = url.searchParams.get('order_id');
-        targetNo = url.searchParams.get('order');
-      } else {
-        // กรณีสแกนแล้วได้ข้อความดิบหรือตัวเลขออเดอร์ตรงๆ
-        targetNo = scannedText.trim();
-      }
+        let orderId = url.searchParams.get('order_id');
+        let targetId = url.searchParams.get('target_id');
 
-      if (targetId) {
-        selectOrderByParam(targetId, 'id_order');
-        alert("✅ สแกนสำเร็จ: โหลดเลขออเดอร์ ID " + targetId + " เรียบร้อย");
-      } else if (targetNo) {
-        // ลองเทียบกับ id_order ก่อน ถ้าไม่เจอค่อยเทียบกับ order_no
-        let found = globalData.orders.find(o => String(o.id_order) === String(targetNo) || String(o.order_no) === String(targetNo));
-        if (found) {
-          document.getElementById('id_order').value = found.id_order;
-          handleOrderChange();
-          alert("✅ สแกนสำเร็จ: โหลดออเดอร์ " + found.order_no + " เรียบร้อย");
-        } else {
-          alert("⚠️ ไม่พบออเดอร์ที่ตรงกับข้อมูลที่สแกนได้: " + targetNo);
+        if (orderId) {
+          const foundOrd = globalData.orders.find(o => String(o.id_order) === String(orderId));
+          if (foundOrd) {
+            document.getElementById('id_order').value = foundOrd.id_order;
+            handleOrderChange();
+            
+            if (targetId) {
+              setTimeout(() => {
+                document.getElementById('id_target').value = targetId;
+                calculateEfficiency();
+              }, 200);
+            }
+            alert("✅ สแกนสำเร็จ: โหลดข้อมูลออเดอร์และขั้นตอนการทำงานเรียบร้อย");
+            return;
+          }
         }
       }
+      alert("⚠️ QR Code นี้ไม่ตรงกับรูปแบบระบบงานผลิต");
     } catch (e) {
-      // เผื่อกรณีแปลง URL ไม่ผ่าน ให้ลองเอาข้อความดิบไปเทียบตรงๆ
-      let found = globalData.orders.find(o => String(o.order_no) === String(scannedText.trim()));
-      if (found) {
-        document.getElementById('id_order').value = found.id_order;
-        handleOrderChange();
-        alert("✅ สแกนสำเร็จ!");
-      } else {
-        alert("⚠️ อ่านข้อมูลได้แต่ไม่พบออเดอร์ในระบบ: " + scannedText);
-      }
+      alert("⚠️ เกิดข้อผิดพลาดในการอ่านข้อมูล QR Code");
     }
   }
 
@@ -853,6 +845,7 @@
     }
   }
 
+  // ฟังก์ชันพิมพ์ใบความก้าวหน้า (แนบทั้ง order_id และ id_target ที่ตรงกับออเดอร์นั้นไปใน QR Code)
   function printProgressSheet() {
     const selectedOrderId = document.getElementById('id_order').value;
     if (!selectedOrderId) {
@@ -873,11 +866,15 @@
     }
 
     let stepNameText = "-";
+    let targetIdVal = "";
     if (orderObj.id_work && globalData.targets.length > 0) {
       const foundTgt = globalData.targets.find(t => String(t.id_work) === String(orderObj.id_work));
-      if (foundTgt && foundTgt.id_step && globalData.steps.length > 0) {
-        const foundStp = globalData.steps.find(s => String(s.id_step) === String(foundTgt.id_step));
-        if (foundStp) stepNameText = foundStp.step_name;
+      if (foundTgt) {
+        targetIdVal = foundTgt.id_target || "";
+        if (foundTgt.id_step && globalData.steps.length > 0) {
+          const foundStp = globalData.steps.find(s => String(s.id_step) === String(foundTgt.id_step));
+          if (foundStp) stepNameText = foundStp.step_name;
+        }
       }
     }
 
@@ -892,7 +889,10 @@
     
     const startDateStr = formatDateStr(orderObj.start_date);
     const endDateStr = formatDateStr(orderObj.end_date);
-    const currentUrl = window.location.href.split('?')[0] + `?order_id=${encodeURIComponent(orderObj.id_order)}`;
+    
+    // สร้างลิงก์ QR Code ให้แนบทั้ง order_id และ target_id ไปด้วย
+    const baseUrl = window.location.href.split('?')[0];
+    const currentUrl = `${baseUrl}?order_id=${encodeURIComponent(orderObj.id_order)}&target_id=${encodeURIComponent(targetIdVal)}`;
 
     let tableRowsHtml = '';
     for(let i=0; i<26; i++) {
@@ -1416,7 +1416,7 @@
     try {
       let response;
       if (isEditMode) {
-        const queryStr = `record_date=eq.${originalRecordKey.record_date}&id_order=eq.${originalRecordKey.id_order}&id_target=eq.${originalRecordKey.id_target}&id_name=eq.${originalReportKey.id_name}`;
+        const queryStr = `record_date=eq.${originalRecordKey.record_date}&id_order=eq.${originalRecordKey.id_order}&id_target=eq.${originalRecordKey.id_target}&id_name=eq.${originalRecordKey.id_name}`;
         response = await fetch(`${SUPABASE_URL}/daily_production?${queryStr}`, {
           method: "PATCH",
           headers: headers,
