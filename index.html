@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>DAILY PROD - TERMINAL & PRINT SHEET v6.5</title>
+  <title>DAILY PROD - TERMINAL & PRINT SHEET v6.6</title>
   <!-- โหลดไลบรารีสำหรับสร้าง QR Code และสแกน QR Code -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -478,7 +478,7 @@
 
 <div class="terminal-container">
   <div class="header">
-    <h2>DAILY_PROD <span style="font-size:12px; color:var(--text-muted)">v6.5 Secure Edition</span></h2>
+    <h2>DAILY_PROD <span style="font-size:12px; color:var(--text-muted)">v6.6 Secure Edition</span></h2>
     <div class="status">
       <span>USER: <strong id="currentUserDisplay" style="color:var(--neon-green)">-</strong></span>
       <button type="button" class="logout-btn" onclick="handleLogout()">LOGOUT</button>
@@ -680,7 +680,6 @@
     "Prefer": "return=representation"
   };
 
-  // กำหนด 5 ยูสเซอร์สำหรับเข้าสู่ระบบ (คุณพี่สามารถแก้ไขเปลี่ยนชื่อ/รหัสผ่านตรงนี้ได้ตามต้องการครับ)
   const USERS_DB = {
     "user1": "1111",
     "user2": "2222",
@@ -695,7 +694,6 @@
   let originalRecordKey = null;
   let html5QrCode = null;
 
-  // ตรวจสอบสถานะ Login ทันทีที่เปิดหน้าเว็บ
   window.addEventListener('DOMContentLoaded', () => {
     const loggedUser = localStorage.getItem('terminal_logged_user');
     if (loggedUser) {
@@ -716,7 +714,6 @@
       document.getElementById('loginOverlay').style.display = 'none';
       errEl.style.display = 'none';
       
-      // ถ้าตรงกับชื่อพนักงานในระบบ ให้พยายามเลือกชื่อให้ด้วยอัตโนมัติ
       setTimeout(() => {
         const empSelect = document.getElementById('id_name');
         for (let opt of empSelect.options) {
@@ -777,7 +774,6 @@
       document.getElementById('reportSection').style.display = 'block';
       document.getElementById('statusText').innerText = "ONLINE";
 
-      // แก้ปัญหาเลือก Target ไม่ทันด้วยการรอโหลดข้อมูลเสร็จ (ติดตั้งแต่รอบแรก)
       if (scannedOrderId) {
         const foundOrd = globalData.orders.find(o => String(o.id_order) === String(scannedOrderId));
         if (foundOrd) {
@@ -986,7 +982,8 @@
     const startDateStr = formatDateStr(orderObj.start_date);
     const endDateStr = formatDateStr(orderObj.end_date);
     
-    const baseUrl = window.location.href.split('?')[0];
+    // บังคับดึง Base URL จากหน้าเว็บปัจจุบัน ตัดพารามิเตอร์เก่าทิ้งให้หมด เพื่อความแม่นยำ
+    const baseUrl = window.location.origin + window.location.pathname;
     const currentUrl = `${baseUrl}?order_id=${encodeURIComponent(orderObj.id_order)}&target_id=${encodeURIComponent(selectedTargetId)}`;
 
     let tableRowsHtml = '';
