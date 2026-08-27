@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>DAILY PROD - TERMINAL & PRINT SHEET v7.6</title>
+  <title>DAILY PROD - TERMINAL & PRINT SHEET v7.7</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <style>
@@ -251,7 +251,6 @@
       @page {
         size: A4 landscape;
         margin: 0mm;
-        counter-increment: page;
       }
     }
 
@@ -291,7 +290,7 @@
 
     .print-qr-box { text-align: center; }
     .print-qr-box canvas, .print-qr-box img {
-      width: 35mm !important; height: 35mm !important; /* ปรับขนาดบาร์โค้ดเป็น 35*35 ตามต้องการ */
+      width: 35mm !important; height: 35mm !important;
     }
     .print-qr-box span {
       display: block; font-size: 6.5pt; margin-top: 1px; font-weight: bold;
@@ -340,7 +339,7 @@
 
 <div class="terminal-container">
   <div class="header">
-    <h2>DAILY_PROD <span style="font-size:12px; color:var(--text-muted)">v7.6 Secure Edition</span></h2>
+    <h2>DAILY_PROD <span style="font-size:12px; color:var(--text-muted)">v7.7 Secure Edition</span></h2>
     <div class="status">
       <span>USER: <strong id="currentUserDisplay" style="color:var(--neon-green)">-</strong></span>
       <button type="button" class="logout-btn" onclick="handleLogout()">LOGOUT</button>
@@ -629,7 +628,6 @@
       if (!ordersRes.ok || !targetsRes.ok) throw new Error("Database Fetch Error");
 
       let ordersData = await ordersRes.json();
-      // เรียงลำดับคำสั่งซื้อจากน้อยไปมาก (A-Z)
       ordersData.sort((a, b) => (a.order_no || '').localeCompare(b.order_no || '', 'th', { numeric: true }));
       globalData.orders = ordersData;
       
@@ -803,33 +801,43 @@
 
   function handleScannedResult(scannedText) {
     try {
+      let orderId = null;
+      let targetId = null;
+
+      // รองรับทั้งรูปแบบ URL เดิม และรูปแบบรหัสสั้น (เช่น O:123|T:45 หรือ URL เต็ม)
       if (scannedText.includes('http://') || scannedText.includes('https://')) {
         let url = new URL(scannedText);
-        let orderId = url.searchParams.get('order_id');
-        let targetId = url.searchParams.get('target_id');
+        orderId = url.searchParams.get('order_id');
+        targetId = url.searchParams.get('target_id');
+      } else if (scannedText.startsWith("PROD:")) {
+        let parts = scannedText.replace("PROD:", "").split("|");
+        for (let p of parts) {
+          if (p.startsWith("O:")) orderId = p.replace("O:", "");
+          if (p.startsWith("T:")) targetId = p.replace("T:", "");
+        }
+      }
 
-        if (orderId) {
-          const foundOrd = globalData.orders.find(o => String(o.id_order) === String(orderId));
-          if (foundOrd) {
-            document.getElementById('id_order').value = foundOrd.id_order;
-            document.getElementById('id_order_input').value = foundOrd.order_no;
-            handleOrderChange();
-            
-            if (targetId) {
-              let checkInterval = setInterval(() => {
-                const targetSelect = document.getElementById('id_target');
-                const optionExists = Array.from(targetSelect.options).some(opt => String(opt.value) === String(targetId));
-                
-                if (optionExists || targetSelect.options.length > 1) {
-                  clearInterval(checkInterval);
-                  targetSelect.value = targetId;
-                  calculateEfficiency();
-                }
-              }, 50);
-            }
-            alert("✅ สแกนสำเร็จ: โหลดข้อมูลออเดอร์และขั้นตอนการทำงานเรียบร้อย");
-            return;
+      if (orderId) {
+        const foundOrd = globalData.orders.find(o => String(o.id_order) === String(orderId));
+        if (foundOrd) {
+          document.getElementById('id_order').value = foundOrd.id_order;
+          document.getElementById('id_order_input').value = foundOrd.order_no;
+          handleOrderChange();
+          
+          if (targetId) {
+            let checkInterval = setInterval(() => {
+              const targetSelect = document.getElementById('id_target');
+              const optionExists = Array.from(targetSelect.options).some(opt => String(opt.value) === String(targetId));
+              
+              if (optionExists || targetSelect.options.length > 1) {
+                clearInterval(checkInterval);
+                targetSelect.value = targetId;
+                calculateEfficiency();
+              }
+            }, 50);
           }
+          alert("✅ สแกนสำเร็จ: โหลดข้อมูลออเดอร์และขั้นตอนการทำงานเรียบร้อย");
+          return;
         }
       }
       alert("⚠️ QR Code นี้ไม่ตรงกับรูปแบบระบบงานผลิต");
@@ -957,7 +965,8 @@
     const startDateStr = formatDateStr(startDateVal);
     const endDateStr = formatDateStr(endDateVal);
     
-    const currentUrl = `${window.location.origin}${window.location.pathname}?order_id=${encodeURIComponent(orderObj.id_order)}&target_id=${encodeURIComponent(selectedTargetId)}`;
+    // ใช้รูปแบบข้อมูลกระชับ (Compact Payload) เพื่อให้ QR Code ไม่แน่นจนเกินไปและสแกนได้แม่นยำ 100%
+    const qrDataPayload = `PROD:O:${orderObj.id_order}|T:${selectedTargetId}`;
 
     let tableRowsHtml = '';
     for(let i=0; i<25; i++) {
@@ -986,7 +995,7 @@
               </div>
             </div>
             <div class="print-qr-box">
-              <div class="qrcode-target" data-url="${currentUrl}"></div>
+              <div class="qrcode-target" data-url="${qrDataPayload}"></div>
               <span>SCAN TO WORK</span>
             </div>
           </div>
@@ -1034,11 +1043,6 @@
       });
     });
 
-    // บังคับพิมพ์หน้า 1-1 เท่านั้น (Page range 1-1) เพื่อความรวดเร็วและไม่พิมพ์หน้าเปล่า
-    const originalPrint = window.print;
-    const mediaQueryList = window.matchMedia('print');
-    
-    // สั่งพิมพ์ทันที
     window.print();
   }
 
