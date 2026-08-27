@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>DAILY PROD - TERMINAL & PRINT SHEET v6.8</title>
-  <!-- โหลดไลบรารีสำหรับสร้าง QR Code และสแกน QR Code -->
+  <title>DAILY PROD - TERMINAL & PRINT SHEET v7.6</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <style>
@@ -35,7 +34,6 @@
       -webkit-text-size-adjust: 100%;
     }
 
-    /* LOGIN MODAL OVERLAY */
     .login-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(11, 14, 20, 0.98); z-index: 9999;
@@ -48,33 +46,19 @@
     .login-box h2 { text-align: center; margin-bottom: 20px; font-size: 22px; }
 
     .terminal-container {
-      width: 100%;
-      max-width: 950px;
-      background: var(--panel-bg);
-      padding: 15px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
+      width: 100%; max-width: 950px;
+      background: var(--panel-bg); padding: 15px;
+      border-radius: 8px; border: 1px solid var(--border-color);
       box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      margin-top: 10px;
-      margin-bottom: 10px;
+      margin-top: 10px; margin-bottom: 10px;
     }
 
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      border-bottom: 1px solid var(--border-color);
-      padding-bottom: 12px;
-      margin-bottom: 15px;
+      display: flex; justify-content: space-between; align-items: baseline;
+      border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 15px;
     }
 
-    h2 {
-      color: var(--neon-green);
-      margin: 0;
-      font-size: 20px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
+    h2 { color: var(--neon-green); margin: 0; font-size: 20px; letter-spacing: 2px; text-transform: uppercase; }
 
     .status { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
     .status-dot {
@@ -92,45 +76,24 @@
     label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; }
 
     input, select {
-      width: 100%; 
-      padding: 12px 14px; 
-      background-color: var(--input-bg);
-      border: 1px solid var(--border-color); 
-      color: var(--text-main);
-      border-radius: 6px; 
-      box-sizing: border-box; 
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 16px; 
-      transition: all 0.2s;
+      width: 100%; padding: 12px 14px; 
+      background-color: var(--input-bg); border: 1px solid var(--border-color); 
+      color: var(--text-main); border-radius: 6px; box-sizing: border-box; 
+      font-family: 'Courier New', Courier, monospace; font-size: 16px; transition: all 0.2s;
     }
 
     input:focus, select:focus { border-color: var(--neon-green); outline: none; box-shadow: 0 0 6px var(--highlight); }
     input[readonly] { background-color: #1a202a; cursor: pointer; color: var(--neon-green); font-weight: bold; }
     input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
 
-    .order-input-wrapper {
-      display: flex;
-      gap: 8px;
-    }
+    .order-input-wrapper { display: flex; gap: 8px; }
     .scan-btn {
-      background: transparent;
-      border: 1px solid var(--neon-blue);
-      color: var(--neon-blue);
-      padding: 0 16px;
-      font-size: 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      font-family: 'Courier New', Courier, monospace;
-      white-space: nowrap;
-      transition: all 0.2s;
+      background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue);
+      padding: 0 16px; font-size: 14px; border-radius: 6px; cursor: pointer; font-weight: bold;
+      font-family: 'Courier New', Courier, monospace; white-space: nowrap; transition: all 0.2s;
     }
-    .scan-btn:hover {
-      background: var(--neon-blue);
-      color: var(--bg-dark);
-    }
+    .scan-btn:hover { background: var(--neon-blue); color: var(--bg-dark); }
 
-    /* QR Scanner Modal */
     .scanner-modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(11, 14, 20, 0.95); z-index: 2000;
@@ -147,33 +110,32 @@
     }
 
     .eff-box {
-      background: #1a202a;
-      border: 1px solid var(--border-color);
-      padding: 12px 14px;
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
-      font-size: 15px;
+      background: #1a202a; border: 1px solid var(--border-color);
+      padding: 12px 14px; border-radius: 6px; display: flex;
+      justify-content: space-between; align-items: center; margin-bottom: 16px; font-size: 15px;
     }
     .eff-value { font-weight: bold; font-size: 18px; }
 
+    .btn-action-row {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;
+    }
+    @media (max-width: 600px) {
+      .btn-action-row { grid-template-columns: 1fr; }
+    }
+
     .submit-btn {
       width: 100%; background-color: transparent; color: var(--neon-green);
-      border: 2px solid var(--neon-green); padding: 14px; font-size: 16px;
+      border: 2px solid var(--neon-green); padding: 14px; font-size: 15px;
       border-radius: 6px; cursor: pointer; font-weight: bold;
-      text-transform: uppercase; margin-top: 10px;
-      font-family: 'Courier New', Courier, monospace; transition: all 0.3s; letter-spacing: 1px;
+      text-transform: uppercase; font-family: 'Courier New', Courier, monospace; transition: all 0.3s;
     }
     .submit-btn:hover { background-color: var(--neon-green); color: var(--bg-dark); box-shadow: 0 0 15px rgba(0, 255, 157, 0.4); }
     
     .print-sheet-btn {
       width: 100%; background-color: transparent; color: var(--neon-blue);
-      border: 2px solid var(--neon-blue); padding: 12px; font-size: 15px;
+      border: 2px solid var(--neon-blue); padding: 14px; font-size: 15px;
       border-radius: 6px; cursor: pointer; font-weight: bold;
-      text-transform: uppercase; margin-top: 8px;
-      font-family: 'Courier New', Courier, monospace; transition: all 0.3s;
+      text-transform: uppercase; font-family: 'Courier New', Courier, monospace; transition: all 0.3s;
     }
     .print-sheet-btn:hover { background-color: var(--neon-blue); color: var(--bg-dark); }
 
@@ -184,7 +146,6 @@
       font-family: 'Courier New', Courier, monospace;
     }
 
-    /* VIRTUAL KEYPAD STYLES */
     .keypad-modal {
       display: none; position: fixed; bottom: 0; left: 0; width: 100%;
       background: var(--panel-bg); border-top: 2px solid var(--neon-green);
@@ -207,33 +168,16 @@
     .loading { color: #f5a623; }
     .error { color: var(--neon-red); }
 
-    /* REPORT & FILTER STYLES */
     .report-section {
-      margin-top: 35px;
-      border-top: 1px dashed var(--border-color);
-      padding-top: 20px;
+      margin-top: 35px; border-top: 1px dashed var(--border-color); padding-top: 20px;
     }
-    .report-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .report-title {
-      color: var(--text-muted);
-      font-size: 14px;
-      letter-spacing: 1px;
-      margin: 0;
-    }
+    .report-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+    .report-title { color: var(--text-muted); font-size: 14px; letter-spacing: 1px; margin: 0; }
+    
     .filter-box {
-      background: #1a202a;
-      border: 1px solid var(--border-color);
-      padding: 12px;
-      border-radius: 6px;
-      margin-bottom: 12px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      background: #1a202a; border: 1px solid var(--border-color);
+      padding: 12px; border-radius: 6px; margin-bottom: 12px;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
     }
     @media (max-width: 600px) {
       .filter-box { grid-template-columns: 1fr; }
@@ -241,72 +185,42 @@
     .filter-group label { font-size: 11px; margin-bottom: 4px; }
     .filter-group select, .filter-group input { padding: 8px; font-size: 14px; }
 
-    .action-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-      gap: 10px;
+    .quick-prefix-row {
+      display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 6px;
     }
+    .prefix-btn {
+      background: #151a22; border: 1px solid var(--neon-blue); color: var(--neon-blue);
+      padding: 3px 6px; font-size: 10.5px; border-radius: 4px; cursor: pointer;
+      font-family: 'Courier New', Courier, monospace; font-weight: bold; transition: all 0.2s;
+    }
+    .prefix-btn:hover { background: var(--neon-blue); color: var(--bg-dark); }
+
+    .action-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 10px; }
     .clear-filter-btn {
-      background: transparent;
-      border: 1px solid var(--neon-yellow);
-      color: var(--neon-yellow);
-      padding: 8px 14px;
-      font-size: 13px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: 'Courier New', Courier, monospace;
-      text-transform: uppercase;
-      transition: all 0.2s;
+      background: transparent; border: 1px solid var(--neon-yellow); color: var(--neon-yellow);
+      padding: 8px 14px; font-size: 13px; border-radius: 6px; cursor: pointer;
+      font-family: 'Courier New', Courier, monospace; text-transform: uppercase; transition: all 0.2s;
     }
-    .clear-filter-btn:hover {
-      background: var(--neon-yellow);
-      color: var(--bg-dark);
-    }
+    .clear-filter-btn:hover { background: var(--neon-yellow); color: var(--bg-dark); }
     .export-btn {
-      background: transparent;
-      border: 1px solid var(--neon-blue);
-      color: var(--neon-blue);
-      padding: 8px 14px;
-      font-size: 13px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-family: 'Courier New', Courier, monospace;
-      text-transform: uppercase;
-      transition: all 0.2s;
+      background: transparent; border: 1px solid var(--neon-blue); color: var(--neon-blue);
+      padding: 8px 14px; font-size: 13px; border-radius: 6px; cursor: pointer;
+      font-family: 'Courier New', Courier, monospace; text-transform: uppercase; transition: all 0.2s;
     }
-    .export-btn:hover {
-      background: var(--neon-blue);
-      color: var(--bg-dark);
-    }
+    .export-btn:hover { background: var(--neon-blue); color: var(--bg-dark); }
 
     .summary-panel {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 15px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px;
     }
     @media (min-width: 768px) {
       .summary-panel { grid-template-columns: repeat(4, 1fr); }
     }
     .summary-card {
-      background: #1a202a;
-      border: 1px solid var(--border-color);
-      padding: 10px;
-      border-radius: 6px;
-      text-align: center;
+      background: #1a202a; border: 1px solid var(--border-color);
+      padding: 10px; border-radius: 6px; text-align: center;
     }
-    .summary-card label {
-      font-size: 10px;
-      color: var(--text-muted);
-      margin-bottom: 4px;
-    }
-    .summary-card span {
-      font-size: 16px;
-      font-weight: bold;
-      color: var(--neon-green);
-    }
+    .summary-card label { font-size: 10px; color: var(--text-muted); margin-bottom: 4px; }
+    .summary-card span { font-size: 16px; font-weight: bold; color: var(--neon-green); }
 
     .table-container { width: 100%; overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; }
@@ -323,141 +237,89 @@
     .btn-edit { color: var(--neon-yellow); border-color: var(--neon-yellow); margin-right: 4px; }
     .btn-del { color: var(--neon-red); border-color: var(--neon-red); }
 
-    /* CSS พิมพ์เอกสาร A4 แนวนอน */
-    #printArea {
-      display: none;
-    }
+    /* --- พิมพ์เอกสาร A4 แนวนอน (ล็อกพิมพ์หน้า 1-1 เท่านั้น และจบใน 1 หน้าถ้วน) --- */
+    #printArea { display: none; }
 
     @media print {
-      body * {
-        visibility: hidden;
-      }
-      #printArea, #printArea * {
-        visibility: visible;
-        color: #000 !important;
-      }
+      body * { visibility: hidden; }
+      #printArea, #printArea * { visibility: visible; color: #000 !important; }
       #printArea {
         display: flex !important;
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
+        position: absolute; left: 0; top: 0;
+        width: 100%; height: 100%;
       }
       @page {
         size: A4 landscape;
-        margin: 0;
+        margin: 0mm;
+        counter-increment: page;
       }
     }
 
     .print-sheet-container {
-      width: 297mm;
-      height: 202mm; 
-      padding: 2.5mm 3.5mm;
-      box-sizing: border-box;
-      background: white;
-      display: flex;
-      justify-content: space-between;
-      page-break-after: avoid;
-      page-break-inside: avoid;
-      color: #000;
-      font-family: 'Courier New', Courier, monospace, 'TH Sarabun PSK';
+      width: 297mm; height: 210mm;
+      padding: 3mm 5mm; box-sizing: border-box;
+      background: white; display: flex; justify-content: space-between; align-items: stretch;
+      page-break-after: avoid; page-break-inside: avoid;
+      color: #000; 
+      font-family: 'angsana new upc', 'Angsana New', 'TH Sarabun PSK', sans-serif;
       overflow: hidden;
     }
 
     .print-card {
-      width: 48.6%;
-      height: 100%;
-      border: 1.5px solid #000;
-      padding: 2.5mm;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background: #fff;
+      width: 49%; height: 100%;
+      border: 1px solid #000; padding: 2mm 2.5mm;
+      box-sizing: border-box; display: flex;
+      flex-direction: column; justify-content: space-between; background: #fff;
     }
 
     .print-header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      border-bottom: 2px solid #000;
-      padding-bottom: 2px;
-      margin-bottom: 2px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+      border-bottom: 2px solid #000; padding-bottom: 1.5px; margin-bottom: 2px;
     }
 
     .print-title-area h3 {
-      margin: 0 0 2px 0;
-      font-size: 13px;
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-weight: bold;
+      margin: 0 0 2px 0; font-size: 13.5pt; text-align: center;
+      text-transform: uppercase; letter-spacing: 1px; font-weight: bold;
     }
 
     .print-meta-row {
-      font-size: 9px;
-      margin-bottom: 1.5px;
-      display: flex;
-      gap: 6px;
+      font-size: 10.5pt; margin-bottom: 1.5px; display: flex; gap: 6px;
     }
-
     .print-meta-row span.line {
-      border-bottom: 1px dotted #000;
-      flex-grow: 1;
-      padding-left: 3px;
-      font-weight: bold;
+      border-bottom: 1px dotted #000; flex-grow: 1; padding-left: 3px; font-weight: bold;
     }
 
-    .print-qr-box {
-      text-align: center;
-    }
+    .print-qr-box { text-align: center; }
     .print-qr-box canvas, .print-qr-box img {
-      width: 64px !important;
-      height: 64px !important;
+      width: 35mm !important; height: 35mm !important; /* ปรับขนาดบาร์โค้ดเป็น 35*35 ตามต้องการ */
     }
     .print-qr-box span {
-      display: block;
-      font-size: 6px;
-      margin-top: 1px;
-      font-weight: bold;
+      display: block; font-size: 6.5pt; margin-top: 1px; font-weight: bold;
     }
 
     .print-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 7.5px;
-      margin-top: 1px;
+      width: 100%; border-collapse: collapse; margin-top: 1px;
     }
-
     .print-table th, .print-table td {
-      border: 1px solid #000;
-      padding: 1.5px 2px; 
-      text-align: center;
-      height: 16.5px;
+      border: 1px solid #000; padding: 0.5px 2px; text-align: center; height: 13pt;
     }
-
     .print-table th {
       background-color: #e0e0e0 !important;
-      font-size: 7.5px;
-      text-transform: uppercase;
-      font-weight: bold;
-      -webkit-print-color-adjust: exact;
+      font-size: 10.5pt !important;
+      text-transform: uppercase; font-weight: bold; -webkit-print-color-adjust: exact;
+    }
+    .print-table td {
+      font-size: 10.5pt !important;
     }
 
     .print-footer {
-      display: flex;
-      justify-content: space-between;
-      font-size: 6.5px;
-      margin-top: 1px;
-      border-top: 1px solid #000;
-      padding-top: 1px;
+      display: flex; justify-content: space-between; font-size: 8.5pt;
+      margin-top: 1px; border-top: 1px solid #000; padding-top: 1px; font-weight: bold;
     }
   </style>
 </head>
 <body>
 
-<!-- LOGIN MODAL SCREEN -->
 <div id="loginOverlay" class="login-overlay">
   <div class="login-box">
     <h2>> TERMINAL LOGIN</h2>
@@ -478,7 +340,7 @@
 
 <div class="terminal-container">
   <div class="header">
-    <h2>DAILY_PROD <span style="font-size:12px; color:var(--text-muted)">v6.8 Secure Edition</span></h2>
+    <h2>DAILY_PROD <span style="font-size:12px; color:var(--text-muted)">v7.6 Secure Edition</span></h2>
     <div class="status">
       <span>USER: <strong id="currentUserDisplay" style="color:var(--neon-green)">-</strong></span>
       <button type="button" class="logout-btn" onclick="handleLogout()">LOGOUT</button>
@@ -495,11 +357,18 @@
     </div>
 
     <div class="form-group">
-      <label>2. ORDER NO</label>
+      <label>2. ORDER NO [พิมพ์ค้นหาหรือเลือกเลขใบสั่ง]</label>
+      <div class="quick-prefix-row">
+        <button type="button" class="prefix-btn" onclick="setFormOrderPrefix('MOMTC26')">MOMTC26</button>
+        <button type="button" class="prefix-btn" onclick="setFormOrderPrefix('MOMTN26')">MOMTN26</button>
+        <button type="button" class="prefix-btn" onclick="setFormOrderPrefix('MOBCC26')">MOBCC26</button>
+        <button type="button" class="prefix-btn" onclick="setFormOrderPrefix('MOBCN26')">MOBCN26</button>
+        <button type="button" class="prefix-btn" onclick="setFormOrderPrefix('MOBCB26')">MOBCB26</button>
+      </div>
       <div class="order-input-wrapper">
-        <select id="id_order" onchange="handleOrderChange()" required style="flex-grow: 1;">
-          <option value="">-- SELECT ORDER --</option>
-        </select>
+        <input type="text" id="id_order_input" list="formOrderList" placeholder="พิมพ์ชื่อออเดอร์ หรือคลิกปุ่ม Prefix ด้านบน..." oninput="onFormOrderInput()" autocomplete="off" required style="flex-grow: 1;">
+        <datalist id="formOrderList"></datalist>
+        <input type="hidden" id="id_order" value="">
         <button type="button" class="scan-btn" onclick="openScanner()">[ 📷 SCAN ]</button>
       </div>
     </div>
@@ -513,10 +382,9 @@
     </div>
 
     <div class="form-group">
-      <label>4. EMPLOYEE</label>
-      <select id="id_name" required>
-        <option value="">-- SELECT EMPLOYEE --</option>
-      </select>
+      <label>4. EMPLOYEE [เลือกหรือพิมพ์ชื่อพนักงาน]</label>
+      <input type="text" id="id_name_input" list="employeeList" required placeholder="พิมพ์หรือเลือกชื่อพนักงาน..." autocomplete="off">
+      <datalist id="employeeList"></datalist>
     </div>
 
     <div class="form-group">
@@ -541,8 +409,10 @@
       </select>
     </div>
 
-    <button type="submit" class="submit-btn" id="submitBtn">> EXECUTE RECORD</button>
-    <button type="button" class="print-sheet-btn" onclick="printProgressSheet()">🖨️ PRINT PROGRESS SHEET (FOR SELECTED ORDER & STEP)</button>
+    <div class="btn-action-row">
+      <button type="submit" class="submit-btn" id="submitBtn">> EXECUTE RECORD</button>
+      <button type="button" class="print-sheet-btn" onclick="printProgressSheet()">🖨️ พิมพ์ใบความก้าวหน้า</button>
+    </div>
     <button type="button" class="cancel-edit-btn" id="cancelEditBtn" onclick="cancelEditMode()">[X] CANCEL EDIT</button>
   </form>
 
@@ -553,10 +423,17 @@
     
     <div class="filter-box">
       <div class="filter-group">
-        <label>FILTER: ORDER NO</label>
-        <select id="filter_order" onchange="onFilterOrderChange()">
-          <option value="">-- ALL ORDERS --</option>
-        </select>
+        <label>FILTER: ORDER NO [ค้นหาเลขใบสั่ง]</label>
+        <div class="quick-prefix-row">
+          <button type="button" class="prefix-btn" onclick="setFilterPrefix('MOMTC26')">MOMTC26</button>
+          <button type="button" class="prefix-btn" onclick="setFilterPrefix('MOMTN26')">MOMTN26</button>
+          <button type="button" class="prefix-btn" onclick="setFilterPrefix('MOBCC26')">MOBCC26</button>
+          <button type="button" class="prefix-btn" onclick="setFilterPrefix('MOBCN26')">MOBCN26</button>
+          <button type="button" class="prefix-btn" onclick="setFilterPrefix('MOBCB26')">MOBCB26</button>
+        </div>
+        <input type="text" id="filter_order_input" list="filterOrderList" placeholder="พิมพ์หรือคลิกปุ่ม Prefix ด้านบน..." oninput="onFilterOrderInput()" autocomplete="off">
+        <datalist id="filterOrderList"></datalist>
+        <input type="hidden" id="filter_order" value="">
       </div>
       <div class="filter-group">
         <label>FILTER: WORK CODE [รหัสชิ้นงาน]</label>
@@ -688,7 +565,7 @@
     "admin": "112233"
   };
 
-  let globalData = { orders: [], employees: [], targets: [], reasons: [], workItems: [], steps: [] };
+  let globalData = { orders: [], employees: [], targets: [], reasons: [], workItems: [], steps: [], orderSteps: [] };
   let activeInputId = null;
   let isEditMode = false;
   let originalRecordKey = null;
@@ -715,12 +592,10 @@
       errEl.style.display = 'none';
       
       setTimeout(() => {
-        const empSelect = document.getElementById('id_name');
-        for (let opt of empSelect.options) {
-          if (opt.textContent.toLowerCase().includes(u.toLowerCase())) {
-            empSelect.value = opt.value;
-            break;
-          }
+        const empInput = document.getElementById('id_name_input');
+        const foundEmp = globalData.employees.find(emp => emp.name.toLowerCase().includes(u.toLowerCase()));
+        if (foundEmp) {
+          empInput.value = foundEmp.name;
         }
       }, 300);
     } else {
@@ -741,18 +616,22 @@
     const scannedTargetId = urlParams.get('target_id');
 
     try {
-      const [ordersRes, empsRes, targetsRes, reasonsRes, workItemsRes, stepsRes] = await Promise.all([
+      const [ordersRes, empsRes, targetsRes, reasonsRes, workItemsRes, stepsRes, orderStepsRes] = await Promise.all([
         fetch(SUPABASE_URL + "/orders?select=*", { headers }),
         fetch(SUPABASE_URL + "/employees?select=*", { headers }), 
         fetch(SUPABASE_URL + "/targets?select=*", { headers }), 
         fetch(SUPABASE_URL + "/reasons?select=*", { headers }),
         fetch(SUPABASE_URL + "/work_items?select=*", { headers }),
-        fetch(SUPABASE_URL + "/production_steps?select=*", { headers }) 
+        fetch(SUPABASE_URL + "/production_steps?select=*", { headers }),
+        fetch(SUPABASE_URL + "/order_steps?select=*", { headers })
       ]);
 
       if (!ordersRes.ok || !targetsRes.ok) throw new Error("Database Fetch Error");
 
-      globalData.orders = await ordersRes.json();
+      let ordersData = await ordersRes.json();
+      // เรียงลำดับคำสั่งซื้อจากน้อยไปมาก (A-Z)
+      ordersData.sort((a, b) => (a.order_no || '').localeCompare(b.order_no || '', 'th', { numeric: true }));
+      globalData.orders = ordersData;
       
       let emps = await empsRes.json();
       emps.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'th'));
@@ -760,13 +639,18 @@
 
       globalData.targets = await targetsRes.json();
       globalData.reasons = await reasonsRes.json();
-      if (workItemsRes.ok) globalData.workItems = await workItemsRes.json();
+      if (workItemsRes.ok) {
+        let works = await workItemsRes.json();
+        works.sort((a, b) => (a.work_code || '').localeCompare(b.work_code || '', 'th', { numeric: true }));
+        globalData.workItems = works;
+      }
       if (stepsRes.ok) globalData.steps = await stepsRes.json();
+      if (orderStepsRes.ok) globalData.orderSteps = await orderStepsRes.json();
 
-      populateDropdown('id_order', globalData.orders, 'id_order', 'order_no'); 
-      populateDropdown('id_name', globalData.employees, 'id_name', 'name'); 
+      populateFormOrderDatalist();
+      populateEmployeeDatalist();
       populateDropdown('id_reason', globalData.reasons, 'id_reason', 'reason_detail');
-      populateDropdown('filter_order', globalData.orders, 'id_order', 'order_no');
+      populateFilterOrderDatalist();
       populateDropdown('filter_work', globalData.workItems, 'id_work', 'work_code');
 
       document.getElementById('statusMessage').style.display = 'none';
@@ -774,11 +658,11 @@
       document.getElementById('reportSection').style.display = 'block';
       document.getElementById('statusText').innerText = "ONLINE";
 
-      // ล็อกเงื่อนไข: ถ้ายิงสแกนผ่าน QR Code มา ให้บังคับเลือกตาม QR เท่านั้น ไม่ไปดึงค่าเก่ารบกวน
       if (scannedOrderId) {
         const foundOrd = globalData.orders.find(o => String(o.id_order) === String(scannedOrderId));
         if (foundOrd) {
           document.getElementById('id_order').value = foundOrd.id_order;
+          document.getElementById('id_order_input').value = foundOrd.order_no;
           handleOrderChange(); 
           
           if (scannedTargetId) {
@@ -794,15 +678,17 @@
             }, 50);
           }
         }
-        // เซ็ตค่าลง filter และอัปเดตรายงานตาม QR Code ทันที
         document.getElementById('filter_order').value = scannedOrderId;
+        const foundFilterOrd = globalData.orders.find(o => String(o.id_order) === String(scannedOrderId));
+        if (foundFilterOrd) {
+          document.getElementById('filter_order_input').value = foundFilterOrd.order_no;
+        }
         onFilterOrderChange();
         if (scannedTargetId) {
           document.getElementById('filter_target').value = scannedTargetId;
         }
         fetchReport();
       } else {
-        // ถ้าไม่ได้สแกน ค่อยโหลดค่าจากการใช้งานครั้งล่าสุดปกติ
         loadLastSessionData();
       }
 
@@ -815,6 +701,73 @@
       document.getElementById('statusText').innerText = "OFFLINE";
     }
   };
+
+  function populateFormOrderDatalist() {
+    const list = document.getElementById('formOrderList');
+    list.innerHTML = '';
+    globalData.orders.forEach(ord => {
+      let opt = document.createElement('option');
+      opt.value = ord.order_no;
+      list.appendChild(opt);
+    });
+  }
+
+  function setFormOrderPrefix(prefix) {
+    const inputEl = document.getElementById('id_order_input');
+    inputEl.value = prefix;
+    inputEl.focus();
+    onFormOrderInput();
+  }
+
+  function onFormOrderInput() {
+    const inputVal = document.getElementById('id_order_input').value.trim();
+    const found = globalData.orders.find(o => o.order_no.toLowerCase() === inputVal.toLowerCase());
+    if (found) {
+      document.getElementById('id_order').value = found.id_order;
+      handleOrderChange();
+    } else {
+      document.getElementById('id_order').value = '';
+      handleOrderChange();
+    }
+  }
+
+  function populateEmployeeDatalist() {
+    const list = document.getElementById('employeeList');
+    list.innerHTML = '';
+    globalData.employees.forEach(emp => {
+      let opt = document.createElement('option');
+      opt.value = emp.name;
+      list.appendChild(opt);
+    });
+  }
+
+  function populateFilterOrderDatalist() {
+    const list = document.getElementById('filterOrderList');
+    list.innerHTML = '';
+    globalData.orders.forEach(ord => {
+      let opt = document.createElement('option');
+      opt.value = ord.order_no;
+      list.appendChild(opt);
+    });
+  }
+
+  function setFilterPrefix(prefix) {
+    const inputEl = document.getElementById('filter_order_input');
+    inputEl.value = prefix;
+    inputEl.focus();
+    onFilterOrderInput();
+  }
+
+  function onFilterOrderInput() {
+    const inputVal = document.getElementById('filter_order_input').value.trim();
+    const found = globalData.orders.find(o => o.order_no.toLowerCase() === inputVal.toLowerCase());
+    if (found) {
+      document.getElementById('filter_order').value = found.id_order;
+    } else {
+      document.getElementById('filter_order').value = '';
+    }
+    onFilterOrderChange();
+  }
 
   function openScanner() {
     document.getElementById('scannerModal').style.display = 'flex';
@@ -859,6 +812,7 @@
           const foundOrd = globalData.orders.find(o => String(o.id_order) === String(orderId));
           if (foundOrd) {
             document.getElementById('id_order').value = foundOrd.id_order;
+            document.getElementById('id_order_input').value = foundOrd.order_no;
             handleOrderChange();
             
             if (targetId) {
@@ -982,19 +936,31 @@
     const orderNo = orderObj.order_no || '-';
     const quantity = orderObj.quantity ? parseInt(orderObj.quantity).toLocaleString() + ' Pcs' : '-';
     
+    let startDateVal = orderObj.start_date;
+    let endDateVal = orderObj.end_date;
+    if (selectedTargetObj && globalData.orderSteps.length > 0) {
+      const foundOrderStep = globalData.orderSteps.find(os => 
+        String(os.id_order) === String(selectedOrderId) && String(os.id_step) === String(selectedTargetObj.id_step)
+      );
+      if (foundOrderStep) {
+        if (foundOrderStep.start_date) startDateVal = foundOrderStep.start_date;
+        if (foundOrderStep.end_date) endDateVal = foundOrderStep.end_date;
+      }
+    }
+
     const formatDateStr = (dateInput) => {
       if (!dateInput) return '-';
       let d = new Date(dateInput);
       return !isNaN(d) ? `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth()+1).toString().padStart(2, '0')}/${d.getFullYear()}` : dateInput;
     };
     
-    const startDateStr = formatDateStr(orderObj.start_date);
-    const endDateStr = formatDateStr(orderObj.end_date);
+    const startDateStr = formatDateStr(startDateVal);
+    const endDateStr = formatDateStr(endDateVal);
     
     const currentUrl = `${window.location.origin}${window.location.pathname}?order_id=${encodeURIComponent(orderObj.id_order)}&target_id=${encodeURIComponent(selectedTargetId)}`;
 
     let tableRowsHtml = '';
-    for(let i=0; i<26; i++) {
+    for(let i=0; i<25; i++) {
       tableRowsHtml += '<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
     }
 
@@ -1044,8 +1010,8 @@
           </table>
         </div>
         <div class="print-footer">
-          <span>F-PR-005-00</span>
           <span>DAILY PRODUCTION TRACKER</span>
+          <span>F-PR-005-00</span>
         </div>
       </div>
     `;
@@ -1060,14 +1026,19 @@
     document.querySelectorAll('.qrcode-target').forEach(el => {
       new QRCode(el, {
         text: el.getAttribute('data-url'),
-        width: 64,
-        height: 64,
+        width: 132, 
+        height: 132,
         colorDark: "#000000",
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.M
       });
     });
 
+    // บังคับพิมพ์หน้า 1-1 เท่านั้น (Page range 1-1) เพื่อความรวดเร็วและไม่พิมพ์หน้าเปล่า
+    const originalPrint = window.print;
+    const mediaQueryList = window.matchMedia('print');
+    
+    // สั่งพิมพ์ทันที
     window.print();
   }
 
@@ -1117,6 +1088,7 @@
   }
 
   function clearFilters() {
+    document.getElementById('filter_order_input').value = '';
     document.getElementById('filter_order').value = '';
     document.getElementById('filter_work').value = '';
     document.getElementById('filter_target').value = '';
@@ -1141,21 +1113,29 @@
   function loadLastSessionData() {
     const lastOrderId = localStorage.getItem('last_order_id');
     const lastTargetId = localStorage.getItem('last_target_id');
-    const lastEmployeeId = localStorage.getItem('last_employee_id');
+    const lastEmployeeName = localStorage.getItem('last_employee_name');
 
     if (lastOrderId) {
       document.getElementById('id_order').value = lastOrderId;
+      const foundOrd = globalData.orders.find(o => String(o.id_order) === String(lastOrderId));
+      if (foundOrd) {
+        document.getElementById('id_order_input').value = foundOrd.order_no;
+      }
       handleOrderChange();
       if (lastTargetId) {
         document.getElementById('id_target').value = lastTargetId;
       }
     }
-    if (lastEmployeeId) {
-      document.getElementById('id_name').value = lastEmployeeId;
+    if (lastEmployeeName) {
+      document.getElementById('id_name_input').value = lastEmployeeName;
     }
 
     if (lastOrderId) {
       document.getElementById('filter_order').value = lastOrderId;
+      const foundOrd = globalData.orders.find(o => String(o.id_order) === String(lastOrderId));
+      if (foundOrd) {
+        document.getElementById('filter_order_input').value = foundOrd.order_no;
+      }
       onFilterOrderChange();
       if (lastTargetId) {
         document.getElementById('filter_target').value = lastTargetId;
@@ -1428,10 +1408,19 @@
 
     document.getElementById('record_date').value = logData.record_date;
     document.getElementById('id_order').value = logData.id_order || '';
+    const foundOrd = globalData.orders.find(o => String(o.id_order) === String(logData.id_order));
+    if (foundOrd) {
+      document.getElementById('id_order_input').value = foundOrd.order_no;
+    }
     handleOrderChange();
     
     document.getElementById('id_target').value = logData.id_target || '';
-    document.getElementById('id_name').value = logData.id_name || '';
+    
+    const empObj = globalData.employees.find(e => String(e.id_name) === String(logData.id_name));
+    if (empObj) {
+      document.getElementById('id_name_input').value = empObj.name;
+    }
+
     document.getElementById('hour_work').value = logData.hour_work || '';
     document.getElementById('produced_amount').value = logData.produced_amount || '';
     document.getElementById('id_reason').value = logData.id_reason || '';
@@ -1448,6 +1437,8 @@
     originalRecordKey = null;
     document.getElementById('prodForm').reset();
     document.getElementById('record_date').valueAsDate = new Date();
+    document.getElementById('id_order').value = '';
+    document.getElementById('id_order_input').value = '';
     document.getElementById('id_target').innerHTML = '<option value="">-- WAITING FOR ORDER SELECTION --</option>';
     document.getElementById('id_work').value = '';
     document.getElementById('submitBtn').innerText = "> EXECUTE RECORD";
@@ -1498,8 +1489,24 @@
     submitBtn.innerText = isEditMode ? "> UPDATING..." : "> EXECUTING...";
 
     const orderVal = document.getElementById('id_order').value;
+    if (!orderVal) {
+      alert("⚠️ กรุณาเลือกเลขออเดอร์ (ORDER NO) จากรายการให้ถูกต้อง");
+      submitBtn.disabled = false;
+      submitBtn.innerText = isEditMode ? "> UPDATE RECORD" : "> EXECUTE RECORD";
+      return;
+    }
+
     const targetVal = document.getElementById('id_target').value;
-    const employeeVal = document.getElementById('id_name').value;
+    const empInputVal = document.getElementById('id_name_input').value.trim();
+
+    const matchedEmp = globalData.employees.find(e => e.name.toLowerCase() === empInputVal.toLowerCase());
+    if (!matchedEmp) {
+      alert("⚠️ ไม่พบชื่อพนักงานนี้ในระบบ กรุณาเลือกจากรายการที่แสดง");
+      submitBtn.disabled = false;
+      submitBtn.innerText = isEditMode ? "> UPDATE RECORD" : "> EXECUTE RECORD";
+      return;
+    }
+    const employeeVal = matchedEmp.id_name;
 
     const payload = {
       record_date: document.getElementById('record_date').value,
@@ -1534,9 +1541,13 @@
 
         localStorage.setItem('last_order_id', orderVal);
         localStorage.setItem('last_target_id', targetVal);
-        localStorage.setItem('last_employee_id', employeeVal);
+        localStorage.setItem('last_employee_name', empInputVal);
 
         document.getElementById('filter_order').value = orderVal;
+        const foundOrd = globalData.orders.find(o => String(o.id_order) === String(orderVal));
+        if (foundOrd) {
+          document.getElementById('filter_order_input').value = foundOrd.order_no;
+        }
         onFilterOrderChange();
         document.getElementById('filter_target').value = targetVal;
 
