@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>DAILY PROD - TERMINAL & PRINT SHEET v6.7</title>
+  <title>DAILY PROD - TERMINAL & PRINT SHEET v6.8</title>
   <!-- โหลดไลบรารีสำหรับสร้าง QR Code และสแกน QR Code -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -478,7 +478,7 @@
 
 <div class="terminal-container">
   <div class="header">
-    <h2>DAILY_PROD <span style="font-size:12px; color:var(--text-muted)">v6.7 Secure Edition</span></h2>
+    <h2>DAILY_PROD <span style="font-size:12px; color:var(--text-muted)">v6.8 Secure Edition</span></h2>
     <div class="status">
       <span>USER: <strong id="currentUserDisplay" style="color:var(--neon-green)">-</strong></span>
       <button type="button" class="logout-btn" onclick="handleLogout()">LOGOUT</button>
@@ -774,6 +774,7 @@
       document.getElementById('reportSection').style.display = 'block';
       document.getElementById('statusText').innerText = "ONLINE";
 
+      // ล็อกเงื่อนไข: ถ้ายิงสแกนผ่าน QR Code มา ให้บังคับเลือกตาม QR เท่านั้น ไม่ไปดึงค่าเก่ารบกวน
       if (scannedOrderId) {
         const foundOrd = globalData.orders.find(o => String(o.id_order) === String(scannedOrderId));
         if (foundOrd) {
@@ -793,9 +794,17 @@
             }, 50);
           }
         }
+        // เซ็ตค่าลง filter และอัปเดตรายงานตาม QR Code ทันที
+        document.getElementById('filter_order').value = scannedOrderId;
+        onFilterOrderChange();
+        if (scannedTargetId) {
+          document.getElementById('filter_target').value = scannedTargetId;
+        }
+        fetchReport();
+      } else {
+        // ถ้าไม่ได้สแกน ค่อยโหลดค่าจากการใช้งานครั้งล่าสุดปกติ
+        loadLastSessionData();
       }
-
-      loadLastSessionData();
 
     } catch (error) {
       console.error(error);
@@ -982,7 +991,6 @@
     const startDateStr = formatDateStr(orderObj.start_date);
     const endDateStr = formatDateStr(orderObj.end_date);
     
-    // บังคับลิงก์ฐานให้วิ่งตรงไปที่ URL ปัจจุบันแบบไม่มีพารามิเตอร์เก่าปนเปื้อน
     const currentUrl = `${window.location.origin}${window.location.pathname}?order_id=${encodeURIComponent(orderObj.id_order)}&target_id=${encodeURIComponent(selectedTargetId)}`;
 
     let tableRowsHtml = '';
