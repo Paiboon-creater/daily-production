@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>DAILY PROD - TERMINAL & PRINT SHEET v6.4</title>
+  <title>DAILY PROD - TERMINAL & PRINT SHEET v6.5</title>
   <!-- โหลดไลบรารีสำหรับสร้าง QR Code และสแกน QR Code -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
@@ -35,6 +35,18 @@
       -webkit-text-size-adjust: 100%;
     }
 
+    /* LOGIN MODAL OVERLAY */
+    .login-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(11, 14, 20, 0.98); z-index: 9999;
+      display: flex; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box;
+    }
+    .login-box {
+      width: 100%; max-width: 400px; background: var(--panel-bg);
+      border: 2px solid var(--neon-green); border-radius: 8px; padding: 25px; box-shadow: 0 0 30px rgba(0,255,157,0.2);
+    }
+    .login-box h2 { text-align: center; margin-bottom: 20px; font-size: 22px; }
+
     .terminal-container {
       width: 100%;
       max-width: 950px;
@@ -64,11 +76,16 @@
       text-transform: uppercase;
     }
 
-    .status { font-size: 12px; color: var(--text-muted); }
+    .status { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
     .status-dot {
       display: inline-block; width: 8px; height: 8px;
       background-color: var(--neon-green); border-radius: 50%;
       margin-right: 4px; box-shadow: 0 0 6px var(--neon-green);
+    }
+    .logout-btn {
+      background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red);
+      padding: 2px 8px; font-size: 11px; border-radius: 4px; cursor: pointer;
+      font-family: 'Courier New', Courier, monospace;
     }
 
     .form-group { margin-bottom: 16px; }
@@ -306,9 +323,7 @@
     .btn-edit { color: var(--neon-yellow); border-color: var(--neon-yellow); margin-right: 4px; }
     .btn-del { color: var(--neon-red); border-color: var(--neon-red); }
 
-    /* ========================================================= */
-    /* CSS พิมพ์เอกสาร A4 แนวนอน (เพิ่มเป็น 26 แถว เต็มพื้นที่เป๊ะ) */
-    /* ========================================================= */
+    /* CSS พิมพ์เอกสาร A4 แนวนอน */
     #printArea {
       display: none;
     }
@@ -319,7 +334,7 @@
       }
       #printArea, #printArea * {
         visibility: visible;
-        color: #000 !important; /* บังคับอักษรสีดำสนิท */
+        color: #000 !important;
       }
       #printArea {
         display: flex !important;
@@ -442,10 +457,33 @@
 </head>
 <body>
 
+<!-- LOGIN MODAL SCREEN -->
+<div id="loginOverlay" class="login-overlay">
+  <div class="login-box">
+    <h2>> TERMINAL LOGIN</h2>
+    <form onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>USERNAME</label>
+        <input type="text" id="loginUser" required placeholder="Enter username">
+      </div>
+      <div class="form-group">
+        <label>PASSWORD</label>
+        <input type="password" id="loginPass" required placeholder="Enter password">
+      </div>
+      <div id="loginError" class="system-msg error" style="display:none; margin-bottom:10px;">> ACCESS DENIED: INVALID CREDENTIALS</div>
+      <button type="submit" class="submit-btn">> AUTHENTICATE</button>
+    </form>
+  </div>
+</div>
+
 <div class="terminal-container">
   <div class="header">
-    <h2>DAILY_PROD <span style="font-size:12px; color:var(--text-muted)">v6.4 Exact Step Print Fixed</span></h2>
-    <div class="status"><span class="status-dot" id="statusDot"></span><span id="statusText">CONNECTING...</span></div>
+    <h2>DAILY_PROD <span style="font-size:12px; color:var(--text-muted)">v6.5 Secure Edition</span></h2>
+    <div class="status">
+      <span>USER: <strong id="currentUserDisplay" style="color:var(--neon-green)">-</strong></span>
+      <button type="button" class="logout-btn" onclick="handleLogout()">LOGOUT</button>
+      <span class="status-dot" id="statusDot"></span><span id="statusText">CONNECTING...</span>
+    </div>
   </div>
 
   <div id="statusMessage" class="system-msg loading">> INITIALIZING SYSTEM PARAMETERS...</div>
@@ -642,11 +680,61 @@
     "Prefer": "return=representation"
   };
 
+  // กำหนด 5 ยูสเซอร์สำหรับเข้าสู่ระบบ (คุณพี่สามารถแก้ไขเปลี่ยนชื่อ/รหัสผ่านตรงนี้ได้ตามต้องการครับ)
+  const USERS_DB = {
+    "user1": "1111",
+    "user2": "2222",
+    "user3": "3333",
+    "user4": "4444",
+    "admin": "112233"
+  };
+
   let globalData = { orders: [], employees: [], targets: [], reasons: [], workItems: [], steps: [] };
   let activeInputId = null;
   let isEditMode = false;
   let originalRecordKey = null;
   let html5QrCode = null;
+
+  // ตรวจสอบสถานะ Login ทันทีที่เปิดหน้าเว็บ
+  window.addEventListener('DOMContentLoaded', () => {
+    const loggedUser = localStorage.getItem('terminal_logged_user');
+    if (loggedUser) {
+      document.getElementById('loginOverlay').style.display = 'none';
+      document.getElementById('currentUserDisplay').innerText = loggedUser;
+    }
+  });
+
+  function handleLogin(e) {
+    e.preventDefault();
+    const u = document.getElementById('loginUser').value.trim();
+    const p = document.getElementById('loginPass').value.trim();
+    const errEl = document.getElementById('loginError');
+
+    if (USERS_DB[u] && USERS_DB[u] === p) {
+      localStorage.setItem('terminal_logged_user', u);
+      document.getElementById('currentUserDisplay').innerText = u;
+      document.getElementById('loginOverlay').style.display = 'none';
+      errEl.style.display = 'none';
+      
+      // ถ้าตรงกับชื่อพนักงานในระบบ ให้พยายามเลือกชื่อให้ด้วยอัตโนมัติ
+      setTimeout(() => {
+        const empSelect = document.getElementById('id_name');
+        for (let opt of empSelect.options) {
+          if (opt.textContent.toLowerCase().includes(u.toLowerCase())) {
+            empSelect.value = opt.value;
+            break;
+          }
+        }
+      }, 300);
+    } else {
+      errEl.style.display = 'block';
+    }
+  }
+
+  function handleLogout() {
+    localStorage.removeItem('terminal_logged_user');
+    location.reload();
+  }
 
   window.onload = async function() {
     document.getElementById('record_date').valueAsDate = new Date();
@@ -689,17 +777,24 @@
       document.getElementById('reportSection').style.display = 'block';
       document.getElementById('statusText').innerText = "ONLINE";
 
+      // แก้ปัญหาเลือก Target ไม่ทันด้วยการรอโหลดข้อมูลเสร็จ (ติดตั้งแต่รอบแรก)
       if (scannedOrderId) {
         const foundOrd = globalData.orders.find(o => String(o.id_order) === String(scannedOrderId));
         if (foundOrd) {
           document.getElementById('id_order').value = foundOrd.id_order;
-          handleOrderChange();
+          handleOrderChange(); 
           
           if (scannedTargetId) {
-            setTimeout(() => {
-              document.getElementById('id_target').value = scannedTargetId;
-              calculateEfficiency();
-            }, 200);
+            let checkInterval = setInterval(() => {
+              const targetSelect = document.getElementById('id_target');
+              const optionExists = Array.from(targetSelect.options).some(opt => String(opt.value) === String(scannedTargetId));
+              
+              if (optionExists || targetSelect.options.length > 1) {
+                clearInterval(checkInterval);
+                targetSelect.value = scannedTargetId;
+                calculateEfficiency();
+              }
+            }, 50);
           }
         }
       }
@@ -762,10 +857,16 @@
             handleOrderChange();
             
             if (targetId) {
-              setTimeout(() => {
-                document.getElementById('id_target').value = targetId;
-                calculateEfficiency();
-              }, 200);
+              let checkInterval = setInterval(() => {
+                const targetSelect = document.getElementById('id_target');
+                const optionExists = Array.from(targetSelect.options).some(opt => String(opt.value) === String(targetId));
+                
+                if (optionExists || targetSelect.options.length > 1) {
+                  clearInterval(checkInterval);
+                  targetSelect.value = targetId;
+                  calculateEfficiency();
+                }
+              }, 50);
             }
             alert("✅ สแกนสำเร็จ: โหลดข้อมูลออเดอร์และขั้นตอนการทำงานเรียบร้อย");
             return;
