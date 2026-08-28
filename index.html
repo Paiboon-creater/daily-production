@@ -42,7 +42,6 @@
       -webkit-text-size-adjust: 100%;
     }
 
-    /* ภาพพื้นหลังเครื่องครัวสแตนเลสจากัวร์ พร้อมฟิลเตอร์เขียวทึมไฮเทค */
     body::before {
       content: "";
       position: fixed;
@@ -67,7 +66,6 @@
       margin-bottom: 30px;
     }
 
-    /* หัวฟอร์ม: โลโก้หัวเสือโลหะสไตล์ไฮเทค */
     .app-header {
       text-align: center;
       border-bottom: 1px dashed var(--border-neon);
@@ -152,6 +150,18 @@
       display: flex;
       gap: 8px;
     }
+    .order-manual-input {
+      width: 130px;
+      text-align: center;
+      letter-spacing: 2px;
+      font-weight: bold;
+      color: var(--neon-yellow);
+      border-color: var(--neon-yellow);
+    }
+    .order-manual-input:focus {
+      border-color: var(--neon-yellow);
+      box-shadow: 0 0 8px rgba(245, 166, 35, 0.4);
+    }
     .scan-btn {
       background: transparent;
       border: 1px solid var(--neon-blue);
@@ -171,7 +181,6 @@
       box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
     }
 
-    /* QR Scanner Modal */
     .scanner-modal {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(3, 8, 6, 0.95); z-index: 2000;
@@ -201,7 +210,6 @@
     }
     .eff-value { font-weight: bold; font-size: 18px; }
 
-    /* ปุ่มกดสไตล์ตลาดหุ้น มีแสงเงาและไฟเรืองแสง */
     .submit-btn {
       width: 100%; background: linear-gradient(145deg, #071910, #040e09); color: var(--neon-green);
       border: 2px solid var(--neon-green); padding: 14px; font-size: 16px;
@@ -229,7 +237,6 @@
       font-family: 'Courier New', Courier, monospace;
     }
 
-    /* VIRTUAL KEYPAD STYLES */
     .keypad-modal {
       display: none; position: fixed; bottom: 0; left: 0; width: 100%;
       background: rgba(7, 24, 16, 0.95); border-top: 2px solid var(--neon-green);
@@ -253,7 +260,6 @@
     .loading { color: var(--neon-yellow); }
     .error { color: var(--neon-red); }
 
-    /* REPORT & FILTER STYLES */
     .report-section {
       margin-top: 35px;
       border-top: 1px dashed var(--border-dim);
@@ -365,7 +371,7 @@
     .btn-del { color: var(--neon-red); border-color: var(--neon-red); }
 
     /* ========================================================= */
-    /* CSS พิมพ์เอกสาร A4 แนวนอน (เพิ่มเป็น 26 แถว เต็มพื้นที่เป๊ะ) */
+    /* CSS พิมพ์เอกสาร A4 แนวนอน */
     /* ========================================================= */
     #printArea { display: none; }
 
@@ -386,7 +392,7 @@
     .print-sheet-container {
       width: 297mm;
       height: 202mm; 
-      padding: 2.5mm 3.5mm;
+      padding: 2mm 3mm;
       box-sizing: border-box;
       background: white;
       display: flex;
@@ -402,7 +408,7 @@
       width: 48.6%;
       height: 100%;
       border: 1.5px solid #000;
-      padding: 2.5mm;
+      padding: 2mm 2.5mm;
       box-sizing: border-box;
       display: flex;
       flex-direction: column;
@@ -410,18 +416,22 @@
       background: #fff;
     }
 
+    .print-header-wrapper {
+      margin-top: 10mm;
+    }
+
     .print-header-top {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       border-bottom: 2px solid #000;
-      padding-bottom: 2px;
-      margin-bottom: 2px;
+      padding-bottom: 3px;
+      margin-bottom: 3px;
     }
 
     .print-title-area h3 {
       margin: 0 0 2px 0;
-      font-size: 13px;
+      font-size: 15px;
       text-align: center;
       text-transform: uppercase;
       letter-spacing: 1px;
@@ -429,10 +439,11 @@
     }
 
     .print-meta-row {
-      font-size: 9px;
-      margin-bottom: 1.5px;
+      font-size: 11px;
+      margin-bottom: 2.5px;
       display: flex;
       gap: 6px;
+      font-weight: bold;
     }
 
     .print-meta-row span.line {
@@ -443,26 +454,27 @@
     }
 
     .print-qr-box { text-align: center; }
-    .print-qr-box canvas, .print-qr-box img { width: 64px !important; height: 64px !important; }
-    .print-qr-box span { display: block; font-size: 6px; margin-top: 1px; font-weight: bold; }
+    .print-qr-box canvas, .print-qr-box img { width: 58px !important; height: 58px !important; }
+    .print-qr-box span { display: block; font-size: 8px; margin-top: 1px; font-weight: bold; }
+    .print-code-text { font-size: 14px; font-weight: bold; letter-spacing: 2px; margin-top: 1px; background: #eee; border: 1px solid #000; padding: 2px 4px; cursor: pointer; }
 
     .print-table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 7.5px;
-      margin-top: 1px;
+      font-size: 11px;
+      margin-top: 3px;
     }
 
     .print-table th, .print-table td {
       border: 1px solid #000;
-      padding: 1.5px 2px; 
+      padding: 2px 3px; 
       text-align: center;
-      height: 16.5px;
+      height: 18px;
     }
 
     .print-table th {
       background-color: #e0e0e0 !important;
-      font-size: 7.5px;
+      font-size: 11px;
       text-transform: uppercase;
       font-weight: bold;
       -webkit-print-color-adjust: exact;
@@ -471,23 +483,23 @@
     .print-footer {
       display: flex;
       justify-content: space-between;
-      font-size: 6.5px;
-      margin-top: 1px;
+      font-size: 11px;
+      margin-top: 2px;
       border-top: 1px solid #000;
-      padding-top: 1px;
+      padding-top: 2px;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
 
 <div class="terminal-container">
-  <!-- หัวฟอร์ม: โลโก้หัวเสือโลหะสไตล์ไฮเทค -->
   <div class="app-header">
     <div class="jaguar-emblem">
       <i class="fa-solid fa-cat"></i>
     </div>
     <h1 class="app-title">JAGUAR_PRODUCTION_SUPABASE</h1>
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">DAILY PROD - TERMINAL & PRINT SHEET v6.4</div>
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">DAILY PROD - TERMINAL & PRINT SHEET v7.0</div>
   </div>
 
   <div class="header">
@@ -504,8 +516,9 @@
     </div>
 
     <div class="form-group">
-      <label>2. ORDER NO</label>
+      <label>2. ORDER & STEP CODE [คีย์รหัส 4 หลัก หรือเลือกเมนู]</label>
       <div class="order-input-wrapper">
+        <input type="text" id="manual_order_code" class="order-manual-input" placeholder="รหัส 4 หลัก" maxlength="4" oninput="handleManualOrderInput(this)">
         <select id="id_order" onchange="handleOrderChange()" required style="flex-grow: 1;">
           <option value="">-- SELECT ORDER --</option>
         </select>
@@ -689,7 +702,7 @@
     "Prefer": "return=representation"
   };
 
-  let globalData = { orders: [], employees: [], targets: [], reasons: [], workItems: [], steps: [] };
+  let globalData = { orders: [], employees: [], targets: [], reasons: [], workItems: [], steps: [], shortcutMap: [] };
   let activeInputId = null;
   let isEditMode = false;
   let originalRecordKey = null;
@@ -714,16 +727,35 @@
 
       if (!ordersRes.ok || !targetsRes.ok) throw new Error("Database Fetch Error");
 
-      globalData.orders = await ordersRes.json();
+      let ords = await ordersRes.json();
+      ords.sort((a, b) => String(a.order_no || '').localeCompare(String(b.order_no || ''), 'th', { numeric: true }));
+      globalData.orders = ords;
       
       let emps = await empsRes.json();
       emps.sort((a, b) => (a.name || '').localeCompare(b.name || '', 'th'));
       globalData.employees = emps;
 
-      globalData.targets = await targetsRes.json();
-      globalData.reasons = await reasonsRes.json();
-      if (workItemsRes.ok) globalData.workItems = await workItemsRes.json();
-      if (stepsRes.ok) globalData.steps = await stepsRes.json();
+      let tgts = await targetsRes.json();
+      tgts.sort((a, b) => (a.id_target || 0) - (b.id_target || 0));
+      globalData.targets = tgts;
+
+      let rens = await reasonsRes.json();
+      rens.sort((a, b) => (a.id_reason || 0) - (b.id_reason || 0));
+      globalData.reasons = rens;
+
+      if (workItemsRes.ok) {
+        let works = await workItemsRes.json();
+        works.sort((a, b) => String(a.work_code || '').localeCompare(String(b.work_code || ''), 'th', { numeric: true }));
+        globalData.workItems = works;
+      }
+      if (stepsRes.ok) {
+        let stps = await stepsRes.json();
+        stps.sort((a, b) => (a.id_step || 0) - (b.id_step || 0));
+        globalData.steps = stps;
+      }
+
+      // สร้าง Mapping สำหรับรหัส 4 หลัก (0001, 0002) ตามจำนวน (ออเดอร์+ชิ้นงาน+ขั้นตอน)
+      generateShortcutMap();
 
       populateDropdown('id_order', globalData.orders, 'id_order', 'order_no'); 
       populateDropdown('id_name', globalData.employees, 'id_name', 'name'); 
@@ -762,6 +794,67 @@
       document.getElementById('statusText').innerText = "OFFLINE";
     }
   };
+
+  // ฟังก์ชันสร้างรหัส 0001, 0002 แบบรันลำดับอัตโนมัติ สำหรับทุกคู่ของออเดอร์+ขั้นตอน
+  function generateShortcutMap() {
+    globalData.shortcutMap = [];
+    let counter = 1;
+    
+    // เรียง Order ตาม ID ก่อนเพื่อความคงที่
+    let sortedOrders = [...globalData.orders].sort((a,b) => parseInt(a.id_order) - parseInt(b.id_order));
+    
+    sortedOrders.forEach(order => {
+      if (order.id_work) {
+        // หาขั้นตอนทั้งหมดในชิ้นงานของออเดอร์นี้
+        let orderTargets = globalData.targets.filter(t => String(t.id_work) === String(order.id_work));
+        orderTargets.sort((a,b) => parseInt(a.id_target) - parseInt(b.id_target));
+        
+        orderTargets.forEach(target => {
+          globalData.shortcutMap.push({
+            code: String(counter).padStart(4, '0'), // สร้างรหัส 0001, 0002...
+            id_order: order.id_order,
+            id_target: target.id_target
+          });
+          counter++;
+        });
+      }
+    });
+  }
+
+  function handleManualOrderInput(inputEl) {
+    let val = inputEl.value.trim();
+    
+    if (val.length === 4) {
+      // 1. ค้นหาใน Mapping รหัสสร้างใหม่ (เช่น 0001)
+      const foundShortcut = globalData.shortcutMap.find(s => s.code === val);
+      
+      if (foundShortcut) {
+        document.getElementById('id_order').value = foundShortcut.id_order;
+        handleOrderChange();
+        
+        setTimeout(() => {
+          document.getElementById('id_target').value = foundShortcut.id_target;
+          calculateEfficiency();
+        }, 150);
+      } else {
+        // 2. ถ้าหาไม่เจอ ให้ลองหาจากเลข 4 ตัวท้ายของใบสั่งเดิม (เผื่อไว้)
+        const foundOrd = globalData.orders.find(o => String(o.order_no || '').endsWith(val));
+        if (foundOrd) {
+          document.getElementById('id_order').value = foundOrd.id_order;
+          handleOrderChange();
+        }
+      }
+    } else if (val === "") {
+      document.getElementById('id_order').value = "";
+      handleOrderChange();
+    }
+  }
+
+  function selectOrderByCode(shortCode) {
+    document.getElementById('manual_order_code').value = shortCode;
+    handleManualOrderInput(document.getElementById('manual_order_code'));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   function openScanner() {
     document.getElementById('scannerModal').style.display = 'flex';
@@ -840,16 +933,23 @@
     const selectedOrderId = document.getElementById('id_order').value;
     const targetSelect = document.getElementById('id_target');
     const workHidden = document.getElementById('id_work');
+    const manualInput = document.getElementById('manual_order_code');
 
     targetSelect.innerHTML = '<option value="">-- SELECT TARGET / STEP --</option>';
     workHidden.value = '';
+    
+    // ถ้าผู้ใช้มาคลิกเปลี่ยนออเดอร์เอง ให้ลบช่องรหัสออกก่อน (จะโชว์เมื่อเลือกเป้าหมาย)
+    if (document.activeElement.id === 'id_order') {
+        manualInput.value = ''; 
+    }
+    
     document.getElementById('effDisplay').innerText = "0.00%";
     document.getElementById('effDisplay').style.color = "var(--text-muted)";
     document.getElementById('reasonGroup').style.display = 'none';
     document.getElementById('id_reason').value = '';
     document.getElementById('id_reason').removeAttribute('required');
 
-    if (!selectedOrderId) return;
+    if (!selectedOrderId) { return; }
 
     const selectedOrder = globalData.orders.find(o => String(o.id_order) === String(selectedOrderId));
     if (!selectedOrder || !selectedOrder.id_work) {
@@ -907,6 +1007,10 @@
       return;
     }
 
+    // ดึงรหัสลัด (0001) สำหรับออเดอร์+ขั้นตอน นี้เพื่อนำไปปริ้นต์
+    const shortcutObj = globalData.shortcutMap.find(s => String(s.id_order) === String(selectedOrderId) && String(s.id_target) === String(selectedTargetId));
+    const printCode = shortcutObj ? shortcutObj.code : "N/A";
+
     let workCodeText = "-";
     if (orderObj.id_work && globalData.workItems.length > 0) {
       const foundW = globalData.workItems.find(w => String(w.id_work) === String(orderObj.id_work));
@@ -935,14 +1039,16 @@
     const baseUrl = window.location.href.split('?')[0];
     const currentUrl = `${baseUrl}?order_id=${encodeURIComponent(orderObj.id_order)}&target_id=${encodeURIComponent(selectedTargetId)}`;
 
+    // สร้างแถวตาราง 22 แถว 
     let tableRowsHtml = '';
-    for(let i=0; i<26; i++) {
-      tableRowsHtml += '<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>';
+    for(let i=1; i<=22; i++) {
+      let runningNo = i < 10 ? '0' + i : '' + i;
+      tableRowsHtml += `<tr><td>${runningNo}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
     }
 
     const singleCardHtml = `
       <div class="print-card">
-        <div>
+        <div class="print-header-wrapper">
           <div class="print-header-top">
             <div style="flex-grow: 1;">
               <div class="print-title-area"><h3>ใบความก้าวหน้าของการผลิต</h3></div>
@@ -963,7 +1069,8 @@
             </div>
             <div class="print-qr-box">
               <div class="qrcode-target" data-url="${currentUrl}"></div>
-              <span>SCAN TO WORK</span>
+              <span>SCAN / KEY CODE</span>
+              <div class="print-code-text" onclick="selectOrderByCode('${printCode}')">[ ${printCode} ]</div>
             </div>
           </div>
 
@@ -1002,8 +1109,8 @@
     document.querySelectorAll('.qrcode-target').forEach(el => {
       new QRCode(el, {
         text: el.getAttribute('data-url'),
-        width: 64,
-        height: 64,
+        width: 58,
+        height: 58,
         colorDark: "#000000",
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.M
@@ -1090,6 +1197,7 @@
       handleOrderChange();
       if (lastTargetId) {
         document.getElementById('id_target').value = lastTargetId;
+        calculateEfficiency(); // โหลดรหัสกลับมาแสดงในช่อง
       }
     }
     if (lastEmployeeId) {
@@ -1108,7 +1216,17 @@
   }
 
   function calculateEfficiency() {
+    const ordId = document.getElementById('id_order').value;
     const targetId = document.getElementById('id_target').value;
+    
+    // โชว์รหัสลัดของงานนี้ขึ้นในช่อง หากมีการเลือกทั้งออเดอร์และเป้าหมาย
+    if (ordId && targetId) {
+      const shortcutObj = globalData.shortcutMap.find(s => String(s.id_order) === String(ordId) && String(s.id_target) === String(targetId));
+      if (shortcutObj) {
+         document.getElementById('manual_order_code').value = shortcutObj.code;
+      }
+    }
+
     const hourWork = parseFloat(document.getElementById('hour_work').value) || 0;
     const producedAmt = parseFloat(document.getElementById('produced_amount').value) || 0;
     
@@ -1166,9 +1284,9 @@
       if (dateTo) query += `&record_date=lte.${dateTo}`;
 
       if (!orderId && !workId && !targetId && !dateFrom && !dateTo) {
-        query += `&order=record_date.desc&limit=10`;
+        query += `&order=record_date.asc&limit=10`;
       } else {
-        query += `&order=record_date.desc&limit=50`;
+        query += `&order=record_date.asc&limit=50`;
       }
 
       const res = await fetch(query, { headers });
