@@ -433,19 +433,26 @@
       font-weight: bold;
     }
 
+    /* จัดการเส้นประใหม่ให้เป็นฟอร์มที่สวยงาม */
     .print-meta-row {
-      font-size: 11px;
-      margin-bottom: 2.5px;
+      font-size: 12px;
+      margin-bottom: 4px;
       display: flex;
-      gap: 6px;
+      align-items: flex-end; /* ให้ตัวหนังสือแนบชิดเส้นล่างสุด */
+      gap: 4px;
       font-weight: bold;
     }
 
-    .print-meta-row span.line {
-      border-bottom: 1px dotted #000;
+    .print-label {
+      white-space: nowrap;
+      margin-bottom: -1px; /* ชดเชยระยะให้พอดีเส้นประ */
+    }
+
+    .print-value {
+      border-bottom: 1.5px dotted #000;
       flex-grow: 1;
-      padding-left: 3px;
-      font-weight: bold;
+      padding-left: 5px;
+      min-height: 15px;
     }
 
     .print-qr-box { text-align: center; }
@@ -493,7 +500,7 @@
       <i class="fa-solid fa-cat"></i>
     </div>
     <h1 class="app-title">JAGUAR_PRODUCTION_SUPABASE</h1>
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.1</div>
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.2</div>
   </div>
 
   <div class="header">
@@ -696,7 +703,8 @@
     "Prefer": "return=representation"
   };
 
-  let globalData = { orders: [], employees: [], targets: [], reasons: [], workItems: [], steps: [], shortcutMap: [] };
+  // เพิ่ม orderSteps เข้าไปใน globalData เพื่อรองรับการดึงข้อมูลตารางใหม่
+  let globalData = { orders: [], employees: [], targets: [], reasons: [], workItems: [], steps: [], orderSteps: [], shortcutMap: [] };
   let activeInputId = null;
   let isEditMode = false;
   let originalRecordKey = null;
@@ -710,13 +718,15 @@
     const scannedTargetId = urlParams.get('target_id');
 
     try {
-      const [ordersRes, empsRes, targetsRes, reasonsRes, workItemsRes, stepsRes] = await Promise.all([
+      // โหลดข้อมูลทั้งหมด รวมถึงตาราง order_steps
+      const [ordersRes, empsRes, targetsRes, reasonsRes, workItemsRes, stepsRes, orderStepsRes] = await Promise.all([
         fetch(SUPABASE_URL + "/orders?select=*", { headers }),
         fetch(SUPABASE_URL + "/employees?select=*", { headers }), 
         fetch(SUPABASE_URL + "/targets?select=*", { headers }), 
         fetch(SUPABASE_URL + "/reasons?select=*", { headers }),
         fetch(SUPABASE_URL + "/work_items?select=*", { headers }),
-        fetch(SUPABASE_URL + "/production_steps?select=*", { headers }) 
+        fetch(SUPABASE_URL + "/production_steps?select=*", { headers }),
+        fetch(SUPABASE_URL + "/order_steps?select=*", { headers }) 
       ]);
 
       if (!ordersRes.ok || !targetsRes.ok) throw new Error("Database Fetch Error");
@@ -746,6 +756,9 @@
         let stps = await stepsRes.json();
         stps.sort((a, b) => (a.id_step || 0) - (b.id_step || 0));
         globalData.steps = stps;
+      }
+      if (orderStepsRes.ok) {
+        globalData.orderSteps = await orderStepsRes.json();
       }
 
       // สร้าง Mapping สำหรับรหัส 4 หลัก (0001, 0002) ตามจำนวน (ออเดอร์+ชิ้นงาน+ขั้นตอน)
@@ -803,7 +816,7 @@
         
         orderTargets.forEach(target => {
           globalData.shortcutMap.push({
-            code: String(counter).padStart(4, '0'), // สร้างรหัส 0001, 0002...
+            code: String(counter).padStart(4, '0'), 
             id_order: order.id_order,
             id_target: target.id_target
           });
@@ -1006,31 +1019,49 @@
     }
 
     let stepNameText = "-";
+    let stepStartDateStr = "-";
+    let stepEndDateStr = "-";
+    
     const selectedTargetObj = globalData.targets.find(t => String(t.id_target) === String(selectedTargetId));
-    if (selectedTargetObj && selectedTargetObj.id_step && globalData.steps.length > 0) {
-      const foundStp = globalData.steps.find(s => String(s.id_step) === String(selectedTargetObj.id_step));
-      if (foundStp) stepNameText = foundStp.step_name;
+    
+    // ดึงข้อมูลวันที่จาก order_steps โดยอ้างอิงจาก id_order และ id_step ที่ตรงกัน
+    if (selectedTargetObj && selectedTargetObj.id_step) {
+      if (globalData.steps.length > 0) {
+        const foundStp = globalData.steps.find(s => String(s.id_step) === String(selectedTargetObj.id_step));
+        if (foundStp) stepNameText = foundStp.step_name;
+      }
+      
+      const orderStepObj = globalData.orderSteps.find(os => String(os.id_order) === String(selectedOrderId) && String(os.id_step) === String(selectedTargetObj.id_step));
+      if (orderStepObj) {
+        stepStartDateStr = formatDateStr(orderStepObj.start_date);
+        stepEndDateStr = formatDateStr(orderStepObj.end_date);
+      }
     }
 
     const orderNo = orderObj.order_no || '-';
     const quantity = orderObj.quantity ? parseInt(orderObj.quantity).toLocaleString() + ' ชิ้น' : '-';
     
-    const formatDateStr = (dateInput) => {
+    function formatDateStr(dateInput) {
       if (!dateInput) return '-';
       let d = new Date(dateInput);
       return !isNaN(d) ? `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth()+1).toString().padStart(2, '0')}/${d.getFullYear()}` : dateInput;
-    };
-    
-    const startDateStr = formatDateStr(orderObj.start_date);
-    const endDateStr = formatDateStr(orderObj.end_date);
+    }
     
     const baseUrl = window.location.href.split('?')[0];
     const currentUrl = `${baseUrl}?order_id=${encodeURIComponent(orderObj.id_order)}&target_id=${encodeURIComponent(selectedTargetId)}`;
 
     let tableRowsHtml = '';
     for(let i=1; i<=22; i++) {
-      let runningNo = i < 10 ? '0' + i : '' + i;
-      tableRowsHtml += `<tr><td>${runningNo}</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>`;
+      tableRowsHtml += `<tr>
+        <td>__/__/__</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td style="font-size: 9px;">__:__-__:__</td>
+        <td></td>
+        <td></td>
+      </tr>`;
     }
 
     const singleCardHtml = `
@@ -1040,18 +1071,18 @@
             <div style="flex-grow: 1;">
               <div class="print-title-area"><h3>ใบความก้าวหน้าของการผลิต</h3></div>
               <div class="print-meta-row">
-                ใบสั่งงานเลขที่: <span class="line">${orderNo}</span>
-                ขั้นตอนงาน: <span class="line" style="flex:0.6">${stepNameText}</span>
+                <span class="print-label">ใบสั่งงานเลขที่:</span> <span class="print-value" style="flex: 0.4;">${orderNo}</span>
+                <span class="print-label">ขั้นตอนงาน:</span> <span class="print-value" style="flex: 1;">${stepNameText}</span>
               </div>
               <div class="print-meta-row">
-                ชนิดงาน: <span class="line">${workCodeText}</span>
+                <span class="print-label">ชนิดงาน:</span> <span class="print-value">${workCodeText}</span>
               </div>
               <div class="print-meta-row">
-                จำนวนชิ้นงานสั่งผลิต: <span class="line">${quantity}</span>
+                <span class="print-label">จำนวนชิ้นงานสั่งผลิต:</span> <span class="print-value">${quantity}</span>
               </div>
               <div class="print-meta-row">
-                วันที่เริ่ม: <span class="line">${startDateStr}</span>
-                วันที่เสร็จ: <span class="line">${endDateStr}</span>
+                <span class="print-label">วันที่เริ่ม:</span> <span class="print-value">${stepStartDateStr}</span>
+                <span class="print-label">วันที่เสร็จ:</span> <span class="print-value">${stepEndDateStr}</span>
               </div>
             </div>
             <div class="print-qr-box">
@@ -1065,13 +1096,13 @@
             <thead>
               <tr>
                 <th width="12%">วันที่</th>
-                <th width="12%">ตัวเลขตอนเลิกงาน</th>
-                <th width="12%">ผลิตได้/วัน</th>
-                <th width="12%">สะสม</th>
+                <th width="13%">ตัวเลขตอนเลิกงาน</th>
+                <th width="13%">ผลิตได้/วัน</th>
+                <th width="13%">สะสม</th>
                 <th width="8%">เสีย</th>
-                <th width="8%">เวลา</th>
-                <th width="14%">ชื่อคนทำ</th>
-                <th width="22%">หมายเหตุ</th>
+                <th width="12%">เวลา</th>
+                <th width="16%">ชื่อคนทำ</th>
+                <th width="13%">หมายเหตุ</th>
               </tr>
             </thead>
             <tbody>
