@@ -28,7 +28,7 @@
     }
 
     body {
-      font-family: 'Courier New', Courier, monospace;
+      font-family: 'Courier New', Courier, monospace, 'Sarabun', sans-serif;
       background-color: var(--bg-dark);
       color: var(--text-main);
       margin: 0;
@@ -116,7 +116,6 @@
       margin: 0;
       font-size: 18px;
       letter-spacing: 1px;
-      text-transform: uppercase;
     }
 
     .status { font-size: 12px; color: var(--text-muted); }
@@ -127,7 +126,7 @@
     }
 
     .form-group { margin-bottom: 16px; }
-    label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: bold; color: var(--text-muted); text-transform: uppercase; }
+    label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: bold; color: var(--text-muted); }
 
     input, select {
       width: 100%; 
@@ -137,7 +136,7 @@
       color: var(--text-main);
       border-radius: 8px; 
       box-sizing: border-box; 
-      font-family: 'Courier New', Courier, monospace;
+      font-family: inherit;
       font-size: 16px; 
       transition: all 0.2s;
     }
@@ -171,7 +170,7 @@
       border-radius: 8px;
       cursor: pointer;
       font-weight: bold;
-      font-family: 'Courier New', Courier, monospace;
+      font-family: inherit;
       white-space: nowrap;
       transition: all 0.2s;
     }
@@ -194,7 +193,7 @@
     .scanner-close {
       background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red);
       padding: 10px; width: 100%; margin-top: 15px; border-radius: 8px; cursor: pointer;
-      font-family: 'Courier New', Courier, monospace; font-weight: bold;
+      font-family: inherit; font-weight: bold;
     }
 
     .eff-box {
@@ -214,8 +213,8 @@
       width: 100%; background: linear-gradient(145deg, #071910, #040e09); color: var(--neon-green);
       border: 2px solid var(--neon-green); padding: 14px; font-size: 16px;
       border-radius: 8px; cursor: pointer; font-weight: bold;
-      text-transform: uppercase; margin-top: 10px;
-      font-family: 'Courier New', Courier, monospace; transition: all 0.3s; letter-spacing: 1px;
+      margin-top: 10px;
+      font-family: inherit; transition: all 0.3s; letter-spacing: 1px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
     .submit-btn:hover { background: var(--neon-green); color: var(--bg-dark); box-shadow: 0 0 20px var(--neon-glow); transform: translateY(-2px); }
@@ -224,8 +223,8 @@
       width: 100%; background: linear-gradient(145deg, #07151a, #030b0e); color: var(--neon-blue);
       border: 2px solid var(--neon-blue); padding: 12px; font-size: 15px;
       border-radius: 8px; cursor: pointer; font-weight: bold;
-      text-transform: uppercase; margin-top: 8px;
-      font-family: 'Courier New', Courier, monospace; transition: all 0.3s;
+      margin-top: 8px;
+      font-family: inherit; transition: all 0.3s;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
     .print-sheet-btn:hover { background: var(--neon-blue); color: var(--bg-dark); box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); transform: translateY(-2px); }
@@ -234,7 +233,7 @@
       width: 100%; background-color: transparent; color: var(--neon-red);
       border: 1px solid var(--neon-red); padding: 10px; font-size: 14px;
       border-radius: 8px; cursor: pointer; margin-top: 8px; display: none;
-      font-family: 'Courier New', Courier, monospace;
+      font-family: inherit;
     }
 
     .keypad-modal {
@@ -243,16 +242,16 @@
       padding: 15px 10px; box-sizing: border-box; box-shadow: 0 -10px 30px rgba(0,0,0,0.9); z-index: 1000;
       backdrop-filter: blur(10px);
     }
-    .keypad-header { display: flex; justify-content: space-between; color: var(--neon-green); margin-bottom: 10px; font-size: 14px; text-transform: uppercase; }
+    .keypad-header { display: flex; justify-content: space-between; color: var(--neon-green); margin-bottom: 10px; font-size: 14px; }
     .keypad-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 500px; margin: 0 auto; }
     
     .key-btn {
       background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border-dim);
       padding: 16px 0; font-size: 20px; border-radius: 8px; cursor: pointer;
-      font-family: 'Courier New', Courier, monospace; transition: background 0.1s;
+      font-family: inherit; transition: background 0.1s;
     }
     .key-btn:active { background: #113a24; }
-    .key-action { color: var(--neon-red); border-color: var(--neon-red); }
+    .key-action { color: var(--neon-red); border-color: var(--neon-red); font-size: 18px; }
     .key-special { color: var(--neon-green); border-color: var(--border-dim); background: #0c1a12; }
     .key-close { background: var(--border-dim); grid-column: span 4; margin-top: 3px; font-size: 16px; color: var(--neon-green); font-weight: bold; }
 
@@ -290,7 +289,7 @@
     @media (max-width: 600px) {
       .filter-box { grid-template-columns: 1fr; }
     }
-    .filter-group label { font-size: 11px; margin-bottom: 4px; }
+    .filter-group label { font-size: 12px; margin-bottom: 4px; }
     .filter-group select, .filter-group input { padding: 8px; font-size: 14px; }
 
     .action-bar {
@@ -308,8 +307,7 @@
       font-size: 13px;
       border-radius: 8px;
       cursor: pointer;
-      font-family: 'Courier New', Courier, monospace;
-      text-transform: uppercase;
+      font-family: inherit;
       transition: all 0.2s;
     }
     .clear-filter-btn:hover { background: var(--neon-yellow); color: var(--bg-dark); }
@@ -322,8 +320,7 @@
       font-size: 13px;
       border-radius: 8px;
       cursor: pointer;
-      font-family: 'Courier New', Courier, monospace;
-      text-transform: uppercase;
+      font-family: inherit;
       transition: all 0.2s;
     }
     .export-btn:hover { background: var(--neon-blue); color: var(--bg-dark); }
@@ -345,7 +342,7 @@
       text-align: center;
     }
     .summary-card label {
-      font-size: 10px;
+      font-size: 11px;
       color: var(--text-muted);
       margin-bottom: 4px;
     }
@@ -358,14 +355,14 @@
     .table-container { width: 100%; overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; }
     th, td { padding: 10px 6px; text-align: left; border-bottom: 1px solid var(--border-dim); }
-    th { color: var(--neon-green); font-weight: normal; text-transform: uppercase; opacity: 0.9; }
+    th { color: var(--neon-green); font-weight: normal; opacity: 0.9; }
     td { color: var(--text-main); }
     tr:hover td { background-color: var(--input-bg); }
     .text-right { text-align: right; }
     .text-center { text-align: center; }
     .action-cell button {
       background: none; border: 1px solid var(--border-dim); padding: 5px 8px;
-      font-family: 'Courier New', Courier, monospace; font-size: 11px; cursor: pointer; border-radius: 6px;
+      font-family: inherit; font-size: 11px; cursor: pointer; border-radius: 6px;
     }
     .btn-edit { color: var(--neon-yellow); border-color: var(--neon-yellow); margin-right: 4px; }
     .btn-del { color: var(--neon-red); border-color: var(--neon-red); }
@@ -400,7 +397,7 @@
       page-break-after: avoid;
       page-break-inside: avoid;
       color: #000;
-      font-family: 'Courier New', Courier, monospace, 'TH Sarabun PSK';
+      font-family: 'Sarabun', sans-serif;
       overflow: hidden;
     }
 
@@ -433,8 +430,6 @@
       margin: 0 0 2px 0;
       font-size: 15px;
       text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 1px;
       font-weight: bold;
     }
 
@@ -475,7 +470,6 @@
     .print-table th {
       background-color: #e0e0e0 !important;
       font-size: 11px;
-      text-transform: uppercase;
       font-weight: bold;
       -webkit-print-color-adjust: exact;
     }
@@ -499,129 +493,129 @@
       <i class="fa-solid fa-cat"></i>
     </div>
     <h1 class="app-title">JAGUAR_PRODUCTION_SUPABASE</h1>
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">DAILY PROD - TERMINAL & PRINT SHEET v7.0</div>
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.1</div>
   </div>
 
   <div class="header">
-    <h2>> DAILY PRODUCTION ENTRY</h2>
-    <div class="status"><span class="status-dot" id="statusDot"></span><span id="statusText">CONNECTING...</span></div>
+    <h2>> บันทึกยอดการผลิตรายวัน</h2>
+    <div class="status"><span class="status-dot" id="statusDot"></span><span id="statusText">กำลังเชื่อมต่อ...</span></div>
   </div>
 
-  <div id="statusMessage" class="system-msg loading">> INITIALIZING SYSTEM PARAMETERS...</div>
+  <div id="statusMessage" class="system-msg loading">> กำลังเตรียมข้อมูลระบบ...</div>
   
   <form id="prodForm" onsubmit="handleSubmit(event)" style="display:none;">
     <div class="form-group">
-      <label>1. RECORD DATE</label>
+      <label>1. วันที่บันทึก (RECORD DATE)</label>
       <input type="date" id="record_date" required>
     </div>
 
     <div class="form-group">
-      <label>2. ORDER & STEP CODE [คีย์รหัส 4 หลัก หรือเลือกเมนู]</label>
+      <label>2. รหัสใบสั่งงาน & ขั้นตอน [คีย์รหัส 4 หลัก หรือเลือกเมนู]</label>
       <div class="order-input-wrapper">
         <input type="text" id="manual_order_code" class="order-manual-input" placeholder="รหัส 4 หลัก" maxlength="4" oninput="handleManualOrderInput(this)">
         <select id="id_order" onchange="handleOrderChange()" required style="flex-grow: 1;">
-          <option value="">-- SELECT ORDER --</option>
+          <option value="">-- เลือกใบสั่งงาน --</option>
         </select>
-        <button type="button" class="scan-btn" onclick="openScanner()">[ 📷 SCAN ]</button>
+        <button type="button" class="scan-btn" onclick="openScanner()">[ 📷 สแกน ]</button>
       </div>
     </div>
 
     <div class="form-group">
-      <label>3. TARGET / STEP</label>
+      <label>3. ชิ้นงาน / ขั้นตอนการทำงาน (TARGET / STEP)</label>
       <select id="id_target" onchange="calculateEfficiency()" required>
-        <option value="">-- WAITING FOR ORDER SELECTION --</option>
+        <option value="">-- รอการเลือกใบสั่งงาน --</option>
       </select>
       <input type="hidden" id="id_work" value="">
     </div>
 
     <div class="form-group">
-      <label>4. EMPLOYEE</label>
+      <label>4. พนักงาน (EMPLOYEE)</label>
       <select id="id_name" required>
-        <option value="">-- SELECT EMPLOYEE --</option>
+        <option value="">-- เลือกพนักงาน --</option>
       </select>
     </div>
 
     <div class="form-group">
-      <label>5. WORK HOURS</label>
-      <input type="text" id="hour_work" readonly placeholder="0.00 (TAP TO INPUT)" onclick="openKeypad('hour_work')" required>
+      <label>5. ชั่วโมงทำงาน (WORK HOURS)</label>
+      <input type="text" id="hour_work" readonly placeholder="0.00 (แตะเพื่อพิมพ์ข้อมูล)" onclick="openKeypad('hour_work')" required>
     </div>
 
     <div class="form-group">
-      <label>6. PRODUCED QTY</label>
-      <input type="text" id="produced_amount" readonly placeholder="0 (TAP TO INPUT)" onclick="openKeypad('produced_amount')" required>
+      <label>6. จำนวนที่ผลิตได้ (PRODUCED QTY)</label>
+      <input type="text" id="produced_amount" readonly placeholder="0 (แตะเพื่อพิมพ์ข้อมูล)" onclick="openKeypad('produced_amount')" required>
     </div>
 
     <div class="eff-box">
-      <span>> CALCULATED EFFICIENCY:</span>
+      <span>> ประสิทธิภาพ (EFFICIENCY):</span>
       <span id="effDisplay" class="eff-value" style="color: var(--text-muted);">0.00%</span>
     </div>
 
     <div class="form-group" id="reasonGroup" style="display: none;">
-      <label style="color: var(--neon-red);">7. REASON (EFFICIENCY &lt; 100% REQUIRED)</label>
+      <label style="color: var(--neon-red);">7. สาเหตุ (บังคับเลือก หากประสิทธิภาพ &lt; 100%)</label>
       <select id="id_reason">
-        <option value="">-- SELECT REASON --</option>
+        <option value="">-- เลือกสาเหตุ --</option>
       </select>
     </div>
 
-    <button type="submit" class="submit-btn" id="submitBtn">> EXECUTE RECORD</button>
-    <button type="button" class="print-sheet-btn" onclick="printProgressSheet()">🖨️ PRINT PROGRESS SHEET (FOR SELECTED ORDER & STEP)</button>
-    <button type="button" class="cancel-edit-btn" id="cancelEditBtn" onclick="cancelEditMode()">[X] CANCEL EDIT</button>
+    <button type="submit" class="submit-btn" id="submitBtn">> บันทึกข้อมูล</button>
+    <button type="button" class="print-sheet-btn" onclick="printProgressSheet()">🖨️ พิมพ์ใบความก้าวหน้า (สำหรับงานที่เลือกอยู่ด้านบน)</button>
+    <button type="button" class="cancel-edit-btn" id="cancelEditBtn" onclick="cancelEditMode()">[X] ยกเลิกการแก้ไข</button>
   </form>
 
   <div class="report-section" id="reportSection" style="display:none;">
     <div class="report-header">
-      <h3 class="report-title">> PROGRESS & VERIFICATION PANEL</h3>
+      <h3 class="report-title">> ตารางตรวจสอบความก้าวหน้า</h3>
     </div>
     
     <div class="filter-box">
       <div class="filter-group">
-        <label>FILTER: ORDER NO</label>
+        <label>ใบสั่งงาน (ORDER NO)</label>
         <select id="filter_order" onchange="onFilterOrderChange()">
-          <option value="">-- ALL ORDERS --</option>
+          <option value="">-- ใบสั่งงานทั้งหมด --</option>
         </select>
       </div>
       <div class="filter-group">
-        <label>FILTER: WORK CODE [รหัสชิ้นงาน]</label>
+        <label>รหัสชิ้นงาน (WORK CODE)</label>
         <select id="filter_work" onchange="fetchReport()">
-          <option value="">-- ALL WORK CODES --</option>
+          <option value="">-- ชิ้นงานทั้งหมด --</option>
         </select>
       </div>
       <div class="filter-group">
-        <label>FILTER: TARGET / STEP</label>
+        <label>ขั้นตอน (STEP)</label>
         <select id="filter_target" onchange="fetchReport()">
-          <option value="">-- ALL STEPS --</option>
+          <option value="">-- ขั้นตอนทั้งหมด --</option>
         </select>
       </div>
       <div class="filter-group">
-        <label>FROM DATE [จากวันที่]</label>
+        <label>จากวันที่</label>
         <input type="date" id="filter_date_from" onchange="fetchReport()">
       </div>
       <div class="filter-group">
-        <label>TO DATE [ถึงวันที่]</label>
+        <label>ถึงวันที่</label>
         <input type="date" id="filter_date_to" onchange="fetchReport()">
       </div>
     </div>
 
     <div class="action-bar">
-      <button type="button" class="clear-filter-btn" onclick="clearFilters()">[CLEAR FILTERS]</button>
-      <button type="button" class="export-btn" onclick="exportToExcel()">[EXPORT TO EXCEL]</button>
+      <button type="button" class="clear-filter-btn" onclick="clearFilters()">[ล้างตัวกรอง]</button>
+      <button type="button" class="export-btn" onclick="exportToExcel()">[ส่งออกเป็น EXCEL]</button>
     </div>
 
     <div class="summary-panel">
       <div class="summary-card">
-        <label>TOTAL PRODUCED</label>
+        <label>ผลิตได้รวม</label>
         <span id="sumProduced">0</span>
       </div>
       <div class="summary-card">
-        <label>TARGET QUANTITY</label>
+        <label>ยอดสั่งผลิตรวม</label>
         <span id="sumTarget" style="color: var(--neon-blue);">0</span>
       </div>
       <div class="summary-card">
-        <label>REMAINING QTY</label>
+        <label>ยอดคงเหลือ</label>
         <span id="sumRemaining" style="color: var(--neon-yellow);">0</span>
       </div>
       <div class="summary-card">
-        <label>DEADLINE (DAYS LEFT)</label>
+        <label>กำหนดส่ง</label>
         <span id="sumDaysLeft" style="color: var(--text-main);">-</span>
       </div>
     </div>
@@ -630,20 +624,20 @@
       <table id="reportTable">
         <thead>
           <tr>
-            <th>DATE</th>
-            <th>ORDER</th>
-            <th>EMPLOYEE</th>
-            <th>WORK CODE</th>
-            <th>STEP</th>
-            <th class="text-right">PRODUCED</th>
-            <th class="text-right">HOURS</th>
+            <th>วันที่</th>
+            <th>ใบสั่งงาน</th>
+            <th>พนักงาน</th>
+            <th>ชิ้นงาน</th>
+            <th>ขั้นตอน</th>
+            <th class="text-right">ยอดผลิต</th>
+            <th class="text-right">ชั่วโมง</th>
             <th class="text-right">EFF%</th>
-            <th>REASON</th>
-            <th class="text-center no-export">ACTIONS</th>
+            <th>สาเหตุ</th>
+            <th class="text-center no-export">จัดการ</th>
           </tr>
         </thead>
         <tbody id="reportTbody">
-          <tr><td colspan="10" class="text-center loading">> LOADING DATA...</td></tr>
+          <tr><td colspan="10" class="text-center loading">> กำลังโหลดข้อมูล...</td></tr>
         </tbody>
       </table>
     </div>
@@ -653,9 +647,9 @@
 <!-- QR SCANNER MODAL -->
 <div id="scannerModal" class="scanner-modal" style="display:none;">
   <div class="scanner-box">
-    <h3 style="color:var(--neon-blue); margin-top:0;">> SCAN QR CODE</h3>
+    <h3 style="color:var(--neon-blue); margin-top:0;">> สแกนคิวอาร์โค้ด</h3>
     <div id="reader" style="width:100%;"></div>
-    <button type="button" class="scanner-close" onclick="closeScanner()">[X] CLOSE CAMERA</button>
+    <button type="button" class="scanner-close" onclick="closeScanner()">[X] ปิดกล้อง</button>
   </div>
 </div>
 
@@ -663,14 +657,14 @@
 
 <div id="numericKeypad" class="keypad-modal">
   <div class="keypad-header">
-    <span id="keypadTitle">> INPUT VALUE: </span>
-    <span onclick="closeKeypad()" style="cursor:pointer;">[X] CLOSE</span>
+    <span id="keypadTitle">> ระบุค่า: </span>
+    <span onclick="closeKeypad()" style="cursor:pointer;">[X] ปิด</span>
   </div>
   <div class="keypad-grid">
     <button type="button" class="key-btn" onclick="pressKey('7')">7</button>
     <button type="button" class="key-btn" onclick="pressKey('8')">8</button>
     <button type="button" class="key-btn" onclick="pressKey('9')">9</button>
-    <button type="button" class="key-btn key-action" onclick="pressKey('CLEAR')">CLR</button>
+    <button type="button" class="key-btn key-action" onclick="pressKey('CLEAR')">ลบ</button>
     
     <button type="button" class="key-btn" onclick="pressKey('4')">4</button>
     <button type="button" class="key-btn" onclick="pressKey('5')">5</button>
@@ -687,7 +681,7 @@
     <button type="button" class="key-btn" onclick="pressKey('.')">.</button>
     <button type="button" class="key-btn key-special" onclick="pressKey('/2')">/2</button>
     
-    <button type="button" class="key-btn key-close" onclick="closeKeypad()">ENTER</button>
+    <button type="button" class="key-btn key-close" onclick="closeKeypad()">ตกลง</button>
   </div>
 </div>
 
@@ -766,7 +760,7 @@
       document.getElementById('statusMessage').style.display = 'none';
       document.getElementById('prodForm').style.display = 'block';
       document.getElementById('reportSection').style.display = 'block';
-      document.getElementById('statusText').innerText = "ONLINE";
+      document.getElementById('statusText').innerText = "ออนไลน์";
 
       if (scannedOrderId) {
         const foundOrd = globalData.orders.find(o => String(o.id_order) === String(scannedOrderId));
@@ -788,10 +782,10 @@
     } catch (error) {
       console.error(error);
       const msgEl = document.getElementById('statusMessage');
-      msgEl.innerText = "> SYS_ERROR: " + error.message;
+      msgEl.innerText = "> ระบบขัดข้อง: " + error.message;
       msgEl.className = "system-msg error";
       document.getElementById('statusDot').style.backgroundColor = "var(--neon-red)";
-      document.getElementById('statusText').innerText = "OFFLINE";
+      document.getElementById('statusText').innerText = "ออฟไลน์";
     }
   };
 
@@ -800,12 +794,10 @@
     globalData.shortcutMap = [];
     let counter = 1;
     
-    // เรียง Order ตาม ID ก่อนเพื่อความคงที่
     let sortedOrders = [...globalData.orders].sort((a,b) => parseInt(a.id_order) - parseInt(b.id_order));
     
     sortedOrders.forEach(order => {
       if (order.id_work) {
-        // หาขั้นตอนทั้งหมดในชิ้นงานของออเดอร์นี้
         let orderTargets = globalData.targets.filter(t => String(t.id_work) === String(order.id_work));
         orderTargets.sort((a,b) => parseInt(a.id_target) - parseInt(b.id_target));
         
@@ -825,7 +817,6 @@
     let val = inputEl.value.trim();
     
     if (val.length === 4) {
-      // 1. ค้นหาใน Mapping รหัสสร้างใหม่ (เช่น 0001)
       const foundShortcut = globalData.shortcutMap.find(s => s.code === val);
       
       if (foundShortcut) {
@@ -837,7 +828,6 @@
           calculateEfficiency();
         }, 150);
       } else {
-        // 2. ถ้าหาไม่เจอ ให้ลองหาจากเลข 4 ตัวท้ายของใบสั่งเดิม (เผื่อไว้)
         const foundOrd = globalData.orders.find(o => String(o.order_no || '').endsWith(val));
         if (foundOrd) {
           document.getElementById('id_order').value = foundOrd.id_order;
@@ -907,14 +897,14 @@
                 calculateEfficiency();
               }, 200);
             }
-            alert("✅ สแกนสำเร็จ: โหลดข้อมูลออเดอร์และขั้นตอนการทำงานเรียบร้อย");
+            alert("✅ สแกนสำเร็จ: โหลดข้อมูลเรียบร้อย");
             return;
           }
         }
       }
-      alert("⚠️ QR Code นี้ไม่ตรงกับรูปแบบระบบงานผลิต");
+      alert("⚠️ รูปแบบคิวอาร์โค้ดไม่ถูกต้อง");
     } catch (e) {
-      alert("⚠️ เกิดข้อผิดพลาดในการอ่านข้อมูล QR Code");
+      alert("⚠️ เกิดข้อผิดพลาดในการอ่านข้อมูลคิวอาร์โค้ด");
     }
   }
 
@@ -935,10 +925,9 @@
     const workHidden = document.getElementById('id_work');
     const manualInput = document.getElementById('manual_order_code');
 
-    targetSelect.innerHTML = '<option value="">-- SELECT TARGET / STEP --</option>';
+    targetSelect.innerHTML = '<option value="">-- กรุณาเลือกขั้นตอนทำงาน --</option>';
     workHidden.value = '';
     
-    // ถ้าผู้ใช้มาคลิกเปลี่ยนออเดอร์เอง ให้ลบช่องรหัสออกก่อน (จะโชว์เมื่อเลือกเป้าหมาย)
     if (document.activeElement.id === 'id_order') {
         manualInput.value = ''; 
     }
@@ -953,7 +942,7 @@
 
     const selectedOrder = globalData.orders.find(o => String(o.id_order) === String(selectedOrderId));
     if (!selectedOrder || !selectedOrder.id_work) {
-        targetSelect.innerHTML = '<option value="">-- NO WORK CONFIGURED FOR THIS ORDER --</option>';
+        targetSelect.innerHTML = '<option value="">-- ไม่พบการตั้งค่าชิ้นงานในใบสั่งนี้ --</option>';
         return;
     }
 
@@ -967,24 +956,24 @@
         let opt = document.createElement('option');
         opt.value = t.id_target; 
         
-        let workDisplay = `WORK:${t.id_work}`;
+        let workDisplay = `ชิ้นงาน:${t.id_work}`;
         if (globalData.workItems.length > 0) {
           const foundWork = globalData.workItems.find(w => String(w.id_work) === String(t.id_work));
           if (foundWork) workDisplay = foundWork.work_code; 
         }
 
-        let stepDisplay = `STEP:${t.id_step}`;
+        let stepDisplay = `ขั้นตอน:${t.id_step}`;
         if (t.id_step && globalData.steps.length > 0) {
           const foundStep = globalData.steps.find(s => String(s.id_step) === String(t.id_step));
           if (foundStep) stepDisplay = foundStep.step_name;
         }
 
-        let tgtDisplay = t.target_amount ? `${t.target_amount} Pcs/H` : '';
-        opt.textContent = `${workDisplay} | ${stepDisplay} ${tgtDisplay ? '| ' + tgtDisplay : ''}`.trim();
+        let tgtDisplay = t.target_amount ? `${t.target_amount} ชิ้น/ชม.` : '';
+        opt.textContent = `${workDisplay} | ${stepDisplay} ${tgtDisplay ? '| เป้า: ' + tgtDisplay : ''}`.trim();
         targetSelect.appendChild(opt);
       });
     } else {
-      targetSelect.innerHTML = '<option value="">-- NO TARGETS FOUND FOR THIS WORK ITEM --</option>';
+      targetSelect.innerHTML = '<option value="">-- ไม่พบเป้าหมายสำหรับชิ้นงานนี้ --</option>';
     }
   }
 
@@ -993,21 +982,20 @@
     const selectedTargetId = document.getElementById('id_target').value;
 
     if (!selectedOrderId) {
-      alert("กรุณาเลือกเลขออเดอร์ (ORDER NO) ก่อนครับ");
+      alert("กรุณาเลือกใบสั่งงานก่อนครับ");
       return;
     }
     if (!selectedTargetId) {
-      alert("กรุณาเลือกขั้นตอนการทำงาน (TARGET / STEP) ที่ต้องการพิมพ์ให้เรียบร้อยก่อนครับ");
+      alert("กรุณาเลือกขั้นตอนการทำงานให้เรียบร้อยก่อนครับ");
       return;
     }
 
     const orderObj = globalData.orders.find(o => String(o.id_order) === String(selectedOrderId));
     if (!orderObj) {
-      alert("ไม่พบข้อมูลออเดอร์นี้ในระบบ");
+      alert("ไม่พบข้อมูลใบสั่งงานนี้ในระบบ");
       return;
     }
 
-    // ดึงรหัสลัด (0001) สำหรับออเดอร์+ขั้นตอน นี้เพื่อนำไปปริ้นต์
     const shortcutObj = globalData.shortcutMap.find(s => String(s.id_order) === String(selectedOrderId) && String(s.id_target) === String(selectedTargetId));
     const printCode = shortcutObj ? shortcutObj.code : "N/A";
 
@@ -1025,7 +1013,7 @@
     }
 
     const orderNo = orderObj.order_no || '-';
-    const quantity = orderObj.quantity ? parseInt(orderObj.quantity).toLocaleString() + ' Pcs' : '-';
+    const quantity = orderObj.quantity ? parseInt(orderObj.quantity).toLocaleString() + ' ชิ้น' : '-';
     
     const formatDateStr = (dateInput) => {
       if (!dateInput) return '-';
@@ -1039,7 +1027,6 @@
     const baseUrl = window.location.href.split('?')[0];
     const currentUrl = `${baseUrl}?order_id=${encodeURIComponent(orderObj.id_order)}&target_id=${encodeURIComponent(selectedTargetId)}`;
 
-    // สร้างแถวตาราง 22 แถว 
     let tableRowsHtml = '';
     for(let i=1; i<=22; i++) {
       let runningNo = i < 10 ? '0' + i : '' + i;
@@ -1069,7 +1056,7 @@
             </div>
             <div class="print-qr-box">
               <div class="qrcode-target" data-url="${currentUrl}"></div>
-              <span>SCAN / KEY CODE</span>
+              <span>สแกน / คีย์รหัส</span>
               <div class="print-code-text" onclick="selectOrderByCode('${printCode}')">[ ${printCode} ]</div>
             </div>
           </div>
@@ -1125,8 +1112,8 @@
     const filterWorkSelect = document.getElementById('filter_work');
     const filterTargetSelect = document.getElementById('filter_target');
     
-    filterWorkSelect.innerHTML = '<option value="">-- ALL WORK CODES --</option>';
-    filterTargetSelect.innerHTML = '<option value="">-- ALL STEPS --</option>';
+    filterWorkSelect.innerHTML = '<option value="">-- ชิ้นงานทั้งหมด --</option>';
+    filterTargetSelect.innerHTML = '<option value="">-- ขั้นตอนทั้งหมด --</option>';
     filterWorkSelect.value = '';
     filterTargetSelect.value = '';
 
@@ -1152,7 +1139,7 @@
         let opt = document.createElement('option');
         opt.value = t.id_target;
         
-        let stepDisplay = `STEP:${t.id_step}`;
+        let stepDisplay = `ขั้นตอน:${t.id_step}`;
         if (t.id_step && globalData.steps.length > 0) {
           const foundStep = globalData.steps.find(s => String(s.id_step) === String(t.id_step));
           if (foundStep) stepDisplay = foundStep.step_name;
@@ -1173,7 +1160,7 @@
     document.getElementById('filter_date_to').value = '';
 
     const filterWorkSelect = document.getElementById('filter_work');
-    filterWorkSelect.innerHTML = '<option value="">-- ALL WORK CODES --</option>';
+    filterWorkSelect.innerHTML = '<option value="">-- ชิ้นงานทั้งหมด --</option>';
     globalData.workItems.forEach(item => {
       let opt = document.createElement('option');
       opt.value = item.id_work;
@@ -1182,7 +1169,7 @@
     });
 
     const filterTargetSelect = document.getElementById('filter_target');
-    filterTargetSelect.innerHTML = '<option value="">-- ALL STEPS --</option>';
+    filterTargetSelect.innerHTML = '<option value="">-- ขั้นตอนทั้งหมด --</option>';
 
     fetchReport();
   }
@@ -1197,7 +1184,7 @@
       handleOrderChange();
       if (lastTargetId) {
         document.getElementById('id_target').value = lastTargetId;
-        calculateEfficiency(); // โหลดรหัสกลับมาแสดงในช่อง
+        calculateEfficiency(); 
       }
     }
     if (lastEmployeeId) {
@@ -1219,7 +1206,6 @@
     const ordId = document.getElementById('id_order').value;
     const targetId = document.getElementById('id_target').value;
     
-    // โชว์รหัสลัดของงานนี้ขึ้นในช่อง หากมีการเลือกทั้งออเดอร์และเป้าหมาย
     if (ordId && targetId) {
       const shortcutObj = globalData.shortcutMap.find(s => String(s.id_order) === String(ordId) && String(s.id_target) === String(targetId));
       if (shortcutObj) {
@@ -1273,7 +1259,7 @@
     const dateTo = document.getElementById('filter_date_to').value;
     const tbody = document.getElementById('reportTbody');
 
-    tbody.innerHTML = '<tr><td colspan="10" class="text-center loading">> FETCHING RECORDS...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" class="text-center loading">> กำลังดึงข้อมูล...</td></tr>';
     updateSummaryMetrics(orderId);
 
     try {
@@ -1290,7 +1276,7 @@
       }
 
       const res = await fetch(query, { headers });
-      if (!res.ok) throw new Error("Failed to fetch logs");
+      if (!res.ok) throw new Error("ดึงข้อมูลไม่สำเร็จ");
       let logs = await res.json();
 
       if (workId) {
@@ -1301,7 +1287,7 @@
       }
 
       if (logs.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted">> NO RECORDS FOUND FOR THIS FILTER</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center text-muted">> ไม่พบข้อมูลสำหรับตัวกรองนี้</td></tr>';
         return;
       }
 
@@ -1359,8 +1345,8 @@
           <td class="text-right" style="color:${effColor}">${effPct.toFixed(1)}%</td>
           <td>${reasonText}</td>
           <td class="text-center action-cell">
-            <button class="btn-edit" onclick='promptEdit(${JSON.stringify(log)})'>EDIT</button>
-            <button class="btn-del" onclick='promptDelete(${JSON.stringify(log)})'>DEL</button>
+            <button class="btn-edit" onclick='promptEdit(${JSON.stringify(log)})'>แก้ไข</button>
+            <button class="btn-del" onclick='promptDelete(${JSON.stringify(log)})'>ลบ</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -1368,7 +1354,7 @@
 
     } catch (error) {
       console.error(error);
-      tbody.innerHTML = `<tr><td colspan="10" class="text-center error">> ERR: ${error.message}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="10" class="text-center error">> ขัดข้อง: ${error.message}</td></tr>`;
     }
   }
 
@@ -1412,17 +1398,17 @@
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       
       if (diffDays > 0) {
-        sumDaysLeftEl.innerText = `${diffDays} DAYS`;
+        sumDaysLeftEl.innerText = `เหลือ ${diffDays} วัน`;
         sumDaysLeftEl.style.color = "var(--neon-green)";
       } else if (diffDays === 0) {
-        sumDaysLeftEl.innerText = `DUE TODAY`;
+        sumDaysLeftEl.innerText = `ครบกำหนดวันนี้`;
         sumDaysLeftEl.style.color = "var(--neon-yellow)";
       } else {
-        sumDaysLeftEl.innerText = `OVERDUE ${Math.abs(diffDays)} DAYS`;
+        sumDaysLeftEl.innerText = `เลยกำหนด ${Math.abs(diffDays)} วัน`;
         sumDaysLeftEl.style.color = "var(--neon-red)";
       }
     } else {
-      sumDaysLeftEl.innerText = "N/A";
+      sumDaysLeftEl.innerText = "-";
       sumDaysLeftEl.style.color = "var(--text-muted)";
     }
 
@@ -1447,11 +1433,11 @@
   }
 
   function promptDelete(logData) {
-    const pwd = prompt("SECURITY CHECK: ENTER PASSWORD TO DELETE (112233)");
+    const pwd = prompt("ตรวจสอบความปลอดภัย: ใส่รหัสผ่านเพื่อลบข้อมูล (112233)");
     if (pwd === "112233") {
       deleteRecord(logData);
     } else if (pwd !== null) {
-      alert("ACCESS DENIED: INCORRECT PASSWORD");
+      alert("ไม่อนุญาต: รหัสผ่านไม่ถูกต้อง");
     }
   }
 
@@ -1463,22 +1449,22 @@
         headers: headers
       });
       if (res.ok) {
-        alert("SUCCESS: RECORD DELETED");
+        alert("สำเร็จ: ลบข้อมูลเรียบร้อย");
         fetchReport();
       } else {
-        alert("DELETE FAILED");
+        alert("ลบข้อมูลล้มเหลว");
       }
     } catch (err) {
-      alert("ERROR: " + err.message);
+      alert("ข้อผิดพลาด: " + err.message);
     }
   }
 
   function promptEdit(logData) {
-    const pwd = prompt("SECURITY CHECK: ENTER PASSWORD TO EDIT (112233)");
+    const pwd = prompt("ตรวจสอบความปลอดภัย: ใส่รหัสผ่านเพื่อแก้ไขข้อมูล (112233)");
     if (pwd === "112233") {
       enterEditMode(logData);
     } else if (pwd !== null) {
-      alert("ACCESS DENIED: INCORRECT PASSWORD");
+      alert("ไม่อนุญาต: รหัสผ่านไม่ถูกต้อง");
     }
   }
 
@@ -1498,7 +1484,7 @@
 
     calculateEfficiency();
 
-    document.getElementById('submitBtn').innerText = "> UPDATE RECORD";
+    document.getElementById('submitBtn').innerText = "> อัปเดตข้อมูล";
     document.getElementById('cancelEditBtn').style.display = 'block';
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -1508,9 +1494,9 @@
     originalRecordKey = null;
     document.getElementById('prodForm').reset();
     document.getElementById('record_date').valueAsDate = new Date();
-    document.getElementById('id_target').innerHTML = '<option value="">-- WAITING FOR ORDER SELECTION --</option>';
+    document.getElementById('id_target').innerHTML = '<option value="">-- รอการเลือกใบสั่งงาน --</option>';
     document.getElementById('id_work').value = '';
-    document.getElementById('submitBtn').innerText = "> EXECUTE RECORD";
+    document.getElementById('submitBtn').innerText = "> บันทึกข้อมูล";
     document.getElementById('cancelEditBtn').style.display = 'none';
     document.getElementById('reasonGroup').style.display = 'none';
     document.getElementById('effDisplay').innerText = "0.00%";
@@ -1520,8 +1506,8 @@
   function openKeypad(inputId) {
     activeInputId = inputId;
     let labelText = document.querySelector(`label[for="${inputId}"]`);
-    let title = labelText ? labelText.innerText : (inputId === 'hour_work' ? 'WORK HOURS' : 'PRODUCED QTY');
-    document.getElementById('keypadTitle').innerText = "> INPUT: " + title;
+    let title = labelText ? labelText.innerText : (inputId === 'hour_work' ? 'ชั่วโมงทำงาน' : 'จำนวนผลิต');
+    document.getElementById('keypadTitle').innerText = "> ระบุค่า: " + title;
     document.getElementById('numericKeypad').style.display = 'block';
   }
 
@@ -1555,7 +1541,7 @@
     
     const submitBtn = document.getElementById('submitBtn');
     submitBtn.disabled = true;
-    submitBtn.innerText = isEditMode ? "> UPDATING..." : "> EXECUTING...";
+    submitBtn.innerText = isEditMode ? "> กำลังอัปเดต..." : "> กำลังบันทึก...";
 
     const orderVal = document.getElementById('id_order').value;
     const targetVal = document.getElementById('id_target').value;
@@ -1590,7 +1576,7 @@
       }
 
       if (response.ok) {
-        alert(isEditMode ? "SUCCESS: RECORD UPDATED" : "SUCCESS: TRANSACTION COMPLETED");
+        alert(isEditMode ? "สำเร็จ: อัปเดตข้อมูลเรียบร้อย" : "สำเร็จ: บันทึกข้อมูลเรียบร้อย");
 
         localStorage.setItem('last_order_id', orderVal);
         localStorage.setItem('last_target_id', targetVal);
@@ -1613,14 +1599,14 @@
         fetchReport();
       } else {
         const errData = await response.json();
-        alert("TRANSACTION FAILED: " + (errData.message || JSON.stringify(errData)));
+        alert("บันทึกข้อมูลล้มเหลว: " + (errData.message || JSON.stringify(errData)));
       }
     } catch (error) {
       console.error(error);
-      alert("CONNECTION ERROR: " + error.message);
+      alert("ข้อผิดพลาดในการเชื่อมต่อ: " + error.message);
     } finally {
       submitBtn.disabled = false;
-      submitBtn.innerText = isEditMode ? "> UPDATE RECORD" : "> EXECUTE RECORD";
+      submitBtn.innerText = isEditMode ? "> อัปเดตข้อมูล" : "> บันทึกข้อมูล";
     }
   }
 </script>
