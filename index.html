@@ -833,6 +833,7 @@
       document.getElementById('statusText').innerText = "ออนไลน์";
 
       if (scannedOrderId) {
+        // 1. กรณีเข้าเว็บผ่านการสแกน QR Code จากมือถือ (ยึดข้อมูลจาก QR เป็นหลัก)
         const foundOrd = globalData.orders.find(o => String(o.id_order) === String(scannedOrderId));
         if (foundOrd) {
           document.getElementById('id_order').value = foundOrd.id_order;
@@ -845,8 +846,18 @@
             }, 200);
           }
         }
-      }
+        
+        // ดึงมาแค่ "ชื่อพนักงานล่าสุด" เพื่ออำนวยความสะดวก โดยไม่ทับรหัสงาน
+        const lastEmployeeId = localStorage.getItem('last_employee_id');
+        if (lastEmployeeId) {
+          const emp = globalData.employees.find(e => String(e.id_name) === String(lastEmployeeId));
+          if (emp) document.getElementById('employee_search').value = emp.name;
+        }
 
+      } else {
+        // 2. กรณีเปิดเว็บเข้ามาปกติ (ไม่ได้สแกน) ให้โหลดข้อมูลที่ทำค้างไว้ล่าสุด
+        loadLastSessionData();
+      }
       loadLastSessionData();
 
     } catch (error) {
