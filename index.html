@@ -23,8 +23,8 @@
       --neon-yellow: #f5a623;
       --neon-blue: #00e5ff;
       --neon-glow: rgba(0, 255, 136, 0.4);
-      --input-bg: #030806;
-      --highlight: rgba(0, 255, 136, 0.15);
+      --input-bg: #0b2218;
+      --highlight: rgba(0, 255, 136, 0.2);
     }
 
     body {
@@ -126,24 +126,39 @@
     }
 
     .form-group { margin-bottom: 16px; }
-    label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: bold; color: var(--text-muted); }
+    .form-group label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: bold; color: var(--text-muted); }
 
     input, select {
       width: 100%; 
       padding: 12px 14px; 
-      background-color: var(--input-bg);
-      border: 1px solid var(--border-dim); 
-      color: var(--text-main);
+      background-color: #0b2218; 
+      border: 1.5px solid #1b4d36; 
+      color: #00ffaa; 
+      font-weight: bold;
       border-radius: 8px; 
       box-sizing: border-box; 
       font-family: inherit;
-      font-size: 16px; 
+      font-size: 17px; 
       transition: all 0.2s;
     }
 
-    input:focus, select:focus { border-color: var(--neon-green); outline: none; box-shadow: 0 0 8px var(--highlight); }
-    input[readonly] { background-color: #0c1a12; cursor: pointer; color: var(--neon-green); font-weight: bold; }
-    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); cursor: pointer; }
+    input:focus, select:focus { 
+      border-color: var(--neon-green); 
+      outline: none; 
+      box-shadow: 0 0 10px var(--neon-glow); 
+      background-color: #0e2b1f;
+    }
+
+    input[readonly] { 
+      background-color: #071710; 
+      cursor: pointer; 
+      color: #00ffaa; 
+    }
+    
+    input[type="date"]::-webkit-calendar-picker-indicator { 
+      filter: invert(0.8) sepia(1) saturate(5) hue-rotate(90deg); 
+      cursor: pointer; 
+    }
 
     .order-input-wrapper {
       display: flex;
@@ -153,13 +168,21 @@
       width: 130px;
       text-align: center;
       letter-spacing: 2px;
-      font-weight: bold;
       color: var(--neon-yellow);
-      border-color: var(--neon-yellow);
+      border-color: #3d3312;
+      background-color: #1a1608;
     }
+    
+    .order-manual-input[readonly] {
+      cursor: pointer;
+      background-color: #1a1608;
+      color: var(--neon-yellow);
+    }
+    
     .order-manual-input:focus {
       border-color: var(--neon-yellow);
       box-shadow: 0 0 8px rgba(245, 166, 35, 0.4);
+      background-color: #241e0b;
     }
     .scan-btn {
       background: transparent;
@@ -197,7 +220,7 @@
     }
 
     .eff-box {
-      background: #0c1a12;
+      background: #071710;
       border: 1px solid var(--border-dim);
       padding: 12px 14px;
       border-radius: 8px;
@@ -246,7 +269,7 @@
     .keypad-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 500px; margin: 0 auto; }
     
     .key-btn {
-      background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border-dim);
+      background: var(--input-bg); color: #00ffaa; border: 1px solid var(--border-dim);
       padding: 16px 0; font-size: 20px; border-radius: 8px; cursor: pointer;
       font-family: inherit; transition: background 0.1s;
     }
@@ -254,6 +277,16 @@
     .key-action { color: var(--neon-red); border-color: var(--neon-red); font-size: 18px; }
     .key-special { color: var(--neon-green); border-color: var(--border-dim); background: #0c1a12; }
     .key-close { background: var(--border-dim); grid-column: span 4; margin-top: 3px; font-size: 16px; color: var(--neon-green); font-weight: bold; }
+    
+    .key-equals {
+      background-color: var(--neon-green);
+      color: var(--bg-dark);
+      font-weight: bold;
+      font-size: 24px;
+      border: none;
+      box-shadow: 0 0 10px rgba(0,255,136,0.3);
+    }
+    .key-equals:active { background-color: #00cc6a; }
 
     .system-msg { text-align: center; font-size: 14px; margin-bottom: 12px; }
     .loading { color: var(--neon-yellow); }
@@ -277,7 +310,7 @@
       margin: 0;
     }
     .filter-box {
-      background: #0c1a12;
+      background: #071710;
       border: 1px solid var(--border-dim);
       padding: 12px;
       border-radius: 8px;
@@ -289,8 +322,8 @@
     @media (max-width: 600px) {
       .filter-box { grid-template-columns: 1fr; }
     }
-    .filter-group label { font-size: 12px; margin-bottom: 4px; }
-    .filter-group select, .filter-group input { padding: 8px; font-size: 14px; }
+    .filter-group label { font-size: 12px; margin-bottom: 4px; color: var(--text-muted); }
+    .filter-group select, .filter-group input { padding: 8px; font-size: 14px; background-color: #0b2218; color: #00ffaa; font-weight: bold; border-radius: 6px; }
 
     .action-bar {
       display: flex;
@@ -335,7 +368,7 @@
       .summary-panel { grid-template-columns: repeat(4, 1fr); }
     }
     .summary-card {
-      background: #0c1a12;
+      background: #071710;
       border: 1px solid var(--border-dim);
       padding: 10px;
       border-radius: 8px;
@@ -345,6 +378,7 @@
       font-size: 11px;
       color: var(--text-muted);
       margin-bottom: 4px;
+      display: block;
     }
     .summary-card span {
       font-size: 16px;
@@ -357,7 +391,7 @@
     th, td { padding: 10px 6px; text-align: left; border-bottom: 1px solid var(--border-dim); }
     th { color: var(--neon-green); font-weight: normal; opacity: 0.9; }
     td { color: var(--text-main); }
-    tr:hover td { background-color: var(--input-bg); }
+    tr:hover td { background-color: rgba(0, 255, 136, 0.05); }
     .text-right { text-align: right; }
     .text-center { text-align: center; }
     .action-cell button {
@@ -433,26 +467,25 @@
       font-weight: bold;
     }
 
-    /* จัดการเส้นประใหม่ให้เป็นฟอร์มที่สวยงาม */
     .print-meta-row {
       font-size: 12px;
       margin-bottom: 4px;
       display: flex;
-      align-items: flex-end; /* ให้ตัวหนังสือแนบชิดเส้นล่างสุด */
+      align-items: flex-end;
       gap: 4px;
       font-weight: bold;
     }
 
     .print-label {
       white-space: nowrap;
-      margin-bottom: -1px; /* ชดเชยระยะให้พอดีเส้นประ */
+      margin-bottom: -1px;
     }
 
     .print-value {
       border-bottom: 1.5px dotted #000;
-      flex-grow: 1;
       padding-left: 5px;
       min-height: 15px;
+      white-space: nowrap; 
     }
 
     .print-qr-box { text-align: center; }
@@ -465,6 +498,7 @@
       border-collapse: collapse;
       font-size: 11px;
       margin-top: 3px;
+      table-layout: fixed; 
     }
 
     .print-table th, .print-table td {
@@ -472,11 +506,12 @@
       padding: 2px 3px; 
       text-align: center;
       height: 18px;
+      word-wrap: break-word; 
     }
 
     .print-table th {
       background-color: #e0e0e0 !important;
-      font-size: 11px;
+      font-size: 9.5px;
       font-weight: bold;
       -webkit-print-color-adjust: exact;
     }
@@ -500,7 +535,7 @@
       <i class="fa-solid fa-cat"></i>
     </div>
     <h1 class="app-title">JAGUAR_PRODUCTION_SUPABASE</h1>
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.2</div>
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.8</div>
   </div>
 
   <div class="header">
@@ -519,7 +554,8 @@
     <div class="form-group">
       <label>2. รหัสใบสั่งงาน & ขั้นตอน [คีย์รหัส 4 หลัก หรือเลือกเมนู]</label>
       <div class="order-input-wrapper">
-        <input type="text" id="manual_order_code" class="order-manual-input" placeholder="รหัส 4 หลัก" maxlength="4" oninput="handleManualOrderInput(this)">
+        <input type="text" id="manual_order_code" class="order-manual-input" placeholder="0000" readonly onclick="openKeypad('manual_order_code')">
+        
         <select id="id_order" onchange="handleOrderChange()" required style="flex-grow: 1;">
           <option value="">-- เลือกใบสั่งงาน --</option>
         </select>
@@ -536,10 +572,10 @@
     </div>
 
     <div class="form-group">
-      <label>4. พนักงาน (EMPLOYEE)</label>
-      <select id="id_name" required>
-        <option value="">-- เลือกพนักงาน --</option>
-      </select>
+      <label>4. พนักงาน (EMPLOYEE) [พิมพ์เพื่อค้นหา]</label>
+      <!-- เพิ่ม onfocus และ onclick เพื่อ "ถมดำ" (select all) อัตโนมัติเมื่อแตะ -->
+      <input type="text" id="employee_search" list="employee_datalist" placeholder="-- พิมพ์ชื่อพนักงานเพื่อค้นหา --" autocomplete="off" onfocus="this.select()" onclick="this.select()" required>
+      <datalist id="employee_datalist"></datalist>
     </div>
 
     <div class="form-group">
@@ -662,33 +698,44 @@
 
 <div id="printArea"></div>
 
+<!-- แป้นพิมพ์ตัวเลขพร้อมฟังก์ชันเครื่องคิดเลข -->
 <div id="numericKeypad" class="keypad-modal">
   <div class="keypad-header">
     <span id="keypadTitle">> ระบุค่า: </span>
     <span onclick="closeKeypad()" style="cursor:pointer;">[X] ปิด</span>
   </div>
   <div class="keypad-grid">
+    <!-- แถว 1 -->
     <button type="button" class="key-btn" onclick="pressKey('7')">7</button>
     <button type="button" class="key-btn" onclick="pressKey('8')">8</button>
     <button type="button" class="key-btn" onclick="pressKey('9')">9</button>
-    <button type="button" class="key-btn key-action" onclick="pressKey('CLEAR')">ลบ</button>
+    <button type="button" class="key-btn key-special key-math" onclick="pressKey('+')">+</button>
     
+    <!-- แถว 2 -->
     <button type="button" class="key-btn" onclick="pressKey('4')">4</button>
     <button type="button" class="key-btn" onclick="pressKey('5')">5</button>
     <button type="button" class="key-btn" onclick="pressKey('6')">6</button>
-    <button type="button" class="key-btn key-special" onclick="pressKey('*2')">*2</button>
+    <button type="button" class="key-btn key-special key-math" onclick="pressKey('-')">-</button>
     
+    <!-- แถว 3 -->
     <button type="button" class="key-btn" onclick="pressKey('1')">1</button>
     <button type="button" class="key-btn" onclick="pressKey('2')">2</button>
     <button type="button" class="key-btn" onclick="pressKey('3')">3</button>
-    <button type="button" class="key-btn key-special" onclick="pressKey('*4')">*4</button>
+    <button type="button" class="key-btn key-special key-math" onclick="pressKey('*')">*</button>
     
+    <!-- แถว 4 -->
     <button type="button" class="key-btn" onclick="pressKey('0')">0</button>
     <button type="button" class="key-btn" onclick="pressKey('00')">00</button>
-    <button type="button" class="key-btn" onclick="pressKey('.')">.</button>
-    <button type="button" class="key-btn key-special" onclick="pressKey('/2')">/2</button>
+    <button type="button" class="key-btn key-math" onclick="pressKey('.')">.</button>
+    <button type="button" class="key-btn key-special key-math" onclick="pressKey('/')">/</button>
+
+    <!-- แถว 5: แอคชัน -->
+    <button type="button" class="key-btn key-action" onclick="pressKey('BACKSPACE')">ลบ</button>
+    <button type="button" class="key-btn key-action" onclick="pressKey('CLEAR')">ล้าง</button>
+    <button type="button" class="key-btn key-equals key-math" style="grid-column: span 2;" onclick="pressKey('=')">=</button>
     
-    <button type="button" class="key-btn key-close" onclick="closeKeypad()">ตกลง</button>
+    <!-- แถว 6: ยืนยัน -->
+    <button type="button" class="key-btn key-close" style="grid-column: span 4; margin-top: 5px;" onclick="closeKeypad()">ตกลง / ยืนยัน</button>
   </div>
 </div>
 
@@ -703,7 +750,6 @@
     "Prefer": "return=representation"
   };
 
-  // เพิ่ม orderSteps เข้าไปใน globalData เพื่อรองรับการดึงข้อมูลตารางใหม่
   let globalData = { orders: [], employees: [], targets: [], reasons: [], workItems: [], steps: [], orderSteps: [], shortcutMap: [] };
   let activeInputId = null;
   let isEditMode = false;
@@ -718,7 +764,6 @@
     const scannedTargetId = urlParams.get('target_id');
 
     try {
-      // โหลดข้อมูลทั้งหมด รวมถึงตาราง order_steps
       const [ordersRes, empsRes, targetsRes, reasonsRes, workItemsRes, stepsRes, orderStepsRes] = await Promise.all([
         fetch(SUPABASE_URL + "/orders?select=*", { headers }),
         fetch(SUPABASE_URL + "/employees?select=*", { headers }), 
@@ -761,14 +806,19 @@
         globalData.orderSteps = await orderStepsRes.json();
       }
 
-      // สร้าง Mapping สำหรับรหัส 4 หลัก (0001, 0002) ตามจำนวน (ออเดอร์+ชิ้นงาน+ขั้นตอน)
       generateShortcutMap();
 
       populateDropdown('id_order', globalData.orders, 'id_order', 'order_no'); 
-      populateDropdown('id_name', globalData.employees, 'id_name', 'name'); 
       populateDropdown('id_reason', globalData.reasons, 'id_reason', 'reason_detail');
       populateDropdown('filter_order', globalData.orders, 'id_order', 'order_no');
       populateDropdown('filter_work', globalData.workItems, 'id_work', 'work_code');
+
+      const empDatalist = document.getElementById('employee_datalist');
+      globalData.employees.forEach(emp => {
+        let opt = document.createElement('option');
+        opt.value = emp.name;
+        empDatalist.appendChild(opt);
+      });
 
       document.getElementById('statusMessage').style.display = 'none';
       document.getElementById('prodForm').style.display = 'block';
@@ -802,7 +852,6 @@
     }
   };
 
-  // ฟังก์ชันสร้างรหัส 0001, 0002 แบบรันลำดับอัตโนมัติ สำหรับทุกคู่ของออเดอร์+ขั้นตอน
   function generateShortcutMap() {
     globalData.shortcutMap = [];
     let counter = 1;
@@ -1024,7 +1073,6 @@
     
     const selectedTargetObj = globalData.targets.find(t => String(t.id_target) === String(selectedTargetId));
     
-    // ดึงข้อมูลวันที่จาก order_steps โดยอ้างอิงจาก id_order และ id_step ที่ตรงกัน
     if (selectedTargetObj && selectedTargetObj.id_step) {
       if (globalData.steps.length > 0) {
         const foundStp = globalData.steps.find(s => String(s.id_step) === String(selectedTargetObj.id_step));
@@ -1068,21 +1116,23 @@
       <div class="print-card">
         <div class="print-header-wrapper">
           <div class="print-header-top">
-            <div style="flex-grow: 1;">
+            <div style="flex-grow: 1; overflow: hidden;">
               <div class="print-title-area"><h3>ใบความก้าวหน้าของการผลิต</h3></div>
               <div class="print-meta-row">
-                <span class="print-label">ใบสั่งงานเลขที่:</span> <span class="print-value" style="flex: 0.4;">${orderNo}</span>
-                <span class="print-label">ขั้นตอนงาน:</span> <span class="print-value" style="flex: 1;">${stepNameText}</span>
+                <span class="print-label">ใบสั่งงานเลขที่:</span> 
+                <span class="print-value" style="flex: 1.4; white-space: nowrap;">${orderNo}</span>
+                <span class="print-label" style="margin-left: 12px;">ขั้นตอนงาน:</span> 
+                <span class="print-value" style="flex: 1.2; white-space: nowrap;">${stepNameText}</span>
               </div>
               <div class="print-meta-row">
-                <span class="print-label">ชนิดงาน:</span> <span class="print-value">${workCodeText}</span>
+                <span class="print-label">ชนิดงาน:</span> <span class="print-value" style="white-space: nowrap;">${workCodeText}</span>
               </div>
               <div class="print-meta-row">
                 <span class="print-label">จำนวนชิ้นงานสั่งผลิต:</span> <span class="print-value">${quantity}</span>
               </div>
               <div class="print-meta-row">
-                <span class="print-label">วันที่เริ่ม:</span> <span class="print-value">${stepStartDateStr}</span>
-                <span class="print-label">วันที่เสร็จ:</span> <span class="print-value">${stepEndDateStr}</span>
+                <span class="print-label">วันที่เริ่ม:</span> <span class="print-value" style="flex: 1;">${stepStartDateStr}</span>
+                <span class="print-label" style="margin-left: 10px;">วันที่เสร็จ:</span> <span class="print-value" style="flex: 1;">${stepEndDateStr}</span>
               </div>
             </div>
             <div class="print-qr-box">
@@ -1095,14 +1145,14 @@
           <table class="print-table">
             <thead>
               <tr>
-                <th width="12%">วันที่</th>
-                <th width="13%">ตัวเลขตอนเลิกงาน</th>
-                <th width="13%">ผลิตได้/วัน</th>
-                <th width="13%">สะสม</th>
+                <th width="10%">วันที่</th>
+                <th width="14%">ตัวเลขตอนเลิกงาน</th>
+                <th width="14%">ผลิตได้/วัน</th>
+                <th width="14%">สะสม</th>
                 <th width="8%">เสีย</th>
-                <th width="12%">เวลา</th>
+                <th width="10%">เวลา</th>
                 <th width="16%">ชื่อคนทำ</th>
-                <th width="13%">หมายเหตุ</th>
+                <th width="14%">หมายเหตุ</th>
               </tr>
             </thead>
             <tbody>
@@ -1218,8 +1268,12 @@
         calculateEfficiency(); 
       }
     }
+    
     if (lastEmployeeId) {
-      document.getElementById('id_name').value = lastEmployeeId;
+      const emp = globalData.employees.find(e => String(e.id_name) === String(lastEmployeeId));
+      if (emp) {
+        document.getElementById('employee_search').value = emp.name;
+      }
     }
 
     if (lastOrderId) {
@@ -1244,6 +1298,7 @@
       }
     }
 
+    // parseInt & parseFloat จะทำการดึงเฉพาะตัวเลขออกมาคำนวณ หากค่ายังอยู่ในรูปแบบการบวกเช่น 10+5 มันจะคำนวณแค่ 10 ไปก่อน (จนกว่าจะกด =)
     const hourWork = parseFloat(document.getElementById('hour_work').value) || 0;
     const producedAmt = parseFloat(document.getElementById('produced_amount').value) || 0;
     
@@ -1508,7 +1563,10 @@
     handleOrderChange();
     
     document.getElementById('id_target').value = logData.id_target || '';
-    document.getElementById('id_name').value = logData.id_name || '';
+    
+    const empEdit = globalData.employees.find(e => String(e.id_name) === String(logData.id_name));
+    document.getElementById('employee_search').value = empEdit ? empEdit.name : '';
+    
     document.getElementById('hour_work').value = logData.hour_work || '';
     document.getElementById('produced_amount').value = logData.produced_amount || '';
     document.getElementById('id_reason').value = logData.id_reason || '';
@@ -1527,6 +1585,9 @@
     document.getElementById('record_date').valueAsDate = new Date();
     document.getElementById('id_target').innerHTML = '<option value="">-- รอการเลือกใบสั่งงาน --</option>';
     document.getElementById('id_work').value = '';
+    
+    document.getElementById('employee_search').value = ''; 
+    
     document.getElementById('submitBtn').innerText = "> บันทึกข้อมูล";
     document.getElementById('cancelEditBtn').style.display = 'none';
     document.getElementById('reasonGroup').style.display = 'none';
@@ -1534,20 +1595,57 @@
     document.getElementById('effDisplay').style.color = "var(--text-muted)";
   }
 
+  // เรียกเปิดแผงควบคุม
   function openKeypad(inputId) {
     activeInputId = inputId;
     let labelText = document.querySelector(`label[for="${inputId}"]`);
-    let title = labelText ? labelText.innerText : (inputId === 'hour_work' ? 'ชั่วโมงทำงาน' : 'จำนวนผลิต');
+    let title = labelText ? labelText.innerText : "";
+    
+    if (inputId === 'hour_work') title = 'ชั่วโมงทำงาน';
+    else if (inputId === 'produced_amount') title = 'จำนวนผลิต';
+    else if (inputId === 'manual_order_code') title = 'รหัสใบสั่งงาน (4 หลัก)';
+
     document.getElementById('keypadTitle').innerText = "> ระบุค่า: " + title;
+
+    // หากพิมพ์ในช่อง "รหัส 4 หลัก" ให้ซ่อนปุ่มคณิตศาสตร์
+    let isCode = (inputId === 'manual_order_code');
+    document.querySelectorAll('.key-math').forEach(btn => {
+      btn.style.visibility = isCode ? 'hidden' : 'visible'; 
+    });
+
     document.getElementById('numericKeypad').style.display = 'block';
   }
 
+  // ปิดแผงควบคุม พร้อมบังคับคำนวณหากมีสมการตกค้าง
   function closeKeypad() {
+    if (activeInputId && activeInputId !== 'manual_order_code') {
+      let input = document.getElementById(activeInputId);
+      input.value = calculateMath(input.value);
+    }
     document.getElementById('numericKeypad').style.display = 'none';
     activeInputId = null;
     calculateEfficiency();
   }
 
+  // ประมวลผลสมการคณิตศาสตร์อย่างปลอดภัย
+  function calculateMath(expression) {
+    try {
+      if(!expression) return '';
+      // ฟังก์ชันประมวลผลสตริงที่มีเครื่องหมายคณิตศาสตร์ (+ - * /)
+      let result = Function('"use strict";return (' + expression + ')')();
+      
+      // ป้องกันค่า error หรือ Infinity
+      if(isNaN(result) || !isFinite(result)) return expression;
+      
+      // คืนค่าตัวเลขที่ปัดเศษเผื่อกรณีทศนิยมเกิน (เช่น 0.1 + 0.2)
+      return Number.isInteger(result) ? result : parseFloat(result.toFixed(4));
+    } catch(e) {
+      // หากเกิดข้อผิดพลาด (เช่น พิมพ์สมการไม่จบ 10+) ให้คืนค่าตัวอักษรเดิมกลับไป
+      return expression; 
+    }
+  }
+
+  // ฟังก์ชันรองรับการกดปุ่มบนแผงควบคุม
   function pressKey(val) {
     if (!activeInputId) return;
     let input = document.getElementById(activeInputId);
@@ -1555,16 +1653,27 @@
 
     if (val === 'CLEAR') {
       input.value = '';
-    } else if (val === '*2') {
-      input.value = (parseFloat(currentVal) || 0) * 2;
-    } else if (val === '*4') {
-      input.value = (parseFloat(currentVal) || 0) * 4;
-    } else if (val === '/2') {
-      input.value = (parseFloat(currentVal) || 0) / 2;
+    } else if (val === 'BACKSPACE') {
+      input.value = currentVal.slice(0, -1);
+    } else if (val === '=') {
+      input.value = calculateMath(currentVal);
     } else {
+      // บล็อกไม่ให้พิมพ์เครื่องหมายคณิตศาสตร์ลงในช่อง รหัส 4 หลัก
+      if (activeInputId === 'manual_order_code') {
+        if (['+', '-', '*', '/', '=', '.'].includes(val)) return;
+        if (currentVal.length + val.length > 4) {
+          val = val.slice(0, 4 - currentVal.length);
+        }
+      }
       input.value = currentVal + val;
     }
-    calculateEfficiency();
+
+    // เรียกประมวลผลทันที
+    if (activeInputId === 'manual_order_code') {
+      handleManualOrderInput(input);
+    } else {
+      calculateEfficiency();
+    }
   }
 
   async function handleSubmit(e) {
@@ -1576,7 +1685,17 @@
 
     const orderVal = document.getElementById('id_order').value;
     const targetVal = document.getElementById('id_target').value;
-    const employeeVal = document.getElementById('id_name').value;
+    
+    const empSearchVal = document.getElementById('employee_search').value;
+    const empObj = globalData.employees.find(e => e.name === empSearchVal);
+    const employeeVal = empObj ? empObj.id_name : null;
+
+    if (!employeeVal) {
+      alert("⚠️ กรุณาระบุชื่อพนักงานให้ถูกต้อง (เลือกจากรายการที่ค้นหา)");
+      submitBtn.disabled = false;
+      submitBtn.innerText = isEditMode ? "> อัปเดตข้อมูล" : "> บันทึกข้อมูล";
+      return;
+    }
 
     const payload = {
       record_date: document.getElementById('record_date').value,
@@ -1584,6 +1703,7 @@
       id_work: parseInt(document.getElementById('id_work').value) || null,
       id_name: parseInt(employeeVal) || null,
       id_target: parseInt(targetVal) || null,
+      // parseInt จะดึงเฉพาะตัวเลขมาแม้ผู้ใช้จะลืมกดคำนวณ แต่เราได้ดักการคำนวณอัตโนมัติตอนกด 'ตกลง' ปิดแป้นไปแล้ว ทำให้ข้อมูลจะสมบูรณ์
       hour_work: parseFloat(document.getElementById('hour_work').value) || 0,
       produced_amount: parseInt(document.getElementById('produced_amount').value) || 0,
       id_reason: parseInt(document.getElementById('id_reason').value) || null
