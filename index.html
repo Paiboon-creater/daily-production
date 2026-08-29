@@ -242,20 +242,29 @@
     }
     .submit-btn:hover { background: var(--neon-green); color: var(--bg-dark); box-shadow: 0 0 20px var(--neon-glow); transform: translateY(-2px); }
     
-    .print-sheet-btn {
+    /* ปุ่มพิมพ์แบบแยกประเภท */
+    .print-blank-btn {
       width: 100%; background: linear-gradient(145deg, #07151a, #030b0e); color: var(--neon-blue);
-      border: 2px solid var(--neon-blue); padding: 12px; font-size: 15px;
+      border: 2px solid var(--neon-blue); padding: 12px; font-size: 14px;
       border-radius: 8px; cursor: pointer; font-weight: bold;
-      margin-top: 8px;
       font-family: inherit; transition: all 0.3s;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5); flex: 1;
     }
-    .print-sheet-btn:hover { background: var(--neon-blue); color: var(--bg-dark); box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); transform: translateY(-2px); }
+    .print-blank-btn:hover { background: var(--neon-blue); color: var(--bg-dark); box-shadow: 0 0 20px rgba(0, 229, 255, 0.4); transform: translateY(-2px); }
+
+    .print-data-btn {
+      width: 100%; background: linear-gradient(145deg, #071910, #040e09); color: var(--neon-green);
+      border: 2px solid var(--neon-green); padding: 12px; font-size: 14px;
+      border-radius: 8px; cursor: pointer; font-weight: bold;
+      font-family: inherit; transition: all 0.3s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5); flex: 1.2;
+    }
+    .print-data-btn:hover { background: var(--neon-green); color: var(--bg-dark); box-shadow: 0 0 20px var(--neon-glow); transform: translateY(-2px); }
 
     .cancel-edit-btn {
       width: 100%; background-color: transparent; color: var(--neon-red);
       border: 1px solid var(--neon-red); padding: 10px; font-size: 14px;
-      border-radius: 8px; cursor: pointer; margin-top: 8px; display: none;
+      border-radius: 8px; cursor: pointer; margin-top: 12px; display: none;
       font-family: inherit;
     }
 
@@ -511,7 +520,7 @@
 
     .print-table th {
       background-color: #e0e0e0 !important;
-      font-size:11px;
+      font-size: 11px;
       font-weight: bold;
       -webkit-print-color-adjust: exact;
     }
@@ -535,7 +544,7 @@
       <i class="fa-solid fa-cat"></i>
     </div>
     <h1 class="app-title">JAGUAR_PRODUCTION_SUPABASE</h1>
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.8</div>
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.11</div>
   </div>
 
   <div class="header">
@@ -573,7 +582,6 @@
 
     <div class="form-group">
       <label>4. พนักงาน (EMPLOYEE) [พิมพ์เพื่อค้นหา]</label>
-      <!-- เพิ่ม onfocus และ onclick เพื่อ "ถมดำ" (select all) อัตโนมัติเมื่อแตะ -->
       <input type="text" id="employee_search" list="employee_datalist" placeholder="-- พิมพ์ชื่อพนักงานเพื่อค้นหา --" autocomplete="off" onfocus="this.select()" onclick="this.select()" required>
       <datalist id="employee_datalist"></datalist>
     </div>
@@ -601,7 +609,12 @@
     </div>
 
     <button type="submit" class="submit-btn" id="submitBtn">> บันทึกข้อมูล</button>
-    <button type="button" class="print-sheet-btn" onclick="printProgressSheet()">🖨️ พิมพ์ใบความก้าวหน้า (สำหรับงานที่เลือกอยู่ด้านบน)</button>
+    
+    <div style="display: flex; gap: 8px; margin-top: 12px;">
+      <button type="button" class="print-blank-btn" id="printBlankBtn" onclick="printProgressSheet(false)">🖨️ พิมพ์ฟอร์มเปล่า</button>
+      <button type="button" class="print-data-btn" id="printDataBtn" onclick="printProgressSheet(true)">🖨️ พิมพ์พร้อมประวัติ</button>
+    </div>
+
     <button type="button" class="cancel-edit-btn" id="cancelEditBtn" onclick="cancelEditMode()">[X] ยกเลิกการแก้ไข</button>
   </form>
 
@@ -705,36 +718,30 @@
     <span onclick="closeKeypad()" style="cursor:pointer;">[X] ปิด</span>
   </div>
   <div class="keypad-grid">
-    <!-- แถว 1 -->
     <button type="button" class="key-btn" onclick="pressKey('7')">7</button>
     <button type="button" class="key-btn" onclick="pressKey('8')">8</button>
     <button type="button" class="key-btn" onclick="pressKey('9')">9</button>
     <button type="button" class="key-btn key-special key-math" onclick="pressKey('+')">+</button>
     
-    <!-- แถว 2 -->
     <button type="button" class="key-btn" onclick="pressKey('4')">4</button>
     <button type="button" class="key-btn" onclick="pressKey('5')">5</button>
     <button type="button" class="key-btn" onclick="pressKey('6')">6</button>
     <button type="button" class="key-btn key-special key-math" onclick="pressKey('-')">-</button>
     
-    <!-- แถว 3 -->
     <button type="button" class="key-btn" onclick="pressKey('1')">1</button>
     <button type="button" class="key-btn" onclick="pressKey('2')">2</button>
     <button type="button" class="key-btn" onclick="pressKey('3')">3</button>
     <button type="button" class="key-btn key-special key-math" onclick="pressKey('*')">*</button>
     
-    <!-- แถว 4 -->
     <button type="button" class="key-btn" onclick="pressKey('0')">0</button>
     <button type="button" class="key-btn" onclick="pressKey('00')">00</button>
     <button type="button" class="key-btn key-math" onclick="pressKey('.')">.</button>
     <button type="button" class="key-btn key-special key-math" onclick="pressKey('/')">/</button>
 
-    <!-- แถว 5: แอคชัน -->
     <button type="button" class="key-btn key-action" onclick="pressKey('BACKSPACE')">ลบ</button>
     <button type="button" class="key-btn key-action" onclick="pressKey('CLEAR')">ล้าง</button>
     <button type="button" class="key-btn key-equals key-math" style="grid-column: span 2;" onclick="pressKey('=')">=</button>
     
-    <!-- แถว 6: ยืนยัน -->
     <button type="button" class="key-btn key-close" style="grid-column: span 4; margin-top: 5px;" onclick="closeKeypad()">ตกลง / ยืนยัน</button>
   </div>
 </div>
@@ -1039,7 +1046,7 @@
     }
   }
 
-  function printProgressSheet() {
+  async function printProgressSheet(withData) {
     const selectedOrderId = document.getElementById('id_order').value;
     const selectedTargetId = document.getElementById('id_target').value;
 
@@ -1057,6 +1064,38 @@
       alert("ไม่พบข้อมูลใบสั่งงานนี้ในระบบ");
       return;
     }
+
+    const printBlankBtn = document.getElementById('printBlankBtn');
+    const printDataBtn = document.getElementById('printDataBtn');
+    const originalBtnText = withData ? printDataBtn.innerText : printBlankBtn.innerText;
+    
+    if (withData) {
+      printDataBtn.innerText = "⏳ กำลังดึงข้อมูล...";
+    } else {
+      printBlankBtn.innerText = "⏳ กำลังเตรียมพิมพ์...";
+    }
+    printBlankBtn.disabled = true;
+    printDataBtn.disabled = true;
+
+    let logs = [];
+    if (withData) {
+      try {
+        const res = await fetch(`${SUPABASE_URL}/daily_production?select=*&id_order=eq.${selectedOrderId}&id_target=eq.${selectedTargetId}&order=record_date.asc`, { headers });
+        if(res.ok) {
+           logs = await res.json();
+        }
+      } catch (e) {
+        console.error("ดึงข้อมูลไม่สำเร็จ", e);
+      }
+    }
+
+    if (withData) {
+      printDataBtn.innerText = originalBtnText;
+    } else {
+      printBlankBtn.innerText = originalBtnText;
+    }
+    printBlankBtn.disabled = false;
+    printDataBtn.disabled = false;
 
     const shortcutObj = globalData.shortcutMap.find(s => String(s.id_order) === String(selectedOrderId) && String(s.id_target) === String(selectedTargetId));
     const printCode = shortcutObj ? shortcutObj.code : "N/A";
@@ -1099,17 +1138,44 @@
     const currentUrl = `${baseUrl}?order_id=${encodeURIComponent(orderObj.id_order)}&target_id=${encodeURIComponent(selectedTargetId)}`;
 
     let tableRowsHtml = '';
-    for(let i=1; i<=22; i++) {
-      tableRowsHtml += `<tr>
-        <td>__/__/__</td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td style="font-size: 9px;">__:__-__:__</td>
-        <td></td>
-        <td></td>
-      </tr>`;
+    let runningTotal = 0;
+    
+    const maxRows = Math.max(22, logs.length + 2); 
+
+    for(let i = 0; i < maxRows; i++) {
+      if (i < logs.length) {
+        const log = logs[i];
+        let d = new Date(log.record_date);
+        let dateFormatted = !isNaN(d) ? `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth()+1).toString().padStart(2, '0')}/${d.getFullYear().toString().slice(-2)}` : '__/__/__';
+
+        const emp = globalData.employees.find(e => String(e.id_name) === String(log.id_name));
+        const empText = emp ? emp.name : '';
+        
+        const produced = log.produced_amount || 0;
+        runningTotal += produced;
+
+        tableRowsHtml += `<tr>
+          <td>${dateFormatted}</td>
+          <td></td>
+          <td style="text-align: right; padding-right: 4px;">${produced.toLocaleString()}</td>
+          <td style="text-align: right; padding-right: 4px; font-weight: bold;">${runningTotal.toLocaleString()}</td>
+          <td></td>
+          <td style="font-size: 9px;">__:__-__:__</td>
+          <td style="text-align: left; padding-left: 4px; font-size: 10px;">${empText}</td>
+          <td></td>
+        </tr>`;
+      } else {
+        tableRowsHtml += `<tr>
+          <td>__/__/__</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td style="font-size: 9px;">__:__-__:__</td>
+          <td></td>
+          <td></td>
+        </tr>`;
+      }
     }
 
     const singleCardHtml = `
@@ -1146,7 +1212,7 @@
             <thead>
               <tr>
                 <th width="10%">วันที่</th>
-                <th width="14%"style="font-size: 7px;">ตัวเลขตอนเลิกงาน</th>
+                <th width="14%" style="font-size: 9px;">ตัวเลขตอนเลิกงาน</th>
                 <th width="14%">ผลิตได้/วัน</th>
                 <th width="14%">สะสม</th>
                 <th width="8%">เสีย</th>
@@ -1185,7 +1251,9 @@
       });
     });
 
-    window.print();
+    setTimeout(() => {
+      window.print();
+    }, 300);
   }
 
   function onFilterOrderChange() {
@@ -1298,7 +1366,6 @@
       }
     }
 
-    // parseInt & parseFloat จะทำการดึงเฉพาะตัวเลขออกมาคำนวณ หากค่ายังอยู่ในรูปแบบการบวกเช่น 10+5 มันจะคำนวณแค่ 10 ไปก่อน (จนกว่าจะกด =)
     const hourWork = parseFloat(document.getElementById('hour_work').value) || 0;
     const producedAmt = parseFloat(document.getElementById('produced_amount').value) || 0;
     
@@ -1595,7 +1662,6 @@
     document.getElementById('effDisplay').style.color = "var(--text-muted)";
   }
 
-  // เรียกเปิดแผงควบคุม
   function openKeypad(inputId) {
     activeInputId = inputId;
     let labelText = document.querySelector(`label[for="${inputId}"]`);
@@ -1607,7 +1673,6 @@
 
     document.getElementById('keypadTitle').innerText = "> ระบุค่า: " + title;
 
-    // หากพิมพ์ในช่อง "รหัส 4 หลัก" ให้ซ่อนปุ่มคณิตศาสตร์
     let isCode = (inputId === 'manual_order_code');
     document.querySelectorAll('.key-math').forEach(btn => {
       btn.style.visibility = isCode ? 'hidden' : 'visible'; 
@@ -1616,7 +1681,6 @@
     document.getElementById('numericKeypad').style.display = 'block';
   }
 
-  // ปิดแผงควบคุม พร้อมบังคับคำนวณหากมีสมการตกค้าง
   function closeKeypad() {
     if (activeInputId && activeInputId !== 'manual_order_code') {
       let input = document.getElementById(activeInputId);
@@ -1627,25 +1691,19 @@
     calculateEfficiency();
   }
 
-  // ประมวลผลสมการคณิตศาสตร์อย่างปลอดภัย
   function calculateMath(expression) {
     try {
       if(!expression) return '';
-      // ฟังก์ชันประมวลผลสตริงที่มีเครื่องหมายคณิตศาสตร์ (+ - * /)
       let result = Function('"use strict";return (' + expression + ')')();
       
-      // ป้องกันค่า error หรือ Infinity
       if(isNaN(result) || !isFinite(result)) return expression;
       
-      // คืนค่าตัวเลขที่ปัดเศษเผื่อกรณีทศนิยมเกิน (เช่น 0.1 + 0.2)
       return Number.isInteger(result) ? result : parseFloat(result.toFixed(4));
     } catch(e) {
-      // หากเกิดข้อผิดพลาด (เช่น พิมพ์สมการไม่จบ 10+) ให้คืนค่าตัวอักษรเดิมกลับไป
       return expression; 
     }
   }
 
-  // ฟังก์ชันรองรับการกดปุ่มบนแผงควบคุม
   function pressKey(val) {
     if (!activeInputId) return;
     let input = document.getElementById(activeInputId);
@@ -1658,7 +1716,6 @@
     } else if (val === '=') {
       input.value = calculateMath(currentVal);
     } else {
-      // บล็อกไม่ให้พิมพ์เครื่องหมายคณิตศาสตร์ลงในช่อง รหัส 4 หลัก
       if (activeInputId === 'manual_order_code') {
         if (['+', '-', '*', '/', '=', '.'].includes(val)) return;
         if (currentVal.length + val.length > 4) {
@@ -1668,7 +1725,6 @@
       input.value = currentVal + val;
     }
 
-    // เรียกประมวลผลทันที
     if (activeInputId === 'manual_order_code') {
       handleManualOrderInput(input);
     } else {
@@ -1703,7 +1759,6 @@
       id_work: parseInt(document.getElementById('id_work').value) || null,
       id_name: parseInt(employeeVal) || null,
       id_target: parseInt(targetVal) || null,
-      // parseInt จะดึงเฉพาะตัวเลขมาแม้ผู้ใช้จะลืมกดคำนวณ แต่เราได้ดักการคำนวณอัตโนมัติตอนกด 'ตกลง' ปิดแป้นไปแล้ว ทำให้ข้อมูลจะสมบูรณ์
       hour_work: parseFloat(document.getElementById('hour_work').value) || 0,
       produced_amount: parseInt(document.getElementById('produced_amount').value) || 0,
       id_reason: parseInt(document.getElementById('id_reason').value) || null
