@@ -544,7 +544,7 @@
       <i class="fa-solid fa-cat"></i>
     </div>
     <h1 class="app-title">JAGUAR_PRODUCTION_SUPABASE</h1>
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.11</div>
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.10</div>
   </div>
 
   <div class="header">
@@ -609,12 +609,6 @@
     </div>
 
     <button type="submit" class="submit-btn" id="submitBtn">> บันทึกข้อมูล</button>
-    
-    <div style="display: flex; gap: 8px; margin-top: 12px;">
-      <button type="button" class="print-blank-btn" id="printBlankBtn" onclick="printProgressSheet(false)">🖨️ พิมพ์ฟอร์มเปล่า</button>
-      <button type="button" class="print-data-btn" id="printDataBtn" onclick="printProgressSheet(true)">🖨️ พิมพ์พร้อมประวัติ</button>
-    </div>
-
     <button type="button" class="cancel-edit-btn" id="cancelEditBtn" onclick="cancelEditMode()">[X] ยกเลิกการแก้ไข</button>
   </form>
 
@@ -623,6 +617,12 @@
       <h3 class="report-title">> ตารางตรวจสอบความก้าวหน้า</h3>
     </div>
     
+    <!-- ปุ่มพิมพ์ย้ายมาไว้ตรงนี้ (ด้านบนตาราง) -->
+    <div style="display: flex; gap: 8px; margin-bottom: 15px;">
+      <button type="button" class="print-blank-btn" id="printBlankBtn" onclick="printProgressSheet(false)">🖨️ พิมพ์ฟอร์มเปล่า</button>
+      <button type="button" class="print-data-btn" id="printDataBtn" onclick="printProgressSheet(true)">🖨️ พิมพ์พร้อมประวัติ</button>
+    </div>
+
     <div class="filter-box">
       <div class="filter-group">
         <label>ใบสั่งงาน (ORDER NO)</label>
@@ -994,6 +994,10 @@
     const workHidden = document.getElementById('id_work');
     const manualInput = document.getElementById('manual_order_code');
 
+    // [เพิ่มใหม่] สั่งให้อัปเดตตัวกรองตารางประวัติด้านล่างแบบ Real-time ตาม Order ที่เลือกทันที
+    document.getElementById('filter_order').value = selectedOrderId || "";
+    onFilterOrderChange(); // ฟังก์ชันนี้จะดึงข้อมูลตารางใหม่ให้อัตโนมัติ
+
     targetSelect.innerHTML = '<option value="">-- กรุณาเลือกขั้นตอนทำงาน --</option>';
     workHidden.value = '';
     
@@ -1046,6 +1050,68 @@
     }
   }
 
+  function calculateEfficiency() {
+    const ordId = document.getElementById('id_order').value;
+    const targetId = document.getElementById('id_target').value;
+    
+    // [เพิ่มใหม่] สั่งอัปเดตตารางให้เจาะจงขั้นตอน (Target) แบบ Real-time
+    if (targetId) {
+      const filterTarget = document.getElementById('filter_target');
+      if (filterTarget.querySelector(`option[value="${targetId}"]`)) {
+        filterTarget.value = targetId;
+        fetchReport();
+      }
+    } else if (ordId) {
+      document.getElementById('filter_target').value = "";
+      fetchReport();
+    }
+
+    if (ordId && targetId) {
+      const shortcutObj = globalData.shortcutMap.find(s => String(s.id_order) === String(ordId) && String(s.id_target) === String(targetId));
+      if (shortcutObj) {
+         document.getElementById('manual_order_code').value = shortcutObj.code;
+      }
+    }
+
+    const hourWork = parseFloat(document.getElementById('hour_work').value) || 0;
+    const producedAmt = parseFloat(document.getElementById('produced_amount').value) || 0;
+    
+    const effDisplayEl = document.getElementById('effDisplay');
+    const reasonGroup = document.getElementById('reasonGroup');
+    const reasonSelect = document.getElementById('id_reason');
+
+    if (!targetId || hourWork <= 0) {
+      effDisplayEl.innerText = "0.00%";
+      effDisplayEl.style.color = "var(--text-muted)";
+      reasonGroup.style.display = 'none';
+      reasonSelect.removeAttribute('required');
+      return;
+    }
+
+    const targetObj = globalData.targets.find(t => String(t.id_target) === String(targetId));
+    if (!targetObj || !targetObj.target_amount) {
+      effDisplayEl.innerText = "N/A";
+      return;
+    }
+
+    const totalTarget = targetObj.target_amount * hourWork;
+    const efficiency = totalTarget > 0 ? (producedAmt / totalTarget) * 100 : 0;
+
+    effDisplayEl.innerText = efficiency.toFixed(2) + "%";
+
+    if (efficiency >= 100) {
+      effDisplayEl.style.color = "var(--neon-green)";
+      reasonGroup.style.display = 'none';
+      reasonSelect.value = '';
+      reasonSelect.removeAttribute('required');
+    } else {
+      effDisplayEl.style.color = "var(--neon-red)";
+      reasonGroup.style.display = 'block';
+      reasonSelect.setAttribute('required', 'true');
+    }
+  }
+
+  // --- อัปเดตฟังก์ชันพิมพ์ ให้รับค่า withData (true/false) ---
   async function printProgressSheet(withData) {
     const selectedOrderId = document.getElementById('id_order').value;
     const selectedTargetId = document.getElementById('id_target').value;
@@ -1065,6 +1131,7 @@
       return;
     }
 
+    // --- จัดการปุ่มขณะโหลดข้อมูล ---
     const printBlankBtn = document.getElementById('printBlankBtn');
     const printDataBtn = document.getElementById('printDataBtn');
     const originalBtnText = withData ? printDataBtn.innerText : printBlankBtn.innerText;
@@ -1077,10 +1144,11 @@
     printBlankBtn.disabled = true;
     printDataBtn.disabled = true;
 
+    // --- ดึงข้อมูลประวัติการผลิตจากฐานข้อมูล (เฉพาะถ้าเลือกพิมพ์แบบมีข้อมูล) ---
     let logs = [];
     if (withData) {
       try {
-        const res = await fetch(`${SUPABASE_URL}/daily_production?select=*&id_order=eq.${selectedOrderId}&id_target=eq.${selectedTargetId}&order=record_date.asc`, { headers });
+        const res = await fetch(`${SUPABASE_URL}/daily_production?id_order=eq.${selectedOrderId}&id_target=eq.${selectedTargetId}&order=record_date.asc`, { headers });
         if(res.ok) {
            logs = await res.json();
         }
@@ -1089,6 +1157,7 @@
       }
     }
 
+    // คืนค่าปุ่มกลับมา
     if (withData) {
       printDataBtn.innerText = originalBtnText;
     } else {
@@ -1137,6 +1206,7 @@
     const baseUrl = window.location.href.split('?')[0];
     const currentUrl = `${baseUrl}?order_id=${encodeURIComponent(orderObj.id_order)}&target_id=${encodeURIComponent(selectedTargetId)}`;
 
+    // --- สร้างบรรทัดตาราง ---
     let tableRowsHtml = '';
     let runningTotal = 0;
     
@@ -1157,8 +1227,8 @@
         tableRowsHtml += `<tr>
           <td>${dateFormatted}</td>
           <td></td>
-          <td style="text-align: right; padding-right: 4px;">${produced.toLocaleString()}</td>
-          <td style="text-align: right; padding-right: 4px; font-weight: bold;">${runningTotal.toLocaleString()}</td>
+          <td>${produced.toLocaleString()}</td>
+          <td style="font-weight: bold;">${runningTotal.toLocaleString()}</td>
           <td></td>
           <td style="font-size: 9px;">__:__-__:__</td>
           <td style="text-align: left; padding-left: 4px; font-size: 10px;">${empText}</td>
@@ -1353,55 +1423,6 @@
     }
     
     fetchReport();
-  }
-
-  function calculateEfficiency() {
-    const ordId = document.getElementById('id_order').value;
-    const targetId = document.getElementById('id_target').value;
-    
-    if (ordId && targetId) {
-      const shortcutObj = globalData.shortcutMap.find(s => String(s.id_order) === String(ordId) && String(s.id_target) === String(targetId));
-      if (shortcutObj) {
-         document.getElementById('manual_order_code').value = shortcutObj.code;
-      }
-    }
-
-    const hourWork = parseFloat(document.getElementById('hour_work').value) || 0;
-    const producedAmt = parseFloat(document.getElementById('produced_amount').value) || 0;
-    
-    const effDisplayEl = document.getElementById('effDisplay');
-    const reasonGroup = document.getElementById('reasonGroup');
-    const reasonSelect = document.getElementById('id_reason');
-
-    if (!targetId || hourWork <= 0) {
-      effDisplayEl.innerText = "0.00%";
-      effDisplayEl.style.color = "var(--text-muted)";
-      reasonGroup.style.display = 'none';
-      reasonSelect.removeAttribute('required');
-      return;
-    }
-
-    const targetObj = globalData.targets.find(t => String(t.id_target) === String(targetId));
-    if (!targetObj || !targetObj.target_amount) {
-      effDisplayEl.innerText = "N/A";
-      return;
-    }
-
-    const totalTarget = targetObj.target_amount * hourWork;
-    const efficiency = totalTarget > 0 ? (producedAmt / totalTarget) * 100 : 0;
-
-    effDisplayEl.innerText = efficiency.toFixed(2) + "%";
-
-    if (efficiency >= 100) {
-      effDisplayEl.style.color = "var(--neon-green)";
-      reasonGroup.style.display = 'none';
-      reasonSelect.value = '';
-      reasonSelect.removeAttribute('required');
-    } else {
-      effDisplayEl.style.color = "var(--neon-red)";
-      reasonGroup.style.display = 'block';
-      reasonSelect.setAttribute('required', 'true');
-    }
   }
 
   async function fetchReport() {
