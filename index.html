@@ -126,25 +126,47 @@
     }
 
     /* ========================================= */
-    /* CSS ปุ่มป้อนเร็ว (Fast Form) เพิ่มใหม่      */
+    /* CSS ปุ่มด้านบน (เมนูหลัก & ป้อนข้อมูลเร็ว) */
     /* ========================================= */
-    .fast-link-btn {
-      display: block;
-      width: 100%;
-      background: linear-gradient(145deg, #1a1608, #0d0b04);
-      color: var(--neon-yellow);
-      border: 2px solid var(--neon-yellow);
-      padding: 14px;
-      font-size: 16px;
+    .top-buttons-wrapper {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .nav-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 10px;
+      font-size: 14px;
       border-radius: 8px;
       text-align: center;
       text-decoration: none;
       font-weight: bold;
       box-sizing: border-box;
-      margin-bottom: 20px;
       transition: all 0.3s;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
       font-family: inherit;
+      flex: 1;
+    }
+
+    .back-link-btn {
+      background: transparent;
+      color: var(--neon-blue);
+      border: 1px solid var(--neon-blue);
+    }
+    .back-link-btn:hover, .back-link-btn:active {
+      background: var(--neon-blue);
+      color: var(--bg-dark);
+      box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+    }
+
+    .fast-link-btn {
+      background: linear-gradient(145deg, #1a1608, #0d0b04);
+      color: var(--neon-yellow);
+      border: 2px solid var(--neon-yellow);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
     .fast-link-btn:hover, .fast-link-btn:active {
       background: var(--neon-yellow);
@@ -584,10 +606,15 @@
   
   <form id="prodForm" onsubmit="handleSubmit(event)" style="display:none;">
 
-    <!-- แทรกปุ่มป้อนเร็วตรงนี้ครับ -->
-    <a href="https://paiboon-creater.github.io/fast_form_daily/" class="fast-link-btn">
-      <i class="fa-solid fa-bolt"></i> ไปหน้าป้อนข้อมูลแบบเร็ว (Fast Form)
-    </a>
+    <!-- ส่วนปุ่มกด 2 ปุ่ม (หน้าหลัก & ฟอร์มเร็ว) -->
+    <div class="top-buttons-wrapper">
+      <a href="https://paiboon-creater.github.io/daily-production/" class="nav-btn back-link-btn">
+        <i class="fa-solid fa-house"></i> กลับหน้าหลัก
+      </a>
+      <a href="https://paiboon-creater.github.io/fast_form_daily/" class="nav-btn fast-link-btn">
+        <i class="fa-solid fa-bolt"></i> ป้อนข้อมูลเร็ว
+      </a>
+    </div>
 
     <div class="form-group">
       <label>1. วันที่บันทึก (RECORD DATE)</label>
