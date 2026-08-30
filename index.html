@@ -125,6 +125,34 @@
       margin-right: 4px; box-shadow: 0 0 6px var(--neon-green);
     }
 
+    /* ========================================= */
+    /* CSS ปุ่มป้อนเร็ว (Fast Form) เพิ่มใหม่      */
+    /* ========================================= */
+    .fast-link-btn {
+      display: block;
+      width: 100%;
+      background: linear-gradient(145deg, #1a1608, #0d0b04);
+      color: var(--neon-yellow);
+      border: 2px solid var(--neon-yellow);
+      padding: 14px;
+      font-size: 16px;
+      border-radius: 8px;
+      text-align: center;
+      text-decoration: none;
+      font-weight: bold;
+      box-sizing: border-box;
+      margin-bottom: 20px;
+      transition: all 0.3s;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+      font-family: inherit;
+    }
+    .fast-link-btn:hover, .fast-link-btn:active {
+      background: var(--neon-yellow);
+      color: var(--bg-dark);
+      box-shadow: 0 0 15px rgba(245, 166, 35, 0.4);
+    }
+    /* ========================================= */
+
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: bold; color: var(--text-muted); }
 
@@ -555,6 +583,12 @@
   <div id="statusMessage" class="system-msg loading">> กำลังเตรียมข้อมูลระบบ...</div>
   
   <form id="prodForm" onsubmit="handleSubmit(event)" style="display:none;">
+
+    <!-- แทรกปุ่มป้อนเร็วตรงนี้ครับ -->
+    <a href="https://paiboon-creater.github.io/fast_form_daily/" class="fast-link-btn">
+      <i class="fa-solid fa-bolt"></i> ไปหน้าป้อนข้อมูลแบบเร็ว (Fast Form)
+    </a>
+
     <div class="form-group">
       <label>1. วันที่บันทึก (RECORD DATE)</label>
       <input type="date" id="record_date" required>
@@ -833,7 +867,6 @@
       document.getElementById('statusText').innerText = "ออนไลน์";
 
       if (scannedOrderId) {
-        // 1. กรณีเข้าเว็บผ่านการสแกน QR Code จากมือถือ (ยึดข้อมูลจาก QR เป็นหลัก)
         const foundOrd = globalData.orders.find(o => String(o.id_order) === String(scannedOrderId));
         if (foundOrd) {
           document.getElementById('id_order').value = foundOrd.id_order;
@@ -847,7 +880,6 @@
           }
         }
         
-        // ดึงมาแค่ "ชื่อพนักงานล่าสุด" เพื่ออำนวยความสะดวก โดยไม่ทับรหัสงาน
         const lastEmployeeId = localStorage.getItem('last_employee_id');
         if (lastEmployeeId) {
           const emp = globalData.employees.find(e => String(e.id_name) === String(lastEmployeeId));
@@ -855,7 +887,6 @@
         }
 
       } else {
-        // 2. กรณีเปิดเว็บเข้ามาปกติ (ไม่ได้สแกน) ให้โหลดข้อมูลที่ทำค้างไว้ล่าสุด
         loadLastSessionData();
       }
       loadLastSessionData();
@@ -1005,9 +1036,8 @@
     const workHidden = document.getElementById('id_work');
     const manualInput = document.getElementById('manual_order_code');
 
-    // [เพิ่มใหม่] สั่งให้อัปเดตตัวกรองตารางประวัติด้านล่างแบบ Real-time ตาม Order ที่เลือกทันที
     document.getElementById('filter_order').value = selectedOrderId || "";
-    onFilterOrderChange(); // ฟังก์ชันนี้จะดึงข้อมูลตารางใหม่ให้อัตโนมัติ
+    onFilterOrderChange();
 
     targetSelect.innerHTML = '<option value="">-- กรุณาเลือกขั้นตอนทำงาน --</option>';
     workHidden.value = '';
@@ -1065,7 +1095,6 @@
     const ordId = document.getElementById('id_order').value;
     const targetId = document.getElementById('id_target').value;
     
-    // [เพิ่มใหม่] สั่งอัปเดตตารางให้เจาะจงขั้นตอน (Target) แบบ Real-time
     if (targetId) {
       const filterTarget = document.getElementById('filter_target');
       if (filterTarget.querySelector(`option[value="${targetId}"]`)) {
@@ -1122,7 +1151,6 @@
     }
   }
 
-  // --- อัปเดตฟังก์ชันพิมพ์ ให้รับค่า withData (true/false) ---
   async function printProgressSheet(withData) {
     const selectedOrderId = document.getElementById('id_order').value;
     const selectedTargetId = document.getElementById('id_target').value;
@@ -1142,7 +1170,6 @@
       return;
     }
 
-    // --- จัดการปุ่มขณะโหลดข้อมูล ---
     const printBlankBtn = document.getElementById('printBlankBtn');
     const printDataBtn = document.getElementById('printDataBtn');
     const originalBtnText = withData ? printDataBtn.innerText : printBlankBtn.innerText;
@@ -1155,7 +1182,6 @@
     printBlankBtn.disabled = true;
     printDataBtn.disabled = true;
 
-    // --- ดึงข้อมูลประวัติการผลิตจากฐานข้อมูล (เฉพาะถ้าเลือกพิมพ์แบบมีข้อมูล) ---
     let logs = [];
     if (withData) {
       try {
@@ -1168,7 +1194,6 @@
       }
     }
 
-    // คืนค่าปุ่มกลับมา
     if (withData) {
       printDataBtn.innerText = originalBtnText;
     } else {
@@ -1217,7 +1242,6 @@
     const baseUrl = window.location.href.split('?')[0];
     const currentUrl = `${baseUrl}?order_id=${encodeURIComponent(orderObj.id_order)}&target_id=${encodeURIComponent(selectedTargetId)}`;
 
-    // --- สร้างบรรทัดตาราง ---
     let tableRowsHtml = '';
     let runningTotal = 0;
     
