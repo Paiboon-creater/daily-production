@@ -23,7 +23,7 @@
       --neon-yellow: #f5a623;
       --neon-blue: #00e5ff;
       --neon-glow: rgba(0, 255, 136, 0.4);
-      --input-bg: #0b2218;
+      --input-bg: #163b2a; 
       --highlight: rgba(0, 255, 136, 0.2);
     }
 
@@ -66,7 +66,6 @@
       margin-bottom: 30px;
     }
 
-    /* ปุ่ม Home App */
     .home-btn {
       background: rgba(0, 229, 255, 0.1);
       border: 1px solid var(--neon-blue);
@@ -147,9 +146,6 @@
       margin-right: 4px; box-shadow: 0 0 6px var(--neon-green);
     }
 
-    /* ========================================= */
-    /* CSS ปุ่มด้านบน */
-    /* ========================================= */
     .nav-btn {
       display: flex;
       justify-content: center;
@@ -178,7 +174,6 @@
       box-shadow: 0 0 15px rgba(245, 166, 35, 0.4);
     }
 
-    /* ปุ่มพิมพ์สติ๊กเกอร์ (สีฟ้า) */
     .sticker-link-btn {
       background: linear-gradient(145deg, #07151a, #030b0e);
       color: var(--neon-blue);
@@ -190,7 +185,6 @@
       color: var(--bg-dark);
       box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
     }
-    /* ========================================= */
 
     .form-group { margin-bottom: 16px; }
     .form-group label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: bold; color: var(--text-muted); }
@@ -198,7 +192,7 @@
     input, select {
       width: 100%; 
       padding: 12px 14px; 
-      background-color: #0b2218; 
+      background-color: var(--input-bg); 
       border: 1.5px solid #1b4d36; 
       color: #00ffaa; 
       font-weight: bold;
@@ -213,13 +207,7 @@
       border-color: var(--neon-green); 
       outline: none; 
       box-shadow: 0 0 10px var(--neon-glow); 
-      background-color: #0e2b1f;
-    }
-
-    input[readonly] { 
-      background-color: #071710; 
-      cursor: pointer; 
-      color: #00ffaa; 
+      background-color: #1a4a35; 
     }
     
     input[type="date"]::-webkit-calendar-picker-indicator { 
@@ -237,19 +225,13 @@
       letter-spacing: 2px;
       color: var(--neon-yellow);
       border-color: #3d3312;
-      background-color: #1a1608;
-    }
-    
-    .order-manual-input[readonly] {
-      cursor: pointer;
-      background-color: #1a1608;
-      color: var(--neon-yellow);
+      background-color: #2b250e; 
     }
     
     .order-manual-input:focus {
       border-color: var(--neon-yellow);
       box-shadow: 0 0 8px rgba(245, 166, 35, 0.4);
-      background-color: #241e0b;
+      background-color: #3d3314;
     }
     .scan-btn {
       background: transparent;
@@ -307,9 +289,9 @@
       font-family: inherit; transition: all 0.3s; letter-spacing: 1px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
+    .submit-btn:focus { outline: 2px solid var(--neon-blue); }
     .submit-btn:hover { background: var(--neon-green); color: var(--bg-dark); box-shadow: 0 0 20px var(--neon-glow); transform: translateY(-2px); }
     
-    /* ปุ่มพิมพ์แบบแยกประเภท */
     .print-blank-btn {
       width: 100%; background: linear-gradient(145deg, #07151a, #030b0e); color: var(--neon-blue);
       border: 2px solid var(--neon-blue); padding: 12px; font-size: 14px;
@@ -399,7 +381,7 @@
       .filter-box { grid-template-columns: 1fr; }
     }
     .filter-group label { font-size: 12px; margin-bottom: 4px; color: var(--text-muted); }
-    .filter-group select, .filter-group input { padding: 8px; font-size: 14px; background-color: #0b2218; color: #00ffaa; font-weight: bold; border-radius: 6px; }
+    .filter-group select, .filter-group input { padding: 8px; font-size: 14px; background-color: var(--input-bg); color: #00ffaa; font-weight: bold; border-radius: 6px; }
 
     .action-bar {
       display: flex;
@@ -607,7 +589,6 @@
 
 <div class="terminal-container">
   
-  <!-- ปุ่ม Home App -->
   <div style="display: flex; justify-content: flex-end; margin-bottom: 5px;">
     <a href="https://paiboon-creater.github.io/Data_Information_Jaguar_productions/" class="home-btn">
       <i class="fa-solid fa-house"></i> HOME APP
@@ -619,7 +600,7 @@
       <i class="fa-solid fa-cat"></i>
     </div>
     <h1 class="app-title">JAGUAR_PRODUCTION_SUPABASE</h1>
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.30</div>
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.30 (Keyboard Flow)</div>
   </div>
 
   <div class="header">
@@ -631,7 +612,6 @@
   
   <form id="prodForm" onsubmit="handleSubmit(event)" style="display:none;">
 
-    <!-- กลุ่มปุ่มทางลัด (Fast Form & Print Sticker) -->
     <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
       <a href="https://paiboon-creater.github.io/fast_form_daily/" class="nav-btn fast-link-btn" style="flex: 1; min-width: 250px;">
         <i class="fa-solid fa-bolt"></i> ป้อนข้อมูลเร็ว (Fast Form)
@@ -643,24 +623,24 @@
 
     <div class="form-group">
       <label>1. วันที่บันทึก (RECORD DATE)</label>
-      <input type="date" id="record_date" required>
+      <input type="date" id="record_date" required onkeydown="handleEnter(event, 'employee_search')">
     </div>
 
     <div class="form-group">
       <label>2. รหัสใบสั่งงาน & ขั้นตอน [คีย์รหัส 5 หลัก หรือเลือกเมนู]</label>
       <div class="order-input-wrapper">
-        <input type="text" id="manual_order_code" class="order-manual-input" placeholder="00000" readonly onclick="openKeypad('manual_order_code')">
+        <input type="text" id="manual_order_code" class="order-manual-input" placeholder="00000" onfocus="this.select()" onclick="openKeypad('manual_order_code')" oninput="handleManualOrderInput(this)" onkeydown="if(event.key==='Enter'){event.preventDefault(); document.getElementById('record_date').focus();}">
         
-        <select id="id_order" onchange="handleOrderChange()" required style="flex-grow: 1;">
+        <select id="id_order" onchange="handleOrderChange()" required style="flex-grow: 1;" tabindex="-1">
           <option value="">-- เลือกใบสั่งงาน --</option>
         </select>
-        <button type="button" class="scan-btn" onclick="openScanner()">[ 📷 สแกน ]</button>
+        <button type="button" class="scan-btn" onclick="openScanner()" tabindex="-1">[ 📷 สแกน ]</button>
       </div>
     </div>
 
     <div class="form-group">
       <label>3. ชิ้นงาน / ขั้นตอนการทำงาน (TARGET / STEP)</label>
-      <select id="id_target" onchange="calculateEfficiency()" required>
+      <select id="id_target" onchange="calculateEfficiency()" required tabindex="-1">
         <option value="">-- รอการเลือกใบสั่งงาน --</option>
       </select>
       <input type="hidden" id="id_work" value="">
@@ -668,23 +648,23 @@
 
     <div class="form-group">
       <label>4. พนักงาน (EMPLOYEE) [พิมพ์เพื่อค้นหา]</label>
-      <input type="text" id="employee_search" list="employee_datalist" placeholder="-- พิมพ์ชื่อพนักงานเพื่อค้นหา --" autocomplete="off" onfocus="this.select()" onclick="this.select()">
+      <input type="text" id="employee_search" list="employee_datalist" placeholder="-- พิมพ์ชื่อพนักงานเพื่อค้นหา --" autocomplete="off" onfocus="this.select()" onclick="this.select()" onkeydown="handleEnter(event, 'hour_work')">
       <datalist id="employee_datalist"></datalist>
     </div>
 
     <div class="form-group">
       <label>5. ชั่วโมงทำงาน (WORK HOURS)</label>
-      <input type="text" id="hour_work" readonly placeholder="0.00 (แตะเพื่อพิมพ์ข้อมูล)" onclick="openKeypad('hour_work')">
+      <input type="text" id="hour_work" placeholder="0.00 (คลิกเพื่อเปิดแป้น หรือพิมพ์ได้เลย)" onclick="openKeypad('hour_work')" onfocus="this.select()" onkeydown="handleEnter(event, 'produced_amount')">
     </div>
 
     <div class="form-group">
       <label>6. จำนวนที่ผลิตได้ (PRODUCED QTY)</label>
-      <input type="text" id="produced_amount" readonly placeholder="0 (แตะเพื่อพิมพ์ข้อมูล)" onclick="openKeypad('produced_amount')">
+      <input type="text" id="produced_amount" placeholder="0 (คลิกเพื่อเปิดแป้น หรือพิมพ์ได้เลย)" onclick="openKeypad('produced_amount')" onfocus="this.select()" onkeydown="handleEnter(event, 'nogoods_amount')">
     </div>
 
     <div class="form-group">
       <label>7. จำนวนของเสีย (NG QTY)</label>
-      <input type="text" id="nogoods_amount" readonly placeholder="0 (แตะเพื่อพิมพ์ข้อมูล)" onclick="openKeypad('nogoods_amount')">
+      <input type="text" id="nogoods_amount" placeholder="0 (ปล่อยว่างกด Enter ได้)" onclick="openKeypad('nogoods_amount')" onfocus="this.select()" onkeydown="handleReasonFlow(event)">
     </div>
 
     <div class="eff-box">
@@ -694,7 +674,7 @@
 
     <div class="form-group" id="reasonGroup" style="display: none;">
       <label style="color: var(--neon-red);">8. สาเหตุ (บังคับเลือก หากประสิทธิภาพ &lt; 80%)</label>
-      <select id="id_reason">
+      <select id="id_reason" onkeydown="handleEnter(event, 'submitBtn')">
         <option value="">-- เลือกสาเหตุ --</option>
       </select>
     </div>
@@ -708,7 +688,6 @@
       <h3 class="report-title">> ตารางตรวจสอบความก้าวหน้า</h3>
     </div>
     
-    <!-- ปุ่มพิมพ์ย้ายมาไว้ตรงนี้ (ด้านบนตาราง) -->
     <div style="display: flex; gap: 8px; margin-bottom: 15px;">
       <button type="button" class="print-blank-btn" id="printBlankBtn" onclick="printProgressSheet(false)">🖨️ พิมพ์ฟอร์มเปล่า</button>
       <button type="button" class="print-data-btn" id="printDataBtn" onclick="printProgressSheet(true)">🖨️ พิมพ์พร้อมประวัติ</button>
@@ -750,7 +729,7 @@
 
     <div class="summary-panel">
       <div class="summary-card">
-        <label>ผลิตได้รวม</label>
+        <label>ผลิตได้รวม (ขั้นตอนนี้)</label>
         <span id="sumProduced">0</span>
       </div>
       <div class="summary-card">
@@ -758,7 +737,7 @@
         <span id="sumTarget" style="color: var(--neon-blue);">0</span>
       </div>
       <div class="summary-card">
-        <label>ยอดคงเหลือ</label>
+        <label>ยอดคงเหลือ (ขั้นตอนนี้)</label>
         <span id="sumRemaining" style="color: var(--neon-yellow);">0</span>
       </div>
       <div class="summary-card">
@@ -792,7 +771,6 @@
   </div>
 </div>
 
-<!-- QR SCANNER MODAL -->
 <div id="scannerModal" class="scanner-modal" style="display:none;">
   <div class="scanner-box">
     <h3 style="color:var(--neon-blue); margin-top:0;">> สแกนคิวอาร์โค้ด</h3>
@@ -803,7 +781,6 @@
 
 <div id="printArea"></div>
 
-<!-- แป้นพิมพ์ตัวเลขพร้อมฟังก์ชันเครื่องคิดเลข -->
 <div id="numericKeypad" class="keypad-modal">
   <div class="keypad-header">
     <span id="keypadTitle">> ระบุค่า: </span>
@@ -854,6 +831,42 @@
   let isEditMode = false;
   let originalRecordKey = null;
   let html5QrCode = null;
+
+  // ฟังก์ชันรองรับการกด Enter ข้ามช่อง พร้อมถมดำ text อัตโนมัติ
+  function handleEnter(e, nextElementId) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      let nextEl = document.getElementById(nextElementId);
+      if (nextEl) {
+        nextEl.focus();
+        if (typeof nextEl.select === 'function') {
+          nextEl.select();
+        }
+      }
+      if(activeInputId) closeKeypad();
+    }
+  }
+
+  // ฟังก์ชันเช็คประสิทธิภาพเพื่อเด้งช่อง ถ้าระบุของเสียเสร็จ
+  function handleReasonFlow(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if(activeInputId) closeKeypad();
+      
+      calculateEfficiency(); // รีเฟรชค่าประสิทธิภาพก่อนเช็ค
+      
+      let effText = document.getElementById('effDisplay').innerText;
+      let eff = parseFloat(effText);
+      
+      // ถ้าประสิทธิภาพต่ำกว่า 80% และคำนวณออกมาเป็นตัวเลขได้ ให้เด้งไปช่องเหตุผล
+      if (eff < 80 && !isNaN(eff)) {
+        document.getElementById('id_reason').focus();
+      } else {
+        // ถ้าผ่าน 80% หรือไม่ได้ยอด (N/A) เด้งไปปุ่มบันทึก เพื่อกดเซฟต่อได้เลย
+        document.getElementById('submitBtn').focus();
+      }
+    }
+  }
 
   window.onload = async function() {
     document.getElementById('record_date').valueAsDate = new Date();
@@ -924,6 +937,11 @@
       document.getElementById('reportSection').style.display = 'block';
       document.getElementById('statusText').innerText = "ออนไลน์";
 
+      // โฟกัสและถมดำรอรับรหัสอัตโนมัติเมื่อเปิดหน้าครั้งแรก
+      let manualInput = document.getElementById('manual_order_code');
+      manualInput.focus();
+      manualInput.select();
+
       if (scannedOrderId) {
         const foundOrd = globalData.orders.find(o => String(o.id_order) === String(scannedOrderId));
         if (foundOrd) {
@@ -947,7 +965,6 @@
       } else {
         loadLastSessionData();
       }
-      loadLastSessionData();
 
     } catch (error) {
       console.error(error);
@@ -996,12 +1013,17 @@
         setTimeout(() => {
           document.getElementById('id_target').value = foundShortcut.id_target;
           calculateEfficiency();
+          // คีย์ครบ 5 ตัวเสร็จให้เด้งไปช่องวันที่ทันที
+          document.getElementById('record_date').focus();
         }, 150);
       } else {
         const foundOrd = globalData.orders.find(o => String(o.order_no || '').endsWith(val));
         if (foundOrd) {
           document.getElementById('id_order').value = foundOrd.id_order;
           handleOrderChange();
+          setTimeout(() => {
+              document.getElementById('record_date').focus();
+          }, 150);
         }
       }
     } else if (val === "") {
@@ -1307,13 +1329,14 @@
       if (i < logs.length) {
         const log = logs[i];
         let d = new Date(log.record_date);
-        let dateFormatted = !isNaN(d) ? `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth()+1).toString().padStart(2, '0')}/${d.getFullYear().toString().slice(-2)}` : '__/__/__';
+        let dateFormatted = !isNaN(d) ? `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth()+1).toString().padStart(2, '0')}/${d.getFullYear().toString().slice(-2)}` : '';
 
         const emp = globalData.employees.find(e => String(e.id_name) === String(log.id_name));
         const empText = emp ? emp.name : '';
         
         const produced = log.produced_amount || 0;
         const ngAmt = log.nogoods_amount || 0;
+        const hWork = log.hour_work ? log.hour_work.toFixed(2) : ''; // ดึงชั่วโมงงานแสดงเป็นตัวเลข
         runningTotal += produced;
 
         tableRowsHtml += `<tr>
@@ -1322,18 +1345,19 @@
           <td>${produced.toLocaleString()}</td>
           <td style="font-weight: bold;">${runningTotal.toLocaleString()}</td>
           <td>${ngAmt > 0 ? ngAmt.toLocaleString() : ''}</td>
-          <td style="font-size: 9px;">__:__-__:__</td>
+          <td style="font-size: 10px;">${hWork}</td>
           <td style="text-align: left; padding-left: 4px; font-size: 10px;">${empText}</td>
           <td></td>
         </tr>`;
       } else {
+        // แถวว่างแบบไม่มี __:__-__:__ ปนแล้ว
         tableRowsHtml += `<tr>
-          <td>__/__/__</td>
           <td></td>
           <td></td>
           <td></td>
           <td></td>
-          <td style="font-size: 9px;">__:__-__:__</td>
+          <td></td>
+          <td></td>
           <td></td>
           <td></td>
         </tr>`;
@@ -1378,7 +1402,7 @@
                 <th width="14%">ผลิตได้/วัน</th>
                 <th width="14%">สะสม</th>
                 <th width="8%">เสีย</th>
-                <th width="10%">เวลา</th>
+                <th width="10%">ชั่วโมง</th>
                 <th width="16%">ชื่อคนทำ</th>
                 <th width="14%">หมายเหตุ</th>
               </tr>
@@ -1526,7 +1550,8 @@
     const tbody = document.getElementById('reportTbody');
 
     tbody.innerHTML = '<tr><td colspan="11" class="text-center loading">> กำลังดึงข้อมูล...</td></tr>';
-    updateSummaryMetrics(orderId);
+    // ส่ง targetId ไปด้วยเพื่อกรองผลรวมให้ตรง
+    updateSummaryMetrics(orderId, targetId);
 
     try {
       let query = `${SUPABASE_URL}/daily_production?select=*`;
@@ -1639,7 +1664,8 @@
     document.body.removeChild(a);
   }
 
-  async function updateSummaryMetrics(orderId) {
+  // เพิ่ม targetId เพื่อเอามากรองยอดสรุปให้ตรงกับขั้นตอนที่เรากำลังคีย์
+  async function updateSummaryMetrics(orderId, targetId) {
     const sumProducedEl = document.getElementById('sumProduced');
     const sumTargetEl = document.getElementById('sumTarget');
     const sumRemainingEl = document.getElementById('sumRemaining');
@@ -1681,7 +1707,10 @@
     }
 
     try {
-      const res = await fetch(`${SUPABASE_URL}/daily_production?select=produced_amount&id_order=eq.${orderId}`, { headers });
+      let q = `${SUPABASE_URL}/daily_production?select=produced_amount&id_order=eq.${orderId}`;
+      if(targetId) { q += `&id_target=eq.${targetId}`; }
+      
+      const res = await fetch(q, { headers });
       if (res.ok) {
         const data = await res.json();
         const totalProduced = data.reduce((acc, curr) => acc + (curr.produced_amount || 0), 0);
@@ -1803,7 +1832,24 @@
     if (activeInputId && activeInputId !== 'manual_order_code') {
       let input = document.getElementById(activeInputId);
       input.value = calculateMath(input.value);
+      
+      // กรณีใช้แป้นมือถือ กดตกลงให้โฟกัสไปช่องต่อไปด้วยพร้อม select()
+      let nextId = null;
+      if(activeInputId === 'hour_work') nextId = 'produced_amount';
+      else if(activeInputId === 'produced_amount') nextId = 'nogoods_amount';
+      else if(activeInputId === 'nogoods_amount') {
+          calculateEfficiency();
+          let effText = document.getElementById('effDisplay').innerText;
+          let eff = parseFloat(effText);
+          nextId = (eff < 80 && !isNaN(eff)) ? 'id_reason' : 'submitBtn';
+      }
+      if(nextId) {
+          let n = document.getElementById(nextId);
+          n.focus();
+          if(typeof n.select === 'function') n.select();
+      }
     }
+    
     document.getElementById('numericKeypad').style.display = 'none';
     activeInputId = null;
     calculateEfficiency();
@@ -1860,7 +1906,6 @@
     const orderVal = document.getElementById('id_order').value;
     const targetVal = document.getElementById('id_target').value;
     
-    // ดึงค่าสำหรับการดักจับข้อผิดพลาด
     const empSearchVal = document.getElementById('employee_search').value.trim();
     const hourWorkVal = document.getElementById('hour_work').value.trim();
     const producedVal = document.getElementById('produced_amount').value.trim();
@@ -1869,7 +1914,6 @@
     const empObj = globalData.employees.find(e => e.name === empSearchVal);
     const employeeVal = empObj ? empObj.id_name : null;
 
-    // 1. ตรวจสอบชื่อพนักงาน
     if (!employeeVal) {
       alert("⚠️ กรุณาระบุชื่อพนักงานให้ถูกต้อง (เลือกจากรายการที่ค้นหา)");
       submitBtn.disabled = false;
@@ -1877,7 +1921,6 @@
       return;
     }
 
-    // 2. ตรวจสอบชั่วโมงทำงาน
     if (hourWorkVal === "" || parseFloat(hourWorkVal) <= 0) {
       alert("⚠️ กรุณาระบุชั่วโมงทำงาน (ต้องมากกว่า 0)");
       submitBtn.disabled = false;
@@ -1885,7 +1928,6 @@
       return;
     }
 
-    // 3. ตรวจสอบจำนวนผลิต
     if (producedVal === "") {
       alert("⚠️ กรุณาระบุจำนวนที่ผลิตได้ (หากไม่มีให้ใส่เลข 0)");
       submitBtn.disabled = false;
@@ -1893,7 +1935,6 @@
       return;
     }
 
-    // 4. ตรวจสอบสาเหตุ (กรณีต่ำกว่า 80%)
     let effPct = 0;
     const targetObj = globalData.targets.find(t => String(t.id_target) === String(targetVal));
     if (targetObj && targetObj.target_amount) {
@@ -1938,7 +1979,6 @@
       }
 
       if (response.ok) {
-        alert(isEditMode ? "สำเร็จ: อัปเดตข้อมูลเรียบร้อย" : "สำเร็จ: บันทึกข้อมูลเรียบร้อย");
 
         localStorage.setItem('last_order_id', orderVal);
         localStorage.setItem('last_target_id', targetVal);
@@ -1960,6 +2000,12 @@
         }
 
         fetchReport();
+        
+        // บันทึกเสร็จให้เด้งไปที่วันที่ทันที
+        let rd = document.getElementById('record_date');
+        rd.focus();
+        if(typeof rd.select === 'function') rd.select();
+        
       } else {
         const errData = await response.json();
         alert("บันทึกข้อมูลล้มเหลว: " + (errData.message || JSON.stringify(errData)));
