@@ -600,7 +600,7 @@
       <i class="fa-solid fa-cat"></i>
     </div>
     <h1 class="app-title">JAGUAR_PRODUCTION_SUPABASE</h1>
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.40 (Keyboard Arrow Navigation)</div>
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.40 (Keyboard & Tab Flow)</div>
   </div>
 
   <div class="header">
@@ -613,23 +613,23 @@
   <form id="prodForm" onsubmit="handleSubmit(event)" style="display:none;">
 
     <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
-      <a href="https://paiboon-creater.github.io/fast_form_daily/" class="nav-btn fast-link-btn" style="flex: 1; min-width: 250px;">
+      <a href="https://paiboon-creater.github.io/fast_form_daily/" class="nav-btn fast-link-btn" style="flex: 1; min-width: 250px;" tabindex="-1">
         <i class="fa-solid fa-bolt"></i> ป้อนข้อมูลเร็ว (Fast Form)
       </a>
-      <a href="https://paiboon-creater.github.io/sticker_head_table/" class="nav-btn sticker-link-btn" style="flex: 1; min-width: 250px;">
+      <a href="https://paiboon-creater.github.io/sticker_head_table/" class="nav-btn sticker-link-btn" style="flex: 1; min-width: 250px;" tabindex="-1">
         <i class="fa-solid fa-print"></i> พิมพ์สติ๊กเกอร์หัวกระดาษ
       </a>
     </div>
 
     <div class="form-group">
       <label>1. วันที่บันทึก (RECORD DATE)</label>
-      <input type="date" id="record_date" required onkeydown="handleEnter(event, 'employee_search')">
+      <input type="date" id="record_date" required onkeydown="handleEnter(event, 'manual_order_code')">
     </div>
 
     <div class="form-group">
       <label>2. รหัสใบสั่งงาน & ขั้นตอน [คีย์รหัส 5 หลัก หรือเลือกเมนู]</label>
       <div class="order-input-wrapper">
-        <input type="text" id="manual_order_code" class="order-manual-input" placeholder="00000" onfocus="this.select()" onclick="openKeypad('manual_order_code')" oninput="handleManualOrderInput(this)" onkeydown="if(event.key==='Enter'){event.preventDefault(); document.getElementById('record_date').focus();}">
+        <input type="text" id="manual_order_code" class="order-manual-input" placeholder="00000" onfocus="this.select()" onclick="openKeypad('manual_order_code')" oninput="handleManualOrderInput(this)" onkeydown="handleEnter(event, 'employee_search')">
         
         <select id="id_order" onchange="handleOrderChange()" required style="flex-grow: 1;" tabindex="-1">
           <option value="">-- เลือกใบสั่งงาน --</option>
@@ -680,7 +680,7 @@
     </div>
 
     <button type="submit" class="submit-btn" id="submitBtn">> บันทึกข้อมูล</button>
-    <button type="button" class="cancel-edit-btn" id="cancelEditBtn" onclick="cancelEditMode()">[X] ยกเลิกการแก้ไข</button>
+    <button type="button" class="cancel-edit-btn" id="cancelEditBtn" onclick="cancelEditMode()" tabindex="-1">[X] ยกเลิกการแก้ไข</button>
   </form>
 
   <div class="report-section" id="reportSection" style="display:none;">
@@ -832,37 +832,40 @@
   let originalRecordKey = null;
   let html5QrCode = null;
 
-  // ฟังก์ชันรองรับการกดลูกศร ขี้น/ลง เพื่อวนไปยังช่องถัดไป หรือก่อนหน้า (Arrow Navigation)
+  // 1. ฟังก์ชันรองรับลูกศรขึ้น/ลง และ Tab เพื่อวิ่งตาม Loop ที่กำหนด
   document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+    // กำหนดลำดับ Loop ตรงเป๊ะๆ ตามโจทย์
+    const formElements = ['record_date', 'manual_order_code', 'employee_search', 'hour_work', 'produced_amount', 'nogoods_amount', 'id_reason', 'submitBtn'];
+    
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Tab') {
       const active = document.activeElement;
       if (!active || !active.id) return;
       
-      const formElements = ['record_date', 'manual_order_code', 'employee_search', 'hour_work', 'produced_amount', 'nogoods_amount', 'id_reason', 'submitBtn'];
       const idx = formElements.indexOf(active.id);
       
       if (idx > -1) {
-        // ปล่อยให้ทำงานปกติสำหรับ Dropdown, วันที่ และการค้นหาพนักงานที่มี List (ป้องกันการกวน native behavior)
-        if (active.tagName === 'SELECT') return; 
-        if (active.type === 'date') return;
-        if (active.hasAttribute('list')) return; 
+        // ให้ลูกศรเลื่อน Dropdown/ปฏิทินได้ตามปกติ ถ้าเป็น Tab ข้ามได้เลย
+        if (e.key !== 'Tab') {
+           if (active.tagName === 'SELECT') return; 
+           if (active.type === 'date') return;
+           if (active.hasAttribute('list')) return; 
+        }
 
-        e.preventDefault(); // บล็อกพฤติกรรมลูกศรปกติในช่องตัวอักษร
-        if(activeInputId) closeKeypad(true); // คำนวณและปิดแป้นจำลองถ้าเปิดอยู่
+        e.preventDefault(); 
+        if(activeInputId) closeKeypad(true); // ซ่อนแป้นจำลองถ้ามีการเปิดค้าง
         
         let nextIdx = idx;
-        let found = false;
-        
-        // ค้นหาช่องถัดไปที่ไม่ได้ถูกซ่อน
+        let isBackward = (e.key === 'ArrowUp' || (e.key === 'Tab' && e.shiftKey));
+
         for (let i = 0; i < formElements.length; i++) {
-          nextIdx = e.key === 'ArrowDown' ? nextIdx + 1 : nextIdx - 1;
+          nextIdx = isBackward ? nextIdx - 1 : nextIdx + 1;
           
           if (nextIdx >= formElements.length) nextIdx = 0;
           if (nextIdx < 0) nextIdx = formElements.length - 1;
           
           let nextEl = document.getElementById(formElements[nextIdx]);
           
-          // เช็คว่าช่องซ่อนอยู่หรือไม่ (ช่องเหตุผล จะแสดงก็ต่อเมื่อประสิทธิภาพต่ำกว่า 80%)
+          // เช็คว่าถ้าช่องเหตุผลถูกซ่อนอยู่ ก็ให้ข้ามไปช่องถัดไปเลย
           let isHidden = false;
           if (nextEl.id === 'id_reason' && document.getElementById('reasonGroup').style.display === 'none') {
             isHidden = true;
@@ -870,8 +873,10 @@
           
           if (nextEl && !isHidden) {
             nextEl.focus();
-            if (typeof nextEl.select === 'function') nextEl.select(); // คลุมดำรอให้พิมพ์ทับ
-            found = true;
+            // หน่วงนิดนึงให้ชัวร์ว่าโฟกัสติดแล้วค่อยดึงคำสั่งถมดำ (select)
+            setTimeout(() => {
+              if (typeof nextEl.select === 'function') nextEl.select(); 
+            }, 10);
             break;
           }
         }
@@ -879,38 +884,39 @@
     }
   });
 
-  // ฟังก์ชันรองรับการกด Enter ข้ามช่อง พร้อมถมดำ text อัตโนมัติ
+  // 2. ฟังก์ชันรองรับการกด Enter ข้ามช่อง
   function handleEnter(e, nextElementId) {
     if (e.key === 'Enter') {
       e.preventDefault();
       let nextEl = document.getElementById(nextElementId);
       if (nextEl) {
         nextEl.focus();
-        if (typeof nextEl.select === 'function') {
-          nextEl.select();
-        }
+        setTimeout(() => {
+          if (typeof nextEl.select === 'function') nextEl.select();
+        }, 10);
       }
-      if(activeInputId) closeKeypad(true); // ซ่อนแป้นพิมพ์จำลองถ้ามี
+      if(activeInputId) closeKeypad(true);
     }
   }
 
-  // ฟังก์ชันเช็คประสิทธิภาพเพื่อเด้งช่อง ถ้าระบุของเสียเสร็จ
+  // 3. ฟังก์ชันเช็คประสิทธิภาพตรงจุด "ของเสีย"
   function handleReasonFlow(e) {
     if (e.key === 'Enter') {
       e.preventDefault();
       if(activeInputId) closeKeypad(true);
       
-      calculateEfficiency(); // รีเฟรชค่าประสิทธิภาพก่อนเช็ค
+      calculateEfficiency(); 
       
       let effText = document.getElementById('effDisplay').innerText;
       let eff = parseFloat(effText);
       
-      // ถ้าประสิทธิภาพต่ำกว่า 80% และคำนวณออกมาเป็นตัวเลขได้ ให้เด้งไปช่องเหตุผล
-      if (eff < 80 && !isNaN(eff)) {
-        document.getElementById('id_reason').focus();
-      } else {
-        // ถ้าผ่าน 80% หรือไม่ได้ยอด (N/A) เด้งไปปุ่มบันทึก เพื่อกดเซฟต่อได้เลย
-        document.getElementById('submitBtn').focus();
+      let nextId = (eff < 80 && !isNaN(eff)) ? 'id_reason' : 'submitBtn';
+      let nextEl = document.getElementById(nextId);
+      if(nextEl) {
+        nextEl.focus();
+        setTimeout(() => {
+          if (typeof nextEl.select === 'function') nextEl.select();
+        }, 10);
       }
     }
   }
@@ -984,7 +990,7 @@
       document.getElementById('reportSection').style.display = 'block';
       document.getElementById('statusText').innerText = "ออนไลน์";
 
-      // โฟกัสและถมดำรอรับรหัสอัตโนมัติเมื่อเปิดหน้าครั้งแรก
+      // โฟกัสและถมดำช่องรหัสใบสั่งไว้รอเป็นช่องแรกเสมอ (ตาม Loop วันที่ -> รหัสใบสั่ง)
       let manualInput = document.getElementById('manual_order_code');
       manualInput.focus();
       manualInput.select();
@@ -1060,8 +1066,10 @@
         setTimeout(() => {
           document.getElementById('id_target').value = foundShortcut.id_target;
           calculateEfficiency();
-          // คีย์ครบ 5 ตัวเสร็จให้เด้งไปช่องวันที่ทันที
-          document.getElementById('record_date').focus();
+          // คีย์ครบ 5 ตัวเสร็จให้เด้งไปช่อง พนักงาน
+          let nextEl = document.getElementById('employee_search');
+          nextEl.focus();
+          setTimeout(() => { if(typeof nextEl.select === 'function') nextEl.select(); }, 10);
         }, 150);
       } else {
         const foundOrd = globalData.orders.find(o => String(o.order_no || '').endsWith(val));
@@ -1069,7 +1077,9 @@
           document.getElementById('id_order').value = foundOrd.id_order;
           handleOrderChange();
           setTimeout(() => {
-              document.getElementById('record_date').focus();
+              let nextEl = document.getElementById('employee_search');
+              nextEl.focus();
+              setTimeout(() => { if(typeof nextEl.select === 'function') nextEl.select(); }, 10);
           }, 150);
         }
       }
@@ -1873,13 +1883,12 @@
     document.getElementById('numericKeypad').style.display = 'block';
   }
 
-  // ปรับปรุง closeKeypad เพื่อรับพารามิเตอร์ว่าต้องการให้ระบบโฟกัสข้ามช่องเองหรือไม่ (ป้องกันการทับซ้อนกับลูกศรหรือ Enter)
   function closeKeypad(preventAutoJumping = false) {
     if (activeInputId && activeInputId !== 'manual_order_code') {
       let input = document.getElementById(activeInputId);
       input.value = calculateMath(input.value);
       
-      // กรณีใช้การคลิกปุ่มตกลงจากแป้นมือถือ
+      // ให้มันข้ามช่องเมื่อกด ตกลง จากแป้นจำลองเท่านั้น (ไม่กวนตอนเลื่อนลูกศร/Tab)
       if(!preventAutoJumping) {
         let nextId = null;
         if(activeInputId === 'hour_work') nextId = 'produced_amount';
@@ -1893,7 +1902,7 @@
         if(nextId) {
             let n = document.getElementById(nextId);
             n.focus();
-            if(typeof n.select === 'function') n.select();
+            setTimeout(() => { if(typeof n.select === 'function') n.select(); }, 10);
         }
       }
     }
@@ -2049,10 +2058,10 @@
 
         fetchReport();
         
-        // บันทึกเสร็จให้เด้งไปที่วันที่ทันที
+        // บันทึกเสร็จให้เด้งไปที่ "วันที่" ตามลำดับที่ตั้งค่าไว้
         let rd = document.getElementById('record_date');
         rd.focus();
-        if(typeof rd.select === 'function') rd.select();
+        setTimeout(() => { if(typeof rd.select === 'function') rd.select(); }, 10);
         
       } else {
         const errData = await response.json();
