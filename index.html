@@ -600,7 +600,7 @@
       <i class="fa-solid fa-cat"></i>
     </div>
     <h1 class="app-title">JAGUAR_PRODUCTION_SUPABASE</h1>
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.30 (Keyboard Flow)</div>
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v7.40 (Keyboard Arrow Navigation)</div>
   </div>
 
   <div class="header">
@@ -811,7 +811,7 @@
     <button type="button" class="key-btn key-action" onclick="pressKey('CLEAR')">ล้าง</button>
     <button type="button" class="key-btn key-equals key-math" style="grid-column: span 2;" onclick="pressKey('=')">=</button>
     
-    <button type="button" class="key-btn key-close" style="grid-column: span 4; margin-top: 5px;" onclick="closeKeypad()">ตกลง / ยืนยัน</button>
+    <button type="button" class="key-btn key-close" style="grid-column: span 4; margin-top: 5px;" onclick="closeKeypad(false)">ตกลง / ยืนยัน</button>
   </div>
 </div>
 
@@ -832,6 +832,53 @@
   let originalRecordKey = null;
   let html5QrCode = null;
 
+  // ฟังก์ชันรองรับการกดลูกศร ขี้น/ลง เพื่อวนไปยังช่องถัดไป หรือก่อนหน้า (Arrow Navigation)
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+      const active = document.activeElement;
+      if (!active || !active.id) return;
+      
+      const formElements = ['record_date', 'manual_order_code', 'employee_search', 'hour_work', 'produced_amount', 'nogoods_amount', 'id_reason', 'submitBtn'];
+      const idx = formElements.indexOf(active.id);
+      
+      if (idx > -1) {
+        // ปล่อยให้ทำงานปกติสำหรับ Dropdown, วันที่ และการค้นหาพนักงานที่มี List (ป้องกันการกวน native behavior)
+        if (active.tagName === 'SELECT') return; 
+        if (active.type === 'date') return;
+        if (active.hasAttribute('list')) return; 
+
+        e.preventDefault(); // บล็อกพฤติกรรมลูกศรปกติในช่องตัวอักษร
+        if(activeInputId) closeKeypad(true); // คำนวณและปิดแป้นจำลองถ้าเปิดอยู่
+        
+        let nextIdx = idx;
+        let found = false;
+        
+        // ค้นหาช่องถัดไปที่ไม่ได้ถูกซ่อน
+        for (let i = 0; i < formElements.length; i++) {
+          nextIdx = e.key === 'ArrowDown' ? nextIdx + 1 : nextIdx - 1;
+          
+          if (nextIdx >= formElements.length) nextIdx = 0;
+          if (nextIdx < 0) nextIdx = formElements.length - 1;
+          
+          let nextEl = document.getElementById(formElements[nextIdx]);
+          
+          // เช็คว่าช่องซ่อนอยู่หรือไม่ (ช่องเหตุผล จะแสดงก็ต่อเมื่อประสิทธิภาพต่ำกว่า 80%)
+          let isHidden = false;
+          if (nextEl.id === 'id_reason' && document.getElementById('reasonGroup').style.display === 'none') {
+            isHidden = true;
+          }
+          
+          if (nextEl && !isHidden) {
+            nextEl.focus();
+            if (typeof nextEl.select === 'function') nextEl.select(); // คลุมดำรอให้พิมพ์ทับ
+            found = true;
+            break;
+          }
+        }
+      }
+    }
+  });
+
   // ฟังก์ชันรองรับการกด Enter ข้ามช่อง พร้อมถมดำ text อัตโนมัติ
   function handleEnter(e, nextElementId) {
     if (e.key === 'Enter') {
@@ -843,7 +890,7 @@
           nextEl.select();
         }
       }
-      if(activeInputId) closeKeypad();
+      if(activeInputId) closeKeypad(true); // ซ่อนแป้นพิมพ์จำลองถ้ามี
     }
   }
 
@@ -851,7 +898,7 @@
   function handleReasonFlow(e) {
     if (e.key === 'Enter') {
       e.preventDefault();
-      if(activeInputId) closeKeypad();
+      if(activeInputId) closeKeypad(true);
       
       calculateEfficiency(); // รีเฟรชค่าประสิทธิภาพก่อนเช็ค
       
@@ -1336,7 +1383,7 @@
         
         const produced = log.produced_amount || 0;
         const ngAmt = log.nogoods_amount || 0;
-        const hWork = log.hour_work ? log.hour_work.toFixed(2) : ''; // ดึงชั่วโมงงานแสดงเป็นตัวเลข
+        const hWork = log.hour_work ? log.hour_work.toFixed(2) : ''; 
         runningTotal += produced;
 
         tableRowsHtml += `<tr>
@@ -1350,7 +1397,6 @@
           <td></td>
         </tr>`;
       } else {
-        // แถวว่างแบบไม่มี __:__-__:__ ปนแล้ว
         tableRowsHtml += `<tr>
           <td></td>
           <td></td>
@@ -1550,7 +1596,7 @@
     const tbody = document.getElementById('reportTbody');
 
     tbody.innerHTML = '<tr><td colspan="11" class="text-center loading">> กำลังดึงข้อมูล...</td></tr>';
-    // ส่ง targetId ไปด้วยเพื่อกรองผลรวมให้ตรง
+    
     updateSummaryMetrics(orderId, targetId);
 
     try {
@@ -1664,7 +1710,6 @@
     document.body.removeChild(a);
   }
 
-  // เพิ่ม targetId เพื่อเอามากรองยอดสรุปให้ตรงกับขั้นตอนที่เรากำลังคีย์
   async function updateSummaryMetrics(orderId, targetId) {
     const sumProducedEl = document.getElementById('sumProduced');
     const sumTargetEl = document.getElementById('sumTarget');
@@ -1828,25 +1873,28 @@
     document.getElementById('numericKeypad').style.display = 'block';
   }
 
-  function closeKeypad() {
+  // ปรับปรุง closeKeypad เพื่อรับพารามิเตอร์ว่าต้องการให้ระบบโฟกัสข้ามช่องเองหรือไม่ (ป้องกันการทับซ้อนกับลูกศรหรือ Enter)
+  function closeKeypad(preventAutoJumping = false) {
     if (activeInputId && activeInputId !== 'manual_order_code') {
       let input = document.getElementById(activeInputId);
       input.value = calculateMath(input.value);
       
-      // กรณีใช้แป้นมือถือ กดตกลงให้โฟกัสไปช่องต่อไปด้วยพร้อม select()
-      let nextId = null;
-      if(activeInputId === 'hour_work') nextId = 'produced_amount';
-      else if(activeInputId === 'produced_amount') nextId = 'nogoods_amount';
-      else if(activeInputId === 'nogoods_amount') {
-          calculateEfficiency();
-          let effText = document.getElementById('effDisplay').innerText;
-          let eff = parseFloat(effText);
-          nextId = (eff < 80 && !isNaN(eff)) ? 'id_reason' : 'submitBtn';
-      }
-      if(nextId) {
-          let n = document.getElementById(nextId);
-          n.focus();
-          if(typeof n.select === 'function') n.select();
+      // กรณีใช้การคลิกปุ่มตกลงจากแป้นมือถือ
+      if(!preventAutoJumping) {
+        let nextId = null;
+        if(activeInputId === 'hour_work') nextId = 'produced_amount';
+        else if(activeInputId === 'produced_amount') nextId = 'nogoods_amount';
+        else if(activeInputId === 'nogoods_amount') {
+            calculateEfficiency();
+            let effText = document.getElementById('effDisplay').innerText;
+            let eff = parseFloat(effText);
+            nextId = (eff < 80 && !isNaN(eff)) ? 'id_reason' : 'submitBtn';
+        }
+        if(nextId) {
+            let n = document.getElementById(nextId);
+            n.focus();
+            if(typeof n.select === 'function') n.select();
+        }
       }
     }
     
