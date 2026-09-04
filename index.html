@@ -598,7 +598,7 @@
       <i class="fa-solid fa-cat"></i>
     </div>
     <h1 class="app-title">JAGUAR_PRODUCTION_SUPABASE</h1>
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v8.00 (New Quick Flow)</div>
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v8.50 (Added Work Period & Remarks)</div>
   </div>
 
   <div class="header">
@@ -656,18 +656,27 @@
     <!-- ลำดับที่ 4 -->
     <div class="form-group">
       <label>5. จำนวนของเสีย (NG QTY)</label>
-      <input type="text" id="nogoods_amount" placeholder="0 (ปล่อยว่างกด Enter ได้)" onclick="openKeypad('nogoods_amount')" onfocus="this.select()" onkeydown="handleEnter(event, 'hour_work')">
+      <input type="text" id="nogoods_amount" placeholder="0 (ปล่อยว่างกด Enter ได้)" onclick="openKeypad('nogoods_amount')" onfocus="this.select()" onkeydown="handleEnter(event, 'work_period')">
     </div>
 
-    <!-- ลำดับที่ 5 -->
+    <!-- ลำดับที่ 5 (ใหม่) -->
     <div class="form-group">
-      <label>6. ชั่วโมงทำงาน (WORK HOURS)</label>
-      <input type="text" id="hour_work" placeholder="0.00 (คลิกเพื่อเปิดแป้น หรือพิมพ์ได้เลย)" onclick="openKeypad('hour_work')" onfocus="this.select()" onkeydown="handleEnter(event, 'employee_search')">
+      <label>6. ช่วงเวลาทำงาน (WORK PERIOD)</label>
+      <select id="work_period" onkeydown="handleEnter(event, 'hour_work')">
+        <option value="ปกติ" selected>ปกติ</option>
+        <option value="OT">OT</option>
+      </select>
     </div>
 
     <!-- ลำดับที่ 6 -->
     <div class="form-group">
-      <label>7. พนักงาน (EMPLOYEE) [พิมพ์เพื่อค้นหา]</label>
+      <label>7. ชั่วโมงทำงาน (WORK HOURS)</label>
+      <input type="text" id="hour_work" placeholder="0.00 (คลิกเพื่อเปิดแป้น หรือพิมพ์ได้เลย)" onclick="openKeypad('hour_work')" onfocus="this.select()" onkeydown="handleEnter(event, 'employee_search')">
+    </div>
+
+    <!-- ลำดับที่ 7 -->
+    <div class="form-group">
+      <label>8. พนักงาน (EMPLOYEE) [พิมพ์เพื่อค้นหา]</label>
       <input type="text" id="employee_search" list="employee_datalist" placeholder="-- พิมพ์ชื่อพนักงานเพื่อค้นหา --" autocomplete="off" onfocus="this.select()" onclick="this.select()" onkeydown="handleReasonFlow(event)">
       <datalist id="employee_datalist"></datalist>
     </div>
@@ -677,12 +686,19 @@
       <span id="effDisplay" class="eff-value" style="color: var(--text-muted);">0.00%</span>
     </div>
 
-    <!-- ลำดับที่ 7 (ถ้ามี) -->
+    <!-- ลำดับที่ 8 (ถ้ามี) -->
     <div class="form-group" id="reasonGroup" style="display: none;">
-      <label style="color: var(--neon-red);">8. สาเหตุ (บังคับเลือก หากประสิทธิภาพ &lt; 80%)</label>
-      <select id="id_reason" onkeydown="handleEnter(event, 'submitBtn')">
+      <label style="color: var(--neon-red);">9. สาเหตุ (บังคับเลือก หากประสิทธิภาพ &lt; 80%)</label>
+      <select id="id_reason" onkeydown="handleEnter(event, 'remark')">
         <option value="">-- เลือกสาเหตุ --</option>
       </select>
+    </div>
+
+    <!-- ลำดับที่ 9 (ใหม่) -->
+    <div class="form-group">
+      <label>10. หมายเหตุ (REMARK) [เช่น เบอร์เครื่อง/แม่พิมพ์]</label>
+      <input type="text" id="remark" list="remark_datalist" placeholder="-- พิมพ์หรือเลือกหมายเหตุจากรายการ --" autocomplete="off" onfocus="this.select()" onclick="this.select()" onkeydown="handleEnter(event, 'submitBtn')">
+      <datalist id="remark_datalist"></datalist>
     </div>
 
     <button type="submit" class="submit-btn" id="submitBtn">> บันทึกข้อมูล</button>
@@ -763,9 +779,9 @@
             <th>ขั้นตอน</th>
             <th class="text-right">ยอดผลิต</th>
             <th class="text-right">ของเสีย</th>
-            <th class="text-right">ชั่วโมง</th>
+            <th class="text-right">ชม.(กะ)</th>
             <th class="text-right">EFF%</th>
-            <th>สาเหตุ</th>
+            <th>สาเหตุ / หมายเหตุ</th>
             <th class="text-center no-export">จัดการ</th>
           </tr>
         </thead>
@@ -832,7 +848,7 @@
     "Prefer": "return=representation"
   };
 
-  let globalData = { orders: [], employees: [], targets: [], reasons: [], workItems: [], steps: [], orderSteps: [], shortcutMap: [] };
+  let globalData = { orders: [], employees: [], targets: [], reasons: [], workItems: [], steps: [], orderSteps: [], shortcutMap: [], remarks: [] };
   let activeInputId = null;
   let isEditMode = false;
   let originalRecordKey = null;
@@ -840,7 +856,7 @@
 
   // 1. ฟังก์ชันรองรับลูกศรขึ้น/ลง และ Tab เพื่อวิ่งตาม Loop ลำดับใหม่
   document.addEventListener('keydown', function(e) {
-    const formElements = ['manual_order_code', 'record_date', 'produced_amount', 'nogoods_amount', 'hour_work', 'employee_search', 'id_reason', 'submitBtn'];
+    const formElements = ['manual_order_code', 'record_date', 'produced_amount', 'nogoods_amount', 'work_period', 'hour_work', 'employee_search', 'id_reason', 'remark', 'submitBtn'];
     
     if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Tab') {
       const active = document.activeElement;
@@ -912,7 +928,7 @@
       let effText = document.getElementById('effDisplay').innerText;
       let eff = parseFloat(effText);
       
-      let nextId = (eff < 80 && !isNaN(eff)) ? 'id_reason' : 'submitBtn';
+      let nextId = (eff < 80 && !isNaN(eff)) ? 'id_reason' : 'remark';
       let nextEl = document.getElementById(nextId);
       if(nextEl) {
         nextEl.focus();
@@ -931,14 +947,15 @@
     const scannedTargetId = urlParams.get('target_id');
 
     try {
-      const [ordersRes, empsRes, targetsRes, reasonsRes, workItemsRes, stepsRes, orderStepsRes] = await Promise.all([
+      const [ordersRes, empsRes, targetsRes, reasonsRes, workItemsRes, stepsRes, orderStepsRes, dailyProdRes] = await Promise.all([
         fetch(SUPABASE_URL + "/orders?select=*", { headers }),
         fetch(SUPABASE_URL + "/employees?select=*", { headers }), 
         fetch(SUPABASE_URL + "/targets?select=*", { headers }), 
         fetch(SUPABASE_URL + "/reasons?select=*", { headers }),
         fetch(SUPABASE_URL + "/work_items?select=*", { headers }),
         fetch(SUPABASE_URL + "/production_steps?select=*", { headers }),
-        fetch(SUPABASE_URL + "/order_steps?select=*", { headers }) 
+        fetch(SUPABASE_URL + "/order_steps?select=*", { headers }),
+        fetch(SUPABASE_URL + "/daily_production?select=remark&limit=2000", { headers }) // โหลดหมายเหตุเก่าๆมาแสดง
       ]);
 
       if (!ordersRes.ok || !targetsRes.ok) throw new Error("Database Fetch Error");
@@ -972,6 +989,19 @@
       if (orderStepsRes.ok) {
         globalData.orderSteps = await orderStepsRes.json();
       }
+      
+      if (dailyProdRes.ok) {
+        let dailyData = await dailyProdRes.json();
+        let uniqueRemarks = [...new Set(dailyData.map(item => item.remark).filter(val => val && val.trim() !== ''))];
+        globalData.remarks = uniqueRemarks.sort();
+        
+        const remarkDatalist = document.getElementById('remark_datalist');
+        globalData.remarks.forEach(rmk => {
+          let opt = document.createElement('option');
+          opt.value = rmk;
+          remarkDatalist.appendChild(opt);
+        });
+      }
 
       generateShortcutMap();
 
@@ -992,7 +1022,6 @@
       document.getElementById('reportSection').style.display = 'block';
       document.getElementById('statusText').innerText = "ออนไลน์";
 
-      // โฟกัสไปที่รหัสค้นหาตัวแรกสุด
       let manualInput = document.getElementById('manual_order_code');
       manualInput.focus();
       manualInput.select();
@@ -1406,7 +1435,7 @@
           <td>${ngAmt > 0 ? ngAmt.toLocaleString() : ''}</td>
           <td style="font-size: 10px;">${hWork}</td>
           <td style="text-align: left; padding-left: 4px; font-size: 10px;">${empText}</td>
-          <td></td>
+          <td>${log.remark ? log.remark : ''}</td>
         </tr>`;
       } else {
         tableRowsHtml += `<tr>
@@ -1672,16 +1701,21 @@
         const producedAmt = log.produced_amount || 0;
         const ngAmt = log.nogoods_amount || 0;
         const hourWork = log.hour_work || 0;
+        
+        const hourWorkDisplay = `${hourWork.toFixed(2)} <span style="font-size:10px; color:var(--text-muted);">(${log.work_period || 'ปกติ'})</span>`;
 
         const totalTarget = targetAmountVal * hourWork;
         const effPct = totalTarget > 0 ? (producedAmt / totalTarget) * 100 : 0;
         const effColor = effPct >= 100 ? "var(--neon-green)" : "var(--neon-red)";
 
-        let reasonText = "-";
+        let reasonText = "";
         if (log.id_reason && globalData.reasons.length > 0) {
           const reason = globalData.reasons.find(r => String(r.id_reason) === String(log.id_reason));
           if (reason) reasonText = reason.reason_detail;
         }
+        
+        const remarkText = log.remark ? `[${log.remark}]` : '';
+        const combinedReasonRemark = `${reasonText} ${remarkText}`.trim() || '-';
 
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -1692,12 +1726,12 @@
           <td>${stepText}</td>
           <td class="text-right" style="color:var(--neon-green)">${producedAmt}</td>
           <td class="text-right" style="color:var(--neon-red)">${ngAmt}</td>
-          <td class="text-right">${hourWork.toFixed(2)}</td>
+          <td class="text-right">${hourWorkDisplay}</td>
           <td class="text-right" style="color:${effColor}">${effPct.toFixed(1)}%</td>
-          <td>${reasonText}</td>
+          <td style="font-size: 11px;">${combinedReasonRemark}</td>
           <td class="text-center action-cell">
-            <button class="btn-edit" onclick='promptEdit(${JSON.stringify(log)})'>แก้ไข</button>
-            <button class="btn-del" onclick='promptDelete(${JSON.stringify(log)})'>ลบ</button>
+            <button class="btn-edit" onclick='promptEdit(${JSON.stringify(log).replace(/'/g, "\\'")})'>แก้ไข</button>
+            <button class="btn-del" onclick='promptDelete(${JSON.stringify(log).replace(/'/g, "\\'")})'>ลบ</button>
           </td>
         `;
         tbody.appendChild(tr);
@@ -1835,10 +1869,12 @@
     const empEdit = globalData.employees.find(e => String(e.id_name) === String(logData.id_name));
     document.getElementById('employee_search').value = empEdit ? empEdit.name : '';
     
+    document.getElementById('work_period').value = logData.work_period || 'ปกติ';
     document.getElementById('hour_work').value = logData.hour_work || '';
     document.getElementById('produced_amount').value = logData.produced_amount || '';
     document.getElementById('nogoods_amount').value = logData.nogoods_amount || '';
     document.getElementById('id_reason').value = logData.id_reason || '';
+    document.getElementById('remark').value = logData.remark || '';
 
     calculateEfficiency();
 
@@ -1857,6 +1893,8 @@
     
     document.getElementById('employee_search').value = ''; 
     document.getElementById('nogoods_amount').value = '';
+    document.getElementById('work_period').value = 'ปกติ';
+    document.getElementById('remark').value = '';
     
     document.getElementById('submitBtn').innerText = "> บันทึกข้อมูล";
     document.getElementById('cancelEditBtn').style.display = 'none';
@@ -1893,7 +1931,7 @@
       if(!preventAutoJumping) {
         let nextId = null;
         if(activeInputId === 'produced_amount') nextId = 'nogoods_amount';
-        else if(activeInputId === 'nogoods_amount') nextId = 'hour_work';
+        else if(activeInputId === 'nogoods_amount') nextId = 'work_period';
         else if(activeInputId === 'hour_work') nextId = 'employee_search';
         
         if(nextId) {
@@ -1961,9 +1999,11 @@
     const targetVal = document.getElementById('id_target').value;
     
     const empSearchVal = document.getElementById('employee_search').value.trim();
+    const workPeriodVal = document.getElementById('work_period').value;
     const hourWorkVal = document.getElementById('hour_work').value.trim();
     const producedVal = document.getElementById('produced_amount').value.trim();
     const reasonVal = document.getElementById('id_reason').value;
+    const remarkVal = document.getElementById('remark').value.trim();
 
     const empObj = globalData.employees.find(e => e.name === empSearchVal);
     const employeeVal = empObj ? empObj.id_name : null;
@@ -2009,10 +2049,12 @@
       id_work: parseInt(document.getElementById('id_work').value) || null,
       id_name: parseInt(employeeVal) || null,
       id_target: parseInt(targetVal) || null,
+      work_period: workPeriodVal,
       hour_work: parseFloat(hourWorkVal) || 0,
       produced_amount: parseInt(producedVal) || 0,
       nogoods_amount: parseInt(document.getElementById('nogoods_amount').value) || 0,
-      id_reason: parseInt(reasonVal) || null
+      id_reason: parseInt(reasonVal) || null,
+      remark: remarkVal || null
     };
 
     try {
@@ -2041,6 +2083,13 @@
         document.getElementById('filter_order').value = orderVal;
         onFilterOrderChange();
         document.getElementById('filter_target').value = targetVal;
+        
+        if (remarkVal && !globalData.remarks.includes(remarkVal)) {
+          globalData.remarks.push(remarkVal);
+          let opt = document.createElement('option');
+          opt.value = remarkVal;
+          document.getElementById('remark_datalist').appendChild(opt);
+        }
 
         if (isEditMode) {
           cancelEditMode();
@@ -2048,6 +2097,8 @@
           document.getElementById('produced_amount').value = '';
           document.getElementById('nogoods_amount').value = '';
           document.getElementById('id_reason').value = '';
+          document.getElementById('remark').value = '';
+          document.getElementById('work_period').value = 'ปกติ';
           document.getElementById('reasonGroup').style.display = 'none';
           document.getElementById('effDisplay').innerText = "0.00%";
           document.getElementById('effDisplay').style.color = "var(--text-muted)";
@@ -2055,7 +2106,6 @@
 
         fetchReport();
         
-        // บันทึกเสร็จให้เด้งไปที่ช่องแรก (รหัสค้นหา) เพื่อเริ่มรายการใหม่
         let firstInput = document.getElementById('manual_order_code');
         firstInput.focus();
         setTimeout(() => { if(typeof firstInput.select === 'function') firstInput.select(); }, 10);
