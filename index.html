@@ -84,6 +84,28 @@
       color: var(--bg-dark);
       box-shadow: 0 0 15px rgba(0, 229, 255, 0.5);
     }
+    
+    .manual-btn {
+      background: rgba(245, 166, 35, 0.1);
+      border: 1px solid var(--neon-yellow);
+      color: var(--neon-yellow);
+      padding: 8px 16px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+      box-shadow: 0 0 10px rgba(245, 166, 35, 0.2);
+      cursor: pointer;
+    }
+    .manual-btn:hover {
+      background: var(--neon-yellow);
+      color: var(--bg-dark);
+      box-shadow: 0 0 15px rgba(245, 166, 35, 0.5);
+    }
 
     .app-header {
       text-align: center;
@@ -250,21 +272,39 @@
       box-shadow: 0 0 10px rgba(0, 229, 255, 0.4);
     }
 
-    .scanner-modal {
+    /* Modal Styles */
+    .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(3, 8, 6, 0.95); z-index: 2000;
       justify-content: center; align-items: center; flex-direction: column; padding: 20px; box-sizing: border-box;
+      backdrop-filter: blur(5px);
     }
     .scanner-box {
       width: 100%; max-width: 400px; background: var(--panel-bg);
       border: 2px solid var(--neon-blue); border-radius: 12px; padding: 15px; text-align: center;
       box-shadow: 0 0 25px rgba(0, 229, 255, 0.3);
     }
-    .scanner-close {
+    .modal-close-btn {
       background: transparent; border: 1px solid var(--neon-red); color: var(--neon-red);
       padding: 10px; width: 100%; margin-top: 15px; border-radius: 8px; cursor: pointer;
-      font-family: inherit; font-weight: bold;
+      font-family: inherit; font-weight: bold; transition: all 0.2s;
     }
+    .modal-close-btn:hover {
+      background: var(--neon-red); color: var(--bg-dark);
+    }
+
+    /* Manual Modal Styles */
+    .manual-box {
+      width: 100%; max-width: 600px; max-height: 85vh; background: var(--panel-bg);
+      border: 2px solid var(--neon-yellow); border-radius: 12px; padding: 20px; text-align: left;
+      box-shadow: 0 0 25px rgba(245, 166, 35, 0.3);
+      overflow-y: auto; color: var(--text-main); font-family: 'Sarabun', sans-serif;
+    }
+    .manual-box h3 { color: var(--neon-yellow); margin-top: 0; border-bottom: 1px dashed var(--border-dim); padding-bottom: 10px; }
+    .manual-box h4 { color: var(--neon-blue); margin-top: 20px; margin-bottom: 10px; }
+    .manual-box ul, .manual-box ol { margin-top: 0; padding-left: 20px; }
+    .manual-box li { margin-bottom: 10px; font-size: 14px; line-height: 1.5; }
+    .manual-box strong { color: var(--neon-green); }
 
     .eff-box {
       background: #071710;
@@ -587,7 +627,11 @@
 
 <div class="terminal-container">
   
-  <div style="display: flex; justify-content: flex-end; margin-bottom: 5px;">
+  <div style="display: flex; justify-content: flex-end; margin-bottom: 5px; gap: 8px;">
+    <!-- ปุ่มคู่มือการใช้งาน -->
+    <button type="button" class="manual-btn" onclick="openManual()">
+      <i class="fa-solid fa-book"></i> คู่มือการใช้งาน
+    </button>
     <a href="https://paiboon-creater.github.io/Data_Information_Jaguar_productions/" class="home-btn">
       <i class="fa-solid fa-house"></i> HOME APP
     </a>
@@ -793,11 +837,49 @@
   </div>
 </div>
 
-<div id="scannerModal" class="scanner-modal" style="display:none;">
+<!-- Modal Scanner -->
+<div id="scannerModal" class="modal-overlay">
   <div class="scanner-box">
     <h3 style="color:var(--neon-blue); margin-top:0;">> สแกนคิวอาร์โค้ด</h3>
     <div id="reader" style="width:100%;"></div>
-    <button type="button" class="scanner-close" onclick="closeScanner()">[X] ปิดกล้อง</button>
+    <button type="button" class="modal-close-btn" onclick="closeScanner()">[X] ปิดกล้อง</button>
+  </div>
+</div>
+
+<!-- Modal Manual (คู่มือการใช้งาน) -->
+<div id="manualModal" class="modal-overlay">
+  <div class="manual-box">
+    <h3>📖 คู่มือการใช้งานระบบ JAGUAR_PRODUCTION</h3>
+    
+    <h4>📝 ขั้นตอนการบันทึกข้อมูลการผลิต</h4>
+    <ol>
+      <li><strong>รหัสใบสั่งงาน & ขั้นตอน:</strong> กรอกรหัสค้นหา 5 หลัก หรือ สแกนรหัสค้นหา กรณีไม่ทราบรหัสค้นหา ให้เลือกใบสั่งที่ต้องการ แล้วจึงเลือกขั้นตอนการทำงาน</li>
+      <li><strong>ชิ้นงาน / ขั้นตอน:</strong> ระบบจะดึงข้อมูลชิ้นงาน ขั้นตอน และเป้าหมายต่อชั่วโมง (Target) มาแสดงให้อัตโนมัติ</li>
+      <li><strong>วันที่บันทึก:</strong> ค่าเริ่มต้นคือวันที่ปัจจุบัน สามารถกดเพื่อเปลี่ยนเป็นวันที่ทำผลิตจริงได้</li>
+      <li><strong>จำนวนที่ผลิตได้:</strong> คลิกที่ช่องเพื่อเรียกแป้นพิมพ์ตัวเลขบนหน้าจอ (Keypad) ขึ้นมากรอกยอดงานดี</li>
+      <li><strong>จำนวนของเสีย:</strong> กรอกจำนวนของเสีย หากไม่มีให้เว้นว่างไว้หรือใส่ 0</li>
+      <li><strong>ช่วงเวลาทำงาน:</strong> ระบุว่าเป็นการผลิตในเวลา "ปกติ" หรือ "OT"</li>
+      <li><strong>ชั่วโมงทำงาน:</strong> กรอกเวลาที่ใช้ผลิตจริง (เช่น 8 หรือ 1.5) เพื่อให้ระบบคำนวณประสิทธิภาพ</li>
+      <li><strong>พนักงาน:</strong> พิมพ์ชื่อพนักงานเพื่อค้นหาและเลือกจากรายชื่อที่ระบบแนะนำ</li>
+      <li><strong>สาเหตุ:</strong> หากระบบคำนวณประสิทธิภาพต่ำกว่า 80% ระบบจะบังคับให้เลือกสาเหตุ</li>
+      <li><strong>หมายเหตุ:</strong> ระบุข้อมูลเพิ่มเติม เช่น เบอร์เครื่องจักร หมายเลขแม่พิมพ์</li>
+    </ol>
+    
+    <h4>⌨️ คีย์ลัดและการนำทาง</h4>
+    <ul>
+      <li><strong>ปุ่ม Enter:</strong> เมื่อพิมพ์ข้อมูลในแต่ละช่องเสร็จ การกด Enter จะสั่งให้เปลี่ยนช่องถัดไปอัตโนมัติ</li>
+      <li><strong>ลูกศร ขึ้น/ลง (หรือ Tab):</strong> ใช้เลื่อนกลับไปแก้ไขช่องก่อนหน้า หรือข้ามช่อง</li>
+      <li><strong>ฟังก์ชันคำนวณในตัว:</strong> แป้นพิมพ์รองรับ บวกลบคูณหาร กดปุ่ม "=" ระบบจะคำนวณให้ทันที</li>
+    </ul>
+
+    <h4>📊 การตรวจสอบรายงานและการจัดการข้อมูล</h4>
+    <ul>
+      <li><strong>แผงสรุปยอด:</strong> เลือกใบสั่งงานในช่องตัวกรอง ระบบจะแสดง ผลิตได้รวม, ยอดสั่งผลิตรวม, ยอดคงเหลือ และกำหนดส่ง</li>
+      <li><strong>แก้ไข / ลบ:</strong> เลื่อนลงตารางด้านล่าง กดปุ่มสีเหลืองเพื่อแก้ไข หรือสีแดงเพื่อลบ (ต้องใช้รหัสผ่านยืนยัน)</li>
+      <li><strong>การพิมพ์:</strong> สามารถพิมพ์ F-PR-005-00 แบบฟอร์มเปล่า หรือแบบมีประวัติพร้อมยอดสะสมได้</li>
+    </ul>
+
+    <button type="button" class="modal-close-btn" onclick="closeManual()">[X] ปิดคู่มือ</button>
   </div>
 </div>
 
@@ -853,6 +935,14 @@
   let isEditMode = false;
   let originalRecordKey = null;
   let html5QrCode = null;
+
+  // ฟังก์ชันเปิด/ปิดคู่มือการใช้งาน
+  function openManual() {
+    document.getElementById('manualModal').style.display = 'flex';
+  }
+  function closeManual() {
+    document.getElementById('manualModal').style.display = 'none';
+  }
 
   // 1. ฟังก์ชันรองรับลูกศรขึ้น/ลง และ Tab เพื่อวิ่งตาม Loop ลำดับใหม่
   document.addEventListener('keydown', function(e) {
