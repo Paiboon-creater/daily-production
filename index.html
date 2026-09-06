@@ -64,6 +64,14 @@
       margin-bottom: 30px;
     }
 
+    .top-menu-bar {
+      display: flex; 
+      justify-content: flex-end; 
+      align-items: center; 
+      margin-bottom: 10px; 
+      gap: 12px;
+    }
+
     .home-btn {
       background: rgba(0, 229, 255, 0.1);
       border: 1px solid var(--neon-blue);
@@ -295,16 +303,40 @@
 
     /* Manual Modal Styles */
     .manual-box {
-      width: 100%; max-width: 600px; max-height: 85vh; background: var(--panel-bg);
+      width: 100%; max-width: 700px; max-height: 85vh; background: var(--panel-bg);
       border: 2px solid var(--neon-yellow); border-radius: 12px; padding: 20px; text-align: left;
       box-shadow: 0 0 25px rgba(245, 166, 35, 0.3);
       overflow-y: auto; color: var(--text-main); font-family: 'Sarabun', sans-serif;
     }
-    .manual-box h3 { color: var(--neon-yellow); margin-top: 0; border-bottom: 1px dashed var(--border-dim); padding-bottom: 10px; }
+    .manual-header {
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px dashed var(--border-dim); padding-bottom: 10px;
+    }
+    .manual-box h3 { color: var(--neon-yellow); margin-top: 0; margin-bottom: 0; }
     .manual-box h4 { color: var(--neon-blue); margin-top: 20px; margin-bottom: 10px; }
-    .manual-box ul, .manual-box ol { margin-top: 0; padding-left: 20px; }
-    .manual-box li { margin-bottom: 10px; font-size: 14px; line-height: 1.5; }
+    .manual-box ul, .manual-box ol { margin-top: 0; padding-left: 25px; }
+    .manual-box li { margin-bottom: 10px; font-size: 15px; line-height: 1.6; }
     .manual-box strong { color: var(--neon-green); }
+
+    .print-manual-btn {
+      background: var(--neon-blue);
+      color: var(--bg-dark);
+      border: none;
+      padding: 8px 14px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .print-manual-btn:hover {
+      background: #00ccff;
+      box-shadow: 0 0 10px var(--neon-blue);
+    }
 
     .eff-box {
       background: #071710;
@@ -498,7 +530,7 @@
     .btn-del { color: var(--neon-red); border-color: var(--neon-red); }
 
     /* ========================================================= */
-    /* CSS พิมพ์เอกสาร A4 แนวนอน */
+    /* CSS พิมพ์เอกสาร A4 แนวนอน (ตารางความก้าวหน้า) */
     /* ========================================================= */
     #printArea { display: none; }
 
@@ -627,8 +659,8 @@
 
 <div class="terminal-container">
   
-  <div style="display: flex; justify-content: flex-end; margin-bottom: 5px; gap: 8px;">
-    <!-- ปุ่มคู่มือการใช้งาน -->
+  <!-- เมนูบาร์ด้านบนสุด ย้ายปุ่มคู่มือมาประกบปุ่ม Home -->
+  <div class="top-menu-bar">
     <button type="button" class="manual-btn" onclick="openManual()">
       <i class="fa-solid fa-book"></i> คู่มือการใช้งาน
     </button>
@@ -849,12 +881,15 @@
 <!-- Modal Manual (คู่มือการใช้งาน) -->
 <div id="manualModal" class="modal-overlay">
   <div class="manual-box">
-    <h3>📖 คู่มือการใช้งานระบบ JAGUAR_PRODUCTION</h3>
+    <div class="manual-header">
+      <h3>📖 คู่มือการใช้งานระบบ JAGUAR_PRODUCTION</h3>
+      <button class="print-manual-btn" onclick="printManual()"><i class="fa-solid fa-print"></i> พิมพ์คู่มือ</button>
+    </div>
     
     <h4>📝 ขั้นตอนการบันทึกข้อมูลการผลิต</h4>
     <ol>
       <li><strong>รหัสใบสั่งงาน & ขั้นตอน:</strong> กรอกรหัสค้นหา 5 หลัก หรือ สแกนรหัสค้นหา กรณีไม่ทราบรหัสค้นหา ให้เลือกใบสั่งที่ต้องการ แล้วจึงเลือกขั้นตอนการทำงาน</li>
-      <li><strong>ชิ้นงาน / ขั้นตอน:</strong> ระบบจะดึงข้อมูลชิ้นงาน ขั้นตอน และเป้าหมายต่อชั่วโมง (Target) มาแสดงให้อัตโนมัติ</li>
+      <li><strong>ชิ้นงาน / ขั้นตอน:</strong> ระบบจะดึงข้อมูลชิ้นงาน ขั้นตอน และเป้าหมายต่อชั่วโมง (Target) มาแสดงให้อัตโนมัติ <span style="color: var(--neon-red);">(กรณีที่ไม่พบข้อมูลใบสั่งผลิต แสดงว่า ระบบยังไม่มีการเพิ่มใบสั่งผลิต จำเป็นจะต้องกลับไปหน้าหลักเพื่อเพิ่มเลขที่ใบสั่งก่อน)</span></li>
       <li><strong>วันที่บันทึก:</strong> ค่าเริ่มต้นคือวันที่ปัจจุบัน สามารถกดเพื่อเปลี่ยนเป็นวันที่ทำผลิตจริงได้</li>
       <li><strong>จำนวนที่ผลิตได้:</strong> คลิกที่ช่องเพื่อเรียกแป้นพิมพ์ตัวเลขบนหน้าจอ (Keypad) ขึ้นมากรอกยอดงานดี</li>
       <li><strong>จำนวนของเสีย:</strong> กรอกจำนวนของเสีย หากไม่มีให้เว้นว่างไว้หรือใส่ 0</li>
@@ -879,7 +914,7 @@
       <li><strong>การพิมพ์:</strong> สามารถพิมพ์ F-PR-005-00 แบบฟอร์มเปล่า หรือแบบมีประวัติพร้อมยอดสะสมได้</li>
     </ul>
 
-    <button type="button" class="modal-close-btn" onclick="closeManual()">[X] ปิดคู่มือ</button>
+    <button type="button" class="modal-close-btn" style="margin-top: 20px;" onclick="closeManual()">[X] ปิดคู่มือ</button>
   </div>
 </div>
 
@@ -942,6 +977,80 @@
   }
   function closeManual() {
     document.getElementById('manualModal').style.display = 'none';
+  }
+  
+  // ฟังก์ชันพิมพ์คู่มือแบบบีบให้ลง 1 หน้า A4
+  function printManual() {
+    const manualContent = document.querySelector('.manual-box').cloneNode(true);
+    const buttons = manualContent.querySelectorAll('button');
+    buttons.forEach(btn => btn.remove()); // เอาปุ่มในหน้าต่างออกก่อนสั่งพิมพ์
+
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+      <html>
+      <head>
+        <title>คู่มือการใช้งาน JAGUAR_PRODUCTION</title>
+        <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
+        <style>
+          @page { 
+            size: A4 portrait; 
+            margin: 12mm; /* ลดขอบกระดาษลงเพื่อให้มีพื้นที่เพิ่ม */
+          }
+          body { 
+            font-family: 'Sarabun', sans-serif; 
+            color: #000; 
+            line-height: 1.35; /* บีบบรรทัดนิดหน่อย */
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box;
+          }
+          /* จัดการโครงสร้างที่พิมพ์ */
+          .manual-box { height: auto !important; overflow: visible !important; }
+          h3 { 
+            color: #000; 
+            border-bottom: 2px solid #000; 
+            padding-bottom: 5px; 
+            margin-top: 0; 
+            font-size: 20px; 
+            text-align: center; 
+          }
+          h4 { 
+            color: #222; 
+            margin-top: 12px; 
+            margin-bottom: 6px; 
+            border-bottom: 1px solid #ccc; 
+            padding-bottom: 3px; 
+            font-size: 16px; 
+          }
+          ul, ol { 
+            margin-top: 5px; 
+            margin-bottom: 5px; 
+            padding-left: 25px; 
+          }
+          li { 
+            margin-bottom: 5px; 
+            font-size: 13.5px; /* ปรับลดขนาดลงให้พอดีหน้า */
+            text-align: justify; 
+          }
+          strong { color: #000; font-weight: bold; }
+          span { color: #333 !important; font-weight: bold; }
+        </style>
+      </head>
+      <body>
+        <div class="manual-box">
+          ${manualContent.innerHTML}
+        </div>
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+    printWindow.focus();
+    
+    // หน่วงเวลาให้ Font โหลดเสร็จก่อนสั่งพิมพ์
+    setTimeout(() => {
+      printWindow.print();
+      printWindow.close();
+    }, 400);
   }
 
   // 1. ฟังก์ชันรองรับลูกศรขึ้น/ลง และ Tab เพื่อวิ่งตาม Loop ลำดับใหม่
@@ -1007,7 +1116,7 @@
     }
   }
 
-  // 3. ฟังก์ชันเช็คประสิทธิภาพตรงจุด "ชื่อพนักงาน" (เพราะข้อมูลครบแล้ว)
+  // 3. ฟังก์ชันเช็คประสิทธิภาพตรงจุด "ชื่อพนักงาน"
   function handleReasonFlow(e) {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -1045,7 +1154,7 @@
         fetch(SUPABASE_URL + "/work_items?select=*", { headers }),
         fetch(SUPABASE_URL + "/production_steps?select=*", { headers }),
         fetch(SUPABASE_URL + "/order_steps?select=*", { headers }),
-        fetch(SUPABASE_URL + "/daily_production?select=remark&limit=2000", { headers }) // โหลดหมายเหตุเก่าๆมาแสดง
+        fetch(SUPABASE_URL + "/daily_production?select=remark&limit=2000", { headers })
       ]);
 
       if (!ordersRes.ok || !targetsRes.ok) throw new Error("Database Fetch Error");
@@ -1187,7 +1296,6 @@
         setTimeout(() => {
           document.getElementById('id_target').value = foundShortcut.id_target;
           calculateEfficiency();
-          // คีย์ครบ 5 ตัวเสร็จให้เด้งไปช่อง วันที่
           let nextEl = document.getElementById('record_date');
           nextEl.focus();
           setTimeout(() => { if(typeof nextEl.select === 'function') nextEl.select(); }, 10);
