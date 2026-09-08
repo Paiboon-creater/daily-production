@@ -232,10 +232,11 @@
     }
 
     input:focus, select:focus { 
-      border-color: var(--neon-green); 
+      border-color: var(--neon-yellow);
       outline: none; 
-      box-shadow: 0 0 10px var(--neon-glow); 
-      background-color: #1a4a35; 
+      box-shadow: 0 0 15px rgba(245, 166, 35, 0.5); 
+      background-color: #000b18; 
+      color: #ffffff; 
     }
     
     input[type="date"]::-webkit-calendar-picker-indicator { 
@@ -258,9 +259,11 @@
     
     .order-manual-input:focus {
       border-color: var(--neon-yellow);
-      box-shadow: 0 0 8px rgba(245, 166, 35, 0.4);
-      background-color: #3d3314;
+      box-shadow: 0 0 15px rgba(245, 166, 35, 0.6);
+      background-color: #000b18; 
+      color: #ffffff; 
     }
+
     .scan-btn {
       background: transparent;
       border: 1px solid var(--neon-blue);
@@ -351,16 +354,27 @@
     }
     .eff-value { font-weight: bold; font-size: 18px; }
 
+    /* =========================================
+       ปุ่ม Submit เปลี่ยนเป็นสีน้ำเงิน
+       ========================================= */
     .submit-btn {
-      width: 100%; background: linear-gradient(145deg, #071910, #040e09); color: var(--neon-green);
-      border: 2px solid var(--neon-green); padding: 14px; font-size: 16px;
+      width: 100%; 
+      background: linear-gradient(145deg, #001f33, #000a14); /* ไล่สีน้ำเงินเข้ม */
+      color: var(--neon-blue); /* ตัวหนังสือสีน้ำเงินนีออน */
+      border: 2px solid var(--neon-blue); /* ขอบสีน้ำเงินนีออน */
+      padding: 14px; font-size: 16px;
       border-radius: 8px; cursor: pointer; font-weight: bold;
       margin-top: 10px;
       font-family: inherit; transition: all 0.3s; letter-spacing: 1px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.5);
     }
-    .submit-btn:focus { outline: 2px solid var(--neon-blue); }
-    .submit-btn:hover { background: var(--neon-green); color: var(--bg-dark); box-shadow: 0 0 20px var(--neon-glow); transform: translateY(-2px); }
+    .submit-btn:focus { outline: 2px solid var(--neon-yellow); }
+    .submit-btn:hover { 
+      background: var(--neon-blue); /* พื้นหลังสีน้ำเงิน */
+      color: var(--bg-dark); /* ตัวหนังสือสีดำ/มืด */
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.6); /* เรืองแสงสีน้ำเงิน */
+      transform: translateY(-2px); 
+    }
     
     .print-blank-btn {
       width: 100%; background: linear-gradient(145deg, #07151a, #030b0e); color: var(--neon-blue);
@@ -387,10 +401,97 @@
       font-family: inherit;
     }
 
+    /* =========================================
+       กล่องคำแนะนำ (Hint Box) ลอยเหนือช่องกรอก (Tooltip)
+       ========================================= */
+    .hint-box {
+      position: absolute; /* เปลี่ยนให้ลอยอิสระบนจอตามพิกัด JS */
+      width: max-content;
+      max-width: 280px;
+      background: rgba(0, 11, 24, 0.95);
+      border: 1px solid var(--neon-blue);
+      border-radius: 8px; /* โค้งมนแบบ tooltip */
+      padding: 8px 12px; /* ขนาดเล็กลง */
+      color: var(--text-main);
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 229, 255, 0.3);
+      z-index: 1500;
+      backdrop-filter: blur(10px);
+      pointer-events: none; /* กดทะลุได้ */
+      
+      /* ซ่อนเริ่มต้นด้วย opacity และ transform */
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .hint-box.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+    .hint-header {
+      color: var(--neon-blue);
+      font-weight: bold;
+      margin-bottom: 4px;
+      font-size: 0.85rem; /* เล็กลง */
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .hint-header i { font-size: 0.8rem; }
+    .hint-body {
+      font-size: 0.75rem; /* เล็กลง */
+      color: #a5b6c9;
+      line-height: 1.3;
+      white-space: normal;
+    }
+
+    /* =========================================
+       ปุ่มเรียกเครื่องคิดเลข (Floating Button) ขวาล่าง
+       ========================================= */
+    .floating-calc-btn {
+      position: fixed;
+      right: 25px;
+      bottom: 25px;
+      background: linear-gradient(135deg, #113a24, #071910);
+      color: var(--neon-green);
+      border: 2px solid var(--neon-green);
+      border-radius: 50%;
+      width: 65px;
+      height: 65px;
+      font-size: 26px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 0 20px var(--neon-glow);
+      z-index: 1600;
+      transition: all 0.3s;
+    }
+    .floating-calc-btn:hover {
+      transform: scale(1.1);
+      background: var(--neon-green);
+      color: #000;
+      box-shadow: 0 0 30px var(--neon-glow);
+    }
+
+    /* =========================================
+       ปรับปรุงเครื่องคิดเลขเป็น Side Panel
+       ========================================= */
     .keypad-modal {
-      display: none; position: fixed; bottom: 0; left: 0; width: 100%;
-      background: rgba(7, 24, 16, 0.95); border-top: 2px solid var(--neon-green);
-      padding: 15px 10px; box-sizing: border-box; box-shadow: 0 -10px 30px rgba(0,0,0,0.9); z-index: 1000;
+      display: none; 
+      position: fixed; 
+      bottom: 100px; 
+      right: 25px;   
+      left: auto;
+      width: 320px; 
+      background: rgba(3, 8, 6, 0.95); 
+      border: 2px solid var(--neon-green);
+      border-radius: 12px;
+      padding: 15px 10px; 
+      box-sizing: border-box; 
+      box-shadow: 0 10px 40px rgba(0,0,0,0.9); 
+      z-index: 1500;
       backdrop-filter: blur(10px);
     }
     .keypad-header { display: flex; justify-content: space-between; color: var(--neon-green); margin-bottom: 10px; font-size: 14px; }
@@ -404,7 +505,6 @@
     .key-btn:active { background: #113a24; }
     .key-action { color: var(--neon-red); border-color: var(--neon-red); font-size: 18px; }
     .key-special { color: var(--neon-green); border-color: var(--border-dim); background: #0c1a12; }
-    .key-close { background: var(--border-dim); grid-column: span 4; margin-top: 3px; font-size: 16px; color: var(--neon-green); font-weight: bold; }
     
     .key-equals {
       background-color: var(--neon-green);
@@ -657,9 +757,19 @@
 </head>
 <body>
 
+  <!-- กล่องคำแนะนำที่ถูกสร้างให้ลอยเหนือช่อง (Tooltip) -->
+  <div id="inputHintBox" class="hint-box">
+    <div class="hint-header"><i class="fa-solid fa-info-circle"></i> ข้อมูลที่ต้องกรอก</div>
+    <div id="hintText" class="hint-body">...</div>
+  </div>
+
+  <!-- ปุ่มเปิดเครื่องคิดเลขขวาล่าง -->
+  <button id="toggleCalcBtn" class="floating-calc-btn" onclick="toggleKeypad()" tabindex="-1">
+    <i class="fa-solid fa-calculator"></i>
+  </button>
+
 <div class="terminal-container">
   
-  <!-- เมนูบาร์ด้านบนสุด ย้ายปุ่มคู่มือมาประกบปุ่ม Home -->
   <div class="top-menu-bar">
     <button type="button" class="manual-btn" onclick="openManual()">
       <i class="fa-solid fa-book"></i> คู่มือการใช้งาน
@@ -674,7 +784,7 @@
       <i class="fa-solid fa-cat"></i>
     </div>
     <h1 class="app-title">JAGUAR_PRODUCTION_SUPABASE</h1>
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v8.50 (Added Work Period & Remarks)</div>
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v8.62 (Tooltip Hint Box)</div>
   </div>
 
   <div class="header">
@@ -699,19 +809,23 @@
     <div class="form-group">
       <label>1. รหัสใบสั่งงาน & ขั้นตอน [คีย์รหัส 5 หลัก]</label>
       <div class="order-input-wrapper">
-        <input type="text" id="manual_order_code" class="order-manual-input" placeholder="00000" onfocus="this.select()" onclick="openKeypad('manual_order_code')" oninput="handleManualOrderInput(this)" onkeydown="handleEnter(event, 'record_date')">
+        <input type="text" id="manual_order_code" class="order-manual-input" placeholder="00000" 
+          onfocus="handleFocus('manual_order_code', 'กรอกรหัส 5 หลักที่มุมขวาบนของใบสั่งงาน หรือคลิกปุ่มสแกนคิวอาร์โค้ด'); this.select()" 
+          onblur="handleBlur()" oninput="handleManualOrderInput(this)" onkeydown="handleEnter(event, 'record_date')">
         
-        <select id="id_order" onchange="handleOrderChange()" required style="flex-grow: 1;" tabindex="-1">
+        <select id="id_order" onchange="handleOrderChange()" required style="flex-grow: 1;" tabindex="-1"
+          onfocus="handleFocus('id_order', 'เลือกเลขที่ใบสั่งงานจากรายการในระบบ')" onblur="handleBlur()">
           <option value="">-- เลือกใบสั่งงาน --</option>
         </select>
         <button type="button" class="scan-btn" onclick="openScanner()" tabindex="-1">[ 📷 สแกน ]</button>
       </div>
     </div>
 
-    <!-- ข้อมูลชิ้นงาน (แสดงให้เห็น แต่ข้ามได้) -->
+    <!-- ข้อมูลชิ้นงาน -->
     <div class="form-group">
       <label>2. ชิ้นงาน / ขั้นตอน (TARGET / STEP)</label>
-      <select id="id_target" onchange="calculateEfficiency()" required tabindex="-1">
+      <select id="id_target" onchange="calculateEfficiency()" required tabindex="-1"
+        onfocus="handleFocus('id_target', 'เลือกขั้นตอนการทำงาน (ระบบจะดึงข้อมูลเป้าหมาย/ชม. มาให้โดยอัตโนมัติ)')" onblur="handleBlur()">
         <option value="">-- รอการเลือกใบสั่งงาน --</option>
       </select>
       <input type="hidden" id="id_work" value="">
@@ -720,25 +834,30 @@
     <!-- ลำดับที่ 2 -->
     <div class="form-group">
       <label>3. วันที่บันทึก (RECORD DATE)</label>
-      <input type="date" id="record_date" required onkeydown="handleEnter(event, 'produced_amount')">
+      <input type="date" id="record_date" required 
+        onfocus="handleFocus('record_date', 'กำหนดวันที่บันทึกยอดการผลิต (ค่าเริ่มต้นคือวันที่ปัจจุบัน)')" onblur="handleBlur()" onkeydown="handleEnter(event, 'produced_amount')">
     </div>
 
     <!-- ลำดับที่ 3 -->
     <div class="form-group">
       <label>4. จำนวนที่ผลิตได้ (PRODUCED QTY)</label>
-      <input type="text" id="produced_amount" placeholder="0 (คลิกเพื่อเปิดแป้น หรือพิมพ์ได้เลย)" onclick="openKeypad('produced_amount')" onfocus="this.select()" onkeydown="handleEnter(event, 'nogoods_amount')">
+      <input type="text" id="produced_amount" placeholder="0" 
+        onfocus="handleFocus('produced_amount', 'กรอกจำนวน **ชิ้นงานดี** ที่ผลิตได้ (เปิดเครื่องคิดเลขได้ที่ปุ่มขวาล่าง)'); this.select()" 
+        onblur="handleBlur()" onkeydown="handleEnter(event, 'nogoods_amount')">
     </div>
 
     <!-- ลำดับที่ 4 -->
     <div class="form-group">
       <label>5. จำนวนของเสีย (NG QTY)</label>
-      <input type="text" id="nogoods_amount" placeholder="0 (ปล่อยว่างกด Enter ได้)" onclick="openKeypad('nogoods_amount')" onfocus="this.select()" onkeydown="handleEnter(event, 'work_period')">
+      <input type="text" id="nogoods_amount" placeholder="0 (ปล่อยว่างได้)" 
+        onfocus="handleFocus('nogoods_amount', 'กรอกจำนวน **ของเสีย** หากไม่มีให้ใส่ 0 หรือเว้นว่างไว้'); this.select()" 
+        onblur="handleBlur()" onkeydown="handleEnter(event, 'work_period')">
     </div>
 
-    <!-- ลำดับที่ 5 (ใหม่) -->
+    <!-- ลำดับที่ 5 -->
     <div class="form-group">
       <label>6. ช่วงเวลาทำงาน (WORK PERIOD)</label>
-      <select id="work_period" onkeydown="handleEnter(event, 'hour_work')">
+      <select id="work_period" onfocus="handleFocus('work_period', 'ระบุว่าเป็นการผลิตในช่วงเวลาทำงาน ปกติ หรือ ทำล่วงเวลา (OT)')" onblur="handleBlur()" onkeydown="handleEnter(event, 'hour_work')">
         <option value="ปกติ" selected>ปกติ</option>
         <option value="OT">OT</option>
       </select>
@@ -747,13 +866,17 @@
     <!-- ลำดับที่ 6 -->
     <div class="form-group">
       <label>7. ชั่วโมงทำงาน (WORK HOURS)</label>
-      <input type="text" id="hour_work" placeholder="0.00 (คลิกเพื่อเปิดแป้น หรือพิมพ์ได้เลย)" onclick="openKeypad('hour_work')" onfocus="this.select()" onkeydown="handleEnter(event, 'employee_search')">
+      <input type="text" id="hour_work" placeholder="0.00" 
+        onfocus="handleFocus('hour_work', 'กรอกระยะเวลาการทำงานเป็นชั่วโมง (เช่น 8 หรือ 1.5 ชั่วโมง)'); this.select()" 
+        onblur="handleBlur()" onkeydown="handleEnter(event, 'employee_search')">
     </div>
 
     <!-- ลำดับที่ 7 -->
     <div class="form-group">
       <label>8. พนักงาน (EMPLOYEE) [พิมพ์เพื่อค้นหา]</label>
-      <input type="text" id="employee_search" list="employee_datalist" placeholder="-- พิมพ์ชื่อพนักงานเพื่อค้นหา --" autocomplete="off" onfocus="this.select()" onclick="this.select()" onkeydown="handleReasonFlow(event)">
+      <input type="text" id="employee_search" list="employee_datalist" placeholder="-- พิมพ์ชื่อพนักงานเพื่อค้นหา --" autocomplete="off" 
+        onfocus="handleFocus('employee_search', 'พิมพ์ชื่อหรือรหัสพนักงาน เพื่อเลือกผู้ปฏิบัติงานในขั้นตอนนี้'); this.select()" 
+        onblur="handleBlur()" onclick="this.select()" onkeydown="handleReasonFlow(event)">
       <datalist id="employee_datalist"></datalist>
     </div>
 
@@ -765,15 +888,17 @@
     <!-- ลำดับที่ 8 (ถ้ามี) -->
     <div class="form-group" id="reasonGroup" style="display: none;">
       <label style="color: var(--neon-red);">9. สาเหตุ (บังคับเลือก หากประสิทธิภาพ &lt; 80%)</label>
-      <select id="id_reason" onkeydown="handleEnter(event, 'remark')">
+      <select id="id_reason" onfocus="handleFocus('id_reason', 'กรุณาระบุสาเหตุที่ประสิทธิภาพการทำงานต่ำกว่าเกณฑ์ 80%')" onblur="handleBlur()" onkeydown="handleEnter(event, 'remark')">
         <option value="">-- เลือกสาเหตุ --</option>
       </select>
     </div>
 
-    <!-- ลำดับที่ 9 (ใหม่) -->
+    <!-- ลำดับที่ 9 -->
     <div class="form-group">
       <label>10. หมายเหตุ (REMARK) [เช่น เบอร์เครื่อง/แม่พิมพ์]</label>
-      <input type="text" id="remark" list="remark_datalist" placeholder="-- พิมพ์หรือเลือกหมายเหตุจากรายการ --" autocomplete="off" onfocus="this.select()" onclick="this.select()" onkeydown="handleEnter(event, 'submitBtn')">
+      <input type="text" id="remark" list="remark_datalist" placeholder="-- พิมพ์หรือเลือกหมายเหตุจากรายการ --" autocomplete="off" 
+        onfocus="handleFocus('remark', 'ใส่หมายเหตุเพิ่มเติม (หากมี) เช่น เบอร์เครื่องจักรที่ใช้ หรือ รหัสแม่พิมพ์'); this.select()" 
+        onblur="handleBlur()" onclick="this.select()" onkeydown="handleEnter(event, 'submitBtn')">
       <datalist id="remark_datalist"></datalist>
     </div>
 
@@ -891,7 +1016,7 @@
       <li><strong>รหัสใบสั่งงาน & ขั้นตอน:</strong> กรอกรหัสค้นหา 5 หลัก หรือ สแกนรหัสค้นหา กรณีไม่ทราบรหัสค้นหา ให้เลือกใบสั่งที่ต้องการ แล้วจึงเลือกขั้นตอนการทำงาน</li>
       <li><strong>ชิ้นงาน / ขั้นตอน:</strong> ระบบจะดึงข้อมูลชิ้นงาน ขั้นตอน และเป้าหมายต่อชั่วโมง (Target) มาแสดงให้อัตโนมัติ <span style="color: var(--neon-red);">(กรณีที่ไม่พบข้อมูลใบสั่งผลิต แสดงว่า ระบบยังไม่มีการเพิ่มใบสั่งผลิต จำเป็นจะต้องกลับไปหน้าหลักเพื่อเพิ่มเลขที่ใบสั่งก่อน)</span> <span style="color: var(--neon-yellow);">กรณีที่ เลือกใบสั่งได้ แต่ขั้นตอนการทำงานไม่ครบ ให้ไปที่ฟอร์ม ตั้งยอดมาตรฐาน(Target )เพื่อ เพิ่มขั้นตอนงานให้กับ รหัสชิ้นงานตัวนี้ พร้อมทั้งระบุยอดผลิตมาตรฐานต่อชม.</span></li>
       <li><strong>วันที่บันทึก:</strong> ค่าเริ่มต้นคือวันที่ปัจจุบัน สามารถกดเพื่อเปลี่ยนเป็นวันที่ทำผลิตจริงได้</li>
-      <li><strong>จำนวนที่ผลิตได้:</strong> คลิกที่ช่องเพื่อเรียกแป้นพิมพ์ตัวเลขบนหน้าจอ (Keypad) ขึ้นมากรอกยอดงานดี</li>
+      <li><strong>จำนวนที่ผลิตได้:</strong> คลิกที่ช่องเพื่อกรอกยอดงานดี สามารถคลิกปุ่มเครื่องคิดเลขที่มุมขวาล่างเพื่อช่วยคำนวณได้</li>
       <li><strong>จำนวนของเสีย:</strong> กรอกจำนวนของเสีย หากไม่มีให้เว้นว่างไว้หรือใส่ 0</li>
       <li><strong>ช่วงเวลาทำงาน:</strong> ระบุว่าเป็นการผลิตในเวลา "ปกติ" หรือ "OT"</li>
       <li><strong>ชั่วโมงทำงาน:</strong> กรอกเวลาที่ใช้ผลิตจริง (เช่น 8 หรือ 1.5) เพื่อให้ระบบคำนวณประสิทธิภาพ</li>
@@ -904,7 +1029,7 @@
     <ul>
       <li><strong>ปุ่ม Enter:</strong> เมื่อพิมพ์ข้อมูลในแต่ละช่องเสร็จ การกด Enter จะสั่งให้เปลี่ยนช่องถัดไปอัตโนมัติ</li>
       <li><strong>ลูกศร ขึ้น/ลง (หรือ Tab):</strong> ใช้เลื่อนกลับไปแก้ไขช่องก่อนหน้า หรือข้ามช่อง</li>
-      <li><strong>ฟังก์ชันคำนวณในตัว:</strong> แป้นพิมพ์รองรับ บวกลบคูณหาร กดปุ่ม "=" ระบบจะคำนวณให้ทันที</li>
+      <li><strong>ฟังก์ชันคำนวณในตัว:</strong> แป้นพิมพ์เครื่องคิดเลขรองรับ บวกลบคูณหาร กดปุ่ม "=" ระบบจะคำนวณให้ทันที</li>
     </ul>
 
     <h4>📊 การตรวจสอบรายงานและการจัดการข้อมูล</h4>
@@ -927,35 +1052,33 @@
 
 <div id="numericKeypad" class="keypad-modal">
   <div class="keypad-header">
-    <span id="keypadTitle">> ระบุค่า: </span>
-    <span onclick="closeKeypad()" style="cursor:pointer;">[X] ปิด</span>
+    <span id="keypadTitle">> เครื่องคิดเลข</span>
+    <span onclick="toggleKeypad()" style="cursor:pointer; color: var(--neon-red);">[X] ปิด</span>
   </div>
   <div class="keypad-grid">
-    <button type="button" class="key-btn" onclick="pressKey('7')">7</button>
-    <button type="button" class="key-btn" onclick="pressKey('8')">8</button>
-    <button type="button" class="key-btn" onclick="pressKey('9')">9</button>
-    <button type="button" class="key-btn key-special key-math" onclick="pressKey('+')">+</button>
+    <button type="button" class="key-btn" onmousedown="event.preventDefault()" onclick="pressKey('7')">7</button>
+    <button type="button" class="key-btn" onmousedown="event.preventDefault()" onclick="pressKey('8')">8</button>
+    <button type="button" class="key-btn" onmousedown="event.preventDefault()" onclick="pressKey('9')">9</button>
+    <button type="button" class="key-btn key-special key-math" onmousedown="event.preventDefault()" onclick="pressKey('+')">+</button>
     
-    <button type="button" class="key-btn" onclick="pressKey('4')">4</button>
-    <button type="button" class="key-btn" onclick="pressKey('5')">5</button>
-    <button type="button" class="key-btn" onclick="pressKey('6')">6</button>
-    <button type="button" class="key-btn key-special key-math" onclick="pressKey('-')">-</button>
+    <button type="button" class="key-btn" onmousedown="event.preventDefault()" onclick="pressKey('4')">4</button>
+    <button type="button" class="key-btn" onmousedown="event.preventDefault()" onclick="pressKey('5')">5</button>
+    <button type="button" class="key-btn" onmousedown="event.preventDefault()" onclick="pressKey('6')">6</button>
+    <button type="button" class="key-btn key-special key-math" onmousedown="event.preventDefault()" onclick="pressKey('-')">-</button>
     
-    <button type="button" class="key-btn" onclick="pressKey('1')">1</button>
-    <button type="button" class="key-btn" onclick="pressKey('2')">2</button>
-    <button type="button" class="key-btn" onclick="pressKey('3')">3</button>
-    <button type="button" class="key-btn key-special key-math" onclick="pressKey('*')">*</button>
+    <button type="button" class="key-btn" onmousedown="event.preventDefault()" onclick="pressKey('1')">1</button>
+    <button type="button" class="key-btn" onmousedown="event.preventDefault()" onclick="pressKey('2')">2</button>
+    <button type="button" class="key-btn" onmousedown="event.preventDefault()" onclick="pressKey('3')">3</button>
+    <button type="button" class="key-btn key-special key-math" onmousedown="event.preventDefault()" onclick="pressKey('*')">*</button>
     
-    <button type="button" class="key-btn" onclick="pressKey('0')">0</button>
-    <button type="button" class="key-btn" onclick="pressKey('00')">00</button>
-    <button type="button" class="key-btn key-math" onclick="pressKey('.')">.</button>
-    <button type="button" class="key-btn key-special key-math" onclick="pressKey('/')">/</button>
+    <button type="button" class="key-btn" onmousedown="event.preventDefault()" onclick="pressKey('0')">0</button>
+    <button type="button" class="key-btn" onmousedown="event.preventDefault()" onclick="pressKey('00')">00</button>
+    <button type="button" class="key-btn key-math" onmousedown="event.preventDefault()" onclick="pressKey('.')">.</button>
+    <button type="button" class="key-btn key-special key-math" onmousedown="event.preventDefault()" onclick="pressKey('/')">/</button>
 
-    <button type="button" class="key-btn key-action" onclick="pressKey('BACKSPACE')">ลบ</button>
-    <button type="button" class="key-btn key-action" onclick="pressKey('CLEAR')">ล้าง</button>
-    <button type="button" class="key-btn key-equals key-math" style="grid-column: span 2;" onclick="pressKey('=')">=</button>
-    
-    <button type="button" class="key-btn key-close" style="grid-column: span 4; margin-top: 5px;" onclick="closeKeypad(false)">ตกลง / ยืนยัน</button>
+    <button type="button" class="key-btn key-action" onmousedown="event.preventDefault()" onclick="pressKey('BACKSPACE')">ลบ</button>
+    <button type="button" class="key-btn key-action" onmousedown="event.preventDefault()" onclick="pressKey('CLEAR')">ล้าง</button>
+    <button type="button" class="key-btn key-equals key-math" style="grid-column: span 2;" onmousedown="event.preventDefault()" onclick="pressKey('=')">=</button>
   </div>
 </div>
 
@@ -975,8 +1098,77 @@
   let isEditMode = false;
   let originalRecordKey = null;
   let html5QrCode = null;
+  let hideHintTimeout;
 
-  // ฟังก์ชันเปิด/ปิดคู่มือการใช้งาน
+  // ==========================================
+  // ระบบ Hint Box (แบบ Tooltip)
+  // ==========================================
+  function handleFocus(id, hintMessage) {
+    activeInputId = id; 
+    const el = document.getElementById(id);
+    const hintBox = document.getElementById('inputHintBox');
+    
+    document.getElementById('hintText').innerHTML = hintMessage;
+    
+    // แสดงชั่วคราวเพื่อคำนวณขนาด
+    hintBox.style.visibility = 'hidden';
+    hintBox.style.display = 'block';
+    
+    // คำนวณพิกัด (ให้อยู่เหนือ Input ที่กำลังโฟกัส)
+    const rect = el.getBoundingClientRect();
+    let boxHeight = hintBox.offsetHeight;
+    
+    let topPos = rect.top + window.scrollY - boxHeight - 8;
+    let leftPos = rect.left + window.scrollX;
+
+    // ถ้าเหนือช่องกรอกไม่มีที่ว่าง (ติดขอบจอเกินไป) ให้ย้ายไปแสดงด้านล่างของช่องกรอกแทน
+    if (rect.top - boxHeight - 8 < 0) {
+       topPos = rect.bottom + window.scrollY + 8;
+    }
+    
+    // ถ้าแสดงแล้วจะล้นขอบขวาของจอ ให้ถอยกลับมา
+    if (leftPos + hintBox.offsetWidth > document.documentElement.scrollWidth) {
+       leftPos = document.documentElement.scrollWidth - hintBox.offsetWidth - 10;
+    }
+
+    hintBox.style.top = topPos + 'px';
+    hintBox.style.left = leftPos + 'px';
+
+    // คืนค่า visibility และเพิ่มคลาส .show เพื่อให้เห็น
+    hintBox.style.visibility = '';
+    hintBox.classList.add('show');
+    clearTimeout(hideHintTimeout);
+    
+    let isCode = (id === 'manual_order_code');
+    document.querySelectorAll('.key-math').forEach(btn => {
+      btn.style.visibility = isCode ? 'hidden' : 'visible'; 
+    });
+  }
+
+  function handleBlur() {
+    hideHintTimeout = setTimeout(() => {
+      document.getElementById('inputHintBox').classList.remove('show');
+    }, 200);
+  }
+
+  function toggleKeypad() {
+    const keypad = document.getElementById('numericKeypad');
+    if (keypad.style.display === 'block') {
+      if (activeInputId) {
+        let input = document.getElementById(activeInputId);
+        if(input) input.value = calculateMath(input.value);
+      }
+      keypad.style.display = 'none';
+      calculateEfficiency();
+    } else {
+      keypad.style.display = 'block';
+    }
+  }
+
+  function closeKeypad() {
+    toggleKeypad();
+  }
+
   function openManual() {
     document.getElementById('manualModal').style.display = 'flex';
   }
@@ -984,11 +1176,10 @@
     document.getElementById('manualModal').style.display = 'none';
   }
   
-  // ฟังก์ชันพิมพ์คู่มือแบบบีบให้ลง 1 หน้า A4
   function printManual() {
     const manualContent = document.querySelector('.manual-box').cloneNode(true);
     const buttons = manualContent.querySelectorAll('button');
-    buttons.forEach(btn => btn.remove()); // เอาปุ่มในหน้าต่างออกก่อนสั่งพิมพ์
+    buttons.forEach(btn => btn.remove());
 
     const printWindow = window.open('', '_blank');
     printWindow.document.write(`
@@ -997,46 +1188,13 @@
         <title>คู่มือการใช้งาน JAGUAR_PRODUCTION</title>
         <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600;700&display=swap" rel="stylesheet">
         <style>
-          @page { 
-            size: A4 portrait; 
-            margin: 12mm; /* ลดขอบกระดาษลงเพื่อให้มีพื้นที่เพิ่ม */
-          }
-          body { 
-            font-family: 'Sarabun', sans-serif; 
-            color: #000; 
-            line-height: 1.35; /* บีบบรรทัดนิดหน่อย */
-            margin: 0; 
-            padding: 0; 
-            box-sizing: border-box;
-          }
-          /* จัดการโครงสร้างที่พิมพ์ */
+          @page { size: A4 portrait; margin: 12mm; }
+          body { font-family: 'Sarabun', sans-serif; color: #000; line-height: 1.35; margin: 0; padding: 0; box-sizing: border-box; }
           .manual-box { height: auto !important; overflow: visible !important; }
-          h3 { 
-            color: #000; 
-            border-bottom: 2px solid #000; 
-            padding-bottom: 5px; 
-            margin-top: 0; 
-            font-size: 20px; 
-            text-align: center; 
-          }
-          h4 { 
-            color: #222; 
-            margin-top: 12px; 
-            margin-bottom: 6px; 
-            border-bottom: 1px solid #ccc; 
-            padding-bottom: 3px; 
-            font-size: 16px; 
-          }
-          ul, ol { 
-            margin-top: 5px; 
-            margin-bottom: 5px; 
-            padding-left: 25px; 
-          }
-          li { 
-            margin-bottom: 5px; 
-            font-size: 13.5px; /* ปรับลดขนาดลงให้พอดีหน้า */
-            text-align: justify; 
-          }
+          h3 { color: #000; border-bottom: 2px solid #000; padding-bottom: 5px; margin-top: 0; font-size: 20px; text-align: center; }
+          h4 { color: #222; margin-top: 12px; margin-bottom: 6px; border-bottom: 1px solid #ccc; padding-bottom: 3px; font-size: 16px; }
+          ul, ol { margin-top: 5px; margin-bottom: 5px; padding-left: 25px; }
+          li { margin-bottom: 5px; font-size: 13.5px; text-align: justify; }
           strong { color: #000; font-weight: bold; }
           span { color: #333 !important; font-weight: bold; }
         </style>
@@ -1051,14 +1209,12 @@
     printWindow.document.close();
     printWindow.focus();
     
-    // หน่วงเวลาให้ Font โหลดเสร็จก่อนสั่งพิมพ์
     setTimeout(() => {
       printWindow.print();
       printWindow.close();
     }, 400);
   }
 
-  // 1. ฟังก์ชันรองรับลูกศรขึ้น/ลง และ Tab เพื่อวิ่งตาม Loop ลำดับใหม่
   document.addEventListener('keydown', function(e) {
     const formElements = ['manual_order_code', 'record_date', 'produced_amount', 'nogoods_amount', 'work_period', 'hour_work', 'employee_search', 'id_reason', 'remark', 'submitBtn'];
     
@@ -1076,7 +1232,6 @@
         }
 
         e.preventDefault(); 
-        if(activeInputId) closeKeypad(true); 
         
         let nextIdx = idx;
         let isBackward = (e.key === 'ArrowUp' || (e.key === 'Tab' && e.shiftKey));
@@ -1106,7 +1261,6 @@
     }
   });
 
-  // 2. ฟังก์ชันรองรับการกด Enter ข้ามช่อง
   function handleEnter(e, nextElementId) {
     if (e.key === 'Enter') {
       e.preventDefault();
@@ -1117,15 +1271,12 @@
           if (typeof nextEl.select === 'function') nextEl.select();
         }, 10);
       }
-      if(activeInputId) closeKeypad(true);
     }
   }
 
-  // 3. ฟังก์ชันเช็คประสิทธิภาพตรงจุด "ชื่อพนักงาน"
   function handleReasonFlow(e) {
     if (e.key === 'Enter') {
       e.preventDefault();
-      if(activeInputId) closeKeypad(true);
       
       calculateEfficiency(); 
       
@@ -2104,50 +2255,6 @@
     document.getElementById('reasonGroup').style.display = 'none';
     document.getElementById('effDisplay').innerText = "0.00%";
     document.getElementById('effDisplay').style.color = "var(--text-muted)";
-  }
-
-  function openKeypad(inputId) {
-    activeInputId = inputId;
-    let labelText = document.querySelector(`label[for="${inputId}"]`);
-    let title = labelText ? labelText.innerText : "";
-    
-    if (inputId === 'hour_work') title = 'ชั่วโมงทำงาน';
-    else if (inputId === 'produced_amount') title = 'จำนวนผลิต';
-    else if (inputId === 'nogoods_amount') title = 'จำนวนของเสีย';
-    else if (inputId === 'manual_order_code') title = 'รหัสใบสั่งงาน (5 หลัก)';
-
-    document.getElementById('keypadTitle').innerText = "> ระบุค่า: " + title;
-
-    let isCode = (inputId === 'manual_order_code');
-    document.querySelectorAll('.key-math').forEach(btn => {
-      btn.style.visibility = isCode ? 'hidden' : 'visible'; 
-    });
-
-    document.getElementById('numericKeypad').style.display = 'block';
-  }
-
-  function closeKeypad(preventAutoJumping = false) {
-    if (activeInputId && activeInputId !== 'manual_order_code') {
-      let input = document.getElementById(activeInputId);
-      input.value = calculateMath(input.value);
-      
-      if(!preventAutoJumping) {
-        let nextId = null;
-        if(activeInputId === 'produced_amount') nextId = 'nogoods_amount';
-        else if(activeInputId === 'nogoods_amount') nextId = 'work_period';
-        else if(activeInputId === 'hour_work') nextId = 'employee_search';
-        
-        if(nextId) {
-            let n = document.getElementById(nextId);
-            n.focus();
-            setTimeout(() => { if(typeof n.select === 'function') n.select(); }, 10);
-        }
-      }
-    }
-    
-    document.getElementById('numericKeypad').style.display = 'none';
-    activeInputId = null;
-    calculateEfficiency();
   }
 
   function calculateMath(expression) {
