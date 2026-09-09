@@ -359,9 +359,9 @@
        ========================================= */
     .submit-btn {
       width: 100%; 
-      background: linear-gradient(145deg, #001f33, #000a14); /* ไล่สีน้ำเงินเข้ม */
-      color: var(--neon-blue); /* ตัวหนังสือสีน้ำเงินนีออน */
-      border: 2px solid var(--neon-blue); /* ขอบสีน้ำเงินนีออน */
+      background: linear-gradient(145deg, #001f33, #000a14); 
+      color: var(--neon-blue); 
+      border: 2px solid var(--neon-blue); 
       padding: 14px; font-size: 16px;
       border-radius: 8px; cursor: pointer; font-weight: bold;
       margin-top: 10px;
@@ -370,9 +370,9 @@
     }
     .submit-btn:focus { outline: 2px solid var(--neon-yellow); }
     .submit-btn:hover { 
-      background: var(--neon-blue); /* พื้นหลังสีน้ำเงิน */
-      color: var(--bg-dark); /* ตัวหนังสือสีดำ/มืด */
-      box-shadow: 0 0 20px rgba(0, 229, 255, 0.6); /* เรืองแสงสีน้ำเงิน */
+      background: var(--neon-blue); 
+      color: var(--bg-dark); 
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.6); 
       transform: translateY(-2px); 
     }
     
@@ -403,22 +403,22 @@
 
     /* =========================================
        กล่องคำแนะนำ (Hint Box) ลอยเหนือช่องกรอก (Tooltip)
+       ปรับให้สูงขึ้นและมีลูกศรสีแดง
        ========================================= */
     .hint-box {
-      position: absolute; /* เปลี่ยนให้ลอยอิสระบนจอตามพิกัด JS */
+      position: absolute;
       width: max-content;
       max-width: 280px;
       background: rgba(0, 11, 24, 0.95);
       border: 1px solid var(--neon-blue);
-      border-radius: 8px; /* โค้งมนแบบ tooltip */
-      padding: 8px 12px; /* ขนาดเล็กลง */
+      border-radius: 8px; 
+      padding: 8px 12px; 
       color: var(--text-main);
       box-shadow: 0 8px 15px rgba(0, 0, 0, 0.8), 0 0 10px rgba(0, 229, 255, 0.3);
       z-index: 1500;
       backdrop-filter: blur(10px);
-      pointer-events: none; /* กดทะลุได้ */
+      pointer-events: none;
       
-      /* ซ่อนเริ่มต้นด้วย opacity และ transform */
       opacity: 0;
       visibility: hidden;
       transform: translateY(10px);
@@ -429,18 +429,42 @@
       visibility: visible;
       transform: translateY(0);
     }
+    
+    /* ลูกศรชี้ลง (กรณีกล่องอยู่ด้านบน) */
+    .hint-box.arrow-down::after {
+      content: '';
+      position: absolute;
+      bottom: -25px; /* ความยาวของลูกศร */
+      left: 20px;
+      border-width: 25px 12px 0 12px;
+      border-style: solid;
+      border-color: red transparent transparent transparent;
+      filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5));
+    }
+    /* ลูกศรชี้ขึ้น (กรณีกล่องย้ายไปอยู่ด้านล่าง เพราะที่ว่างด้านบนไม่พอ) */
+    .hint-box.arrow-up::after {
+      content: '';
+      position: absolute;
+      top: -25px; /* ความยาวของลูกศร */
+      left: 20px;
+      border-width: 0 12px 25px 12px;
+      border-style: solid;
+      border-color: transparent transparent red transparent;
+      filter: drop-shadow(0 -4px 4px rgba(0,0,0,0.5));
+    }
+
     .hint-header {
       color: var(--neon-blue);
       font-weight: bold;
       margin-bottom: 4px;
-      font-size: 0.85rem; /* เล็กลง */
+      font-size: 0.85rem; 
       display: flex;
       align-items: center;
       gap: 6px;
     }
     .hint-header i { font-size: 0.8rem; }
     .hint-body {
-      font-size: 0.75rem; /* เล็กลง */
+      font-size: 0.75rem; 
       color: #a5b6c9;
       line-height: 1.3;
       white-space: normal;
@@ -1101,7 +1125,7 @@
   let hideHintTimeout;
 
   // ==========================================
-  // ระบบ Hint Box (แบบ Tooltip)
+  // ระบบ Hint Box (แบบ Tooltip) - ปรับระดับความสูงและลูกศร
   // ==========================================
   function handleFocus(id, hintMessage) {
     activeInputId = id; 
@@ -1114,16 +1138,22 @@
     hintBox.style.visibility = 'hidden';
     hintBox.style.display = 'block';
     
-    // คำนวณพิกัด (ให้อยู่เหนือ Input ที่กำลังโฟกัส)
+    // คำนวณพิกัด ให้อยู่เหนือ Input ที่กำลังโฟกัส
     const rect = el.getBoundingClientRect();
     let boxHeight = hintBox.offsetHeight;
     
-    let topPos = rect.top + window.scrollY - boxHeight - 8;
+    // ปรับให้ลอยสูงขึ้นอย่างชัดเจน (เว้นระยะสำหรับลูกศรประมาณ 45px)
+    let topPos = rect.top + window.scrollY - boxHeight - 45; 
     let leftPos = rect.left + window.scrollX;
 
-    // ถ้าเหนือช่องกรอกไม่มีที่ว่าง (ติดขอบจอเกินไป) ให้ย้ายไปแสดงด้านล่างของช่องกรอกแทน
-    if (rect.top - boxHeight - 8 < 0) {
-       topPos = rect.bottom + window.scrollY + 8;
+    // ถ้าพื้นที่ด้านบนไม่พอ (ใกล้ขอบจอเกินไป) ให้ย้ายไปแสดงด้านล่าง
+    if (rect.top - boxHeight - 45 < 0) {
+       topPos = rect.bottom + window.scrollY + 35; // ย้ายลงล่าง และเว้นพื้นที่ให้ลูกศรชี้ขึ้น
+       hintBox.classList.remove('arrow-down');
+       hintBox.classList.add('arrow-up');
+    } else {
+       hintBox.classList.remove('arrow-up');
+       hintBox.classList.add('arrow-down');
     }
     
     // ถ้าแสดงแล้วจะล้นขอบขวาของจอ ให้ถอยกลับมา
