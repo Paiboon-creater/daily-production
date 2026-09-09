@@ -354,9 +354,6 @@
     }
     .eff-value { font-weight: bold; font-size: 18px; }
 
-    /* =========================================
-       ปุ่ม Submit เปลี่ยนเป็นสีน้ำเงิน
-       ========================================= */
     .submit-btn {
       width: 100%; 
       background: linear-gradient(145deg, #001f33, #000a14); 
@@ -402,8 +399,7 @@
     }
 
     /* =========================================
-       กล่องคำแนะนำ (Hint Box) ลอยเหนือช่องกรอก (Tooltip)
-       ปรับให้สูงขึ้นและมีลูกศรสีแดง
+       กล่องคำแนะนำ (Hint Box) ลอยเหนือช่องกรอก
        ========================================= */
     .hint-box {
       position: absolute;
@@ -430,23 +426,22 @@
       transform: translateY(0);
     }
     
-    /* ลูกศรชี้ลง (กรณีกล่องอยู่ด้านบน) */
     .hint-box.arrow-down::after {
       content: '';
       position: absolute;
-      bottom: -25px; /* ความยาวของลูกศร */
-      left: 20px;
+      bottom: -25px;
+      /* ใช้ตัวแปร CSS สำหรับขยับตำแหน่งลูกศร */
+      left: var(--arrow-pos, 20px);
       border-width: 25px 12px 0 12px;
       border-style: solid;
       border-color: red transparent transparent transparent;
       filter: drop-shadow(0 4px 4px rgba(0,0,0,0.5));
     }
-    /* ลูกศรชี้ขึ้น (กรณีกล่องย้ายไปอยู่ด้านล่าง เพราะที่ว่างด้านบนไม่พอ) */
     .hint-box.arrow-up::after {
       content: '';
       position: absolute;
-      top: -25px; /* ความยาวของลูกศร */
-      left: 20px;
+      top: -25px;
+      left: var(--arrow-pos, 20px);
       border-width: 0 12px 25px 12px;
       border-style: solid;
       border-color: transparent transparent red transparent;
@@ -470,9 +465,6 @@
       white-space: normal;
     }
 
-    /* =========================================
-       ปุ่มเรียกเครื่องคิดเลข (Floating Button) ขวาล่าง
-       ========================================= */
     .floating-calc-btn {
       position: fixed;
       right: 25px;
@@ -499,9 +491,6 @@
       box-shadow: 0 0 30px var(--neon-glow);
     }
 
-    /* =========================================
-       ปรับปรุงเครื่องคิดเลขเป็น Side Panel
-       ========================================= */
     .keypad-modal {
       display: none; 
       position: fixed; 
@@ -808,7 +797,7 @@
       <i class="fa-solid fa-cat"></i>
     </div>
     <h1 class="app-title">JAGUAR_PRODUCTION_SUPABASE</h1>
-    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v8.62 (Tooltip Hint Box)</div>
+    <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; letter-spacing: 1px;">ระบบบันทึกการผลิตรายวัน v8.63 (อัปเดตป้องกันข้อมูลตารางทับซ้อน)</div>
   </div>
 
   <div class="header">
@@ -1123,9 +1112,12 @@
   let originalRecordKey = null;
   let html5QrCode = null;
   let hideHintTimeout;
+  
+  // ตัวแปรสำหรับเช็คลำดับการดึงข้อมูลตาราง ป้องกันข้อมูลโหลดทับซ้อน (Race Condition)
+  let fetchReportCounter = 0; 
 
   // ==========================================
-  // ระบบ Hint Box (แบบ Tooltip) - ปรับระดับความสูงและลูกศร
+  // ระบบ Hint Box (ปรับตำแหน่งชดเชยไปซ้าย)
   // ==========================================
   function handleFocus(id, hintMessage) {
     activeInputId = id; 
@@ -1138,17 +1130,20 @@
     hintBox.style.visibility = 'hidden';
     hintBox.style.display = 'block';
     
-    // คำนวณพิกัด ให้อยู่เหนือ Input ที่กำลังโฟกัส
+    // คำนวณพิกัดจากตำแหน่ง Input
     const rect = el.getBoundingClientRect();
     let boxHeight = hintBox.offsetHeight;
     
-    // ปรับให้ลอยสูงขึ้นอย่างชัดเจน (เว้นระยะสำหรับลูกศรประมาณ 45px)
+    // ปรับลอยสูงขึ้น
     let topPos = rect.top + window.scrollY - boxHeight - 45; 
-    let leftPos = rect.left + window.scrollX;
+    
+    // เลื่อนเยื้องซ้ายไป 80px
+    let shiftLeftAmount = 80;
+    let leftPos = rect.left + window.scrollX - shiftLeftAmount;
 
-    // ถ้าพื้นที่ด้านบนไม่พอ (ใกล้ขอบจอเกินไป) ให้ย้ายไปแสดงด้านล่าง
+    // ถ้าพื้นที่ด้านบนไม่พอ ให้ย้ายไปแสดงด้านล่าง
     if (rect.top - boxHeight - 45 < 0) {
-       topPos = rect.bottom + window.scrollY + 35; // ย้ายลงล่าง และเว้นพื้นที่ให้ลูกศรชี้ขึ้น
+       topPos = rect.bottom + window.scrollY + 35;
        hintBox.classList.remove('arrow-down');
        hintBox.classList.add('arrow-up');
     } else {
@@ -1156,13 +1151,24 @@
        hintBox.classList.add('arrow-down');
     }
     
-    // ถ้าแสดงแล้วจะล้นขอบขวาของจอ ให้ถอยกลับมา
+    // กันล้นซ้าย
+    if (leftPos < 10) leftPos = 10;
+    
+    // กันล้นขวา
     if (leftPos + hintBox.offsetWidth > document.documentElement.scrollWidth) {
        leftPos = document.documentElement.scrollWidth - hintBox.offsetWidth - 10;
     }
 
     hintBox.style.top = topPos + 'px';
     hintBox.style.left = leftPos + 'px';
+
+    // คำนวณตำแหน่งลูกศรให้ชี้มาตรงตำแหน่ง input เสมอ
+    let arrowPos = (rect.left + window.scrollX) - leftPos + 20; // 20 คือค่า default
+    if (arrowPos < 10) arrowPos = 10;
+    if (arrowPos > hintBox.offsetWidth - 25) arrowPos = hintBox.offsetWidth - 25;
+    
+    // เซ็ตตัวแปร CSS เพื่อขยับลูกศร
+    hintBox.style.setProperty('--arrow-pos', arrowPos + 'px');
 
     // คืนค่า visibility และเพิ่มคลาส .show เพื่อให้เห็น
     hintBox.style.visibility = '';
@@ -2013,6 +2019,8 @@
   }
 
   async function fetchReport() {
+    const currentFetchId = ++fetchReportCounter; // สร้าง ID ยืนยันการ Fetch ครั้งนี้
+    
     const orderId = document.getElementById('filter_order').value;
     const workId = document.getElementById('filter_work').value;
     const targetId = document.getElementById('filter_target').value;
@@ -2038,8 +2046,15 @@
       }
 
       const res = await fetch(query, { headers });
+      
+      // ถ้าระหว่างรอดึงข้อมูล มีการคลิก/แก้ไขจนทำให้เกิดการ Fetch ใหม่ที่เร็วกว่า ให้ยกเลิกการวาดตารางเก่านี้ทิ้งซะ
+      if (currentFetchId !== fetchReportCounter) return; 
+
       if (!res.ok) throw new Error("ดึงข้อมูลไม่สำเร็จ");
       let logs = await res.json();
+      
+      // ดักไว้อีกรอบหลังประมวลผล json เผื่อมีการหน่วง
+      if (currentFetchId !== fetchReportCounter) return; 
 
       if (workId) {
         logs = logs.filter(log => {
@@ -2123,7 +2138,9 @@
 
     } catch (error) {
       console.error(error);
-      tbody.innerHTML = `<tr><td colspan="11" class="text-center error">> ขัดข้อง: ${error.message}</td></tr>`;
+      if (currentFetchId === fetchReportCounter) { // จัดการตอน error ก็ต้องตรวจสอบ Counter
+        tbody.innerHTML = `<tr><td colspan="11" class="text-center error">> ขัดข้อง: ${error.message}</td></tr>`;
+      }
     }
   }
 
